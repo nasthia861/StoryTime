@@ -29,4 +29,13 @@ const Text = orm.define('text', {
 });
 
 User.hasMany(Text);
+Entry.hasMany(Text);
+
+User.sync()
+Entry.sync()
+Text.sync()
+
+exports.User = User;
+exports.Entry = Entry;
+exports.Text = Text;
 
