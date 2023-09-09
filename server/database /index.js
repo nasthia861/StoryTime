@@ -1,8 +1,15 @@
-const Sequelize = require('sequelize');
+const { Sequelize } = require('sequelize');
 const orm = new Sequelize('stories', 'root', '', {
   host: 'localhost',
   dialect: 'mysql'
 });
+
+try {
+  await orm.authenticate();
+  console.log('Connection has been established successfully.');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
 
 const User = orm.define('users', {
   username: Sequelize.STRING,
@@ -29,7 +36,9 @@ const Text = orm.define('text', {
 });
 
 User.hasMany(Text);
+Text.belongsTo(User);
 Entry.hasMany(Text);
+Text.belongsTo(Entry);
 
 User.sync()
 Entry.sync()
