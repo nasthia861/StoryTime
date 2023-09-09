@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom'
 import axios from'axios';
 
 function Homepage() {
@@ -24,10 +25,11 @@ function Homepage() {
     setInput(event.target.value)
   }
 
-  //function to handle user submut
+  //function to handle user submit
   const handleSubmit = () => {
     //sets story to current story plus users input
-    setStory(`${story}\n ${input}`)
+    setStory(`${story} <br>${input}`)
+    setInput('')
   }
 
   
@@ -42,7 +44,7 @@ function Homepage() {
       </div>
       
         <div className='story-container'>
-          <p>{story}</p>
+          <p dangerouslySetInnerHTML={{__html: story}} ></p>
         </div>
 
         <div>
@@ -57,6 +59,12 @@ function Homepage() {
           />
           <div className='submit'>
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
+          </div>
+
+          <div >
+            <Link to="/user">
+              <button className='user-btn'>User</button>
+            </Link>
           </div>
 
         </div>
