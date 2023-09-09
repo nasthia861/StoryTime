@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const orm = new Sequelize('stories', 'root', '', {
   host: '127.0.0.1',
   dialect: 'mysql'
@@ -27,8 +27,14 @@ const Prompt = orm.define('prompts', {
 
 const Text = orm.define('texts', {
   text: Sequelize.TEXT,
-  likes: Sequelize.INTEGER,
-  wordMatchCt: Sequelize.INTEGER
+  likes: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  wordMatchCt: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  }
 }, {
   timestamps: false
 });

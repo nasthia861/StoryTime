@@ -4,7 +4,7 @@ const router = express.Router();
 const {Text} = require('../database/index') // temporary 
 
 //end point temporary until testing
-router.post('/text/likes/:textId', (req, res) => {
+router.post('/like:id', (req, res) => {
   const { id } = req.params;
   const action = req.body.action;
 
@@ -31,6 +31,7 @@ router.post('/text/likes/:textId', (req, res) => {
   })
 })
 
+//Get all text by a user
 router.get('/text', (req,res) => {
   const { user_Id} = req.params;
   Text.findAll({
@@ -45,6 +46,19 @@ router.get('/text', (req,res) => {
       console.error('Could not Get all texts', err);
       res.sendStatus(500);
     });
+})
+
+router.post('/', (req, res) => {
+  const { newText } = req.body;
+  Text.create(newText)
+    .then(() => {
+      console.log('successfully added new text');
+      res.sendStatus(201);
+    })
+    .catch((error) => {
+      console.error('text post handler failed', error)
+      res.sendStatus(500);
+    })
 })
 
 module.exports = router; 
