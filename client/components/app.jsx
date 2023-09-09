@@ -1,14 +1,11 @@
 import React from 'react';
+import Homepage from './homepage.jsx';
 
-class App extends React.Component {
-  constructor(){
-    super()
-  }
-
-  render(){
-    return (
-      <h1>Hello world!</h1>
-    )
-  }
+function App() {
+  return (
+    <div>
+      <Homepage/>
+    </div>
+  )
 }
 export default App

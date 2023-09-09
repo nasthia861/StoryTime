@@ -8,6 +8,9 @@ const app = express()
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
 
+
+
 app.listen(port, () => {
   console.log(`Listening on : http://localhost:${port}`)
 })
+
