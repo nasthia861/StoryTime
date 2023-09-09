@@ -15,12 +15,18 @@ const User = () => {
   //   .catch((err) => {
   //     console.error('Could not retrieve user', err);
   //   });
-
+  const userId = 3;
   axios.get('http://127.0.0.1:8080/text', {
     params: {
       user_Id: userId
     }
   })
+    .then((userTexts) =>{
+      setUserTexts(userTexts);
+    })
+    .catch((err) => {
+      console.error('Could not retrieve texts', err);
+    });
 
     const sample = ['antman received an award', 
     'black panther was exalted to ruler', 
