@@ -2,6 +2,7 @@ import React from 'react';
 import Homepage from './homepage.jsx';
 import User from './User.jsx';
 import axios from 'axios';
+import bestOf from '../badgeHelpers/bestOf.jsx'
 
 class App extends React.Component {
   constructor(){
@@ -12,35 +13,16 @@ class App extends React.Component {
       textMostWordCt: [],
     }
   }
-
-  //sets winner
-  BestOf(array, comp, key) {  
-    array.reduce((acc, current) => {
-      //if there is already a tie
-      if (acc.length > 1){
-        if(current.comp > acc[0].comp){
-          acc = [current];
-          return acc;
-        }
-      }
-      //for ties
-      if (current.comp === acc.comp){
-        acc.push(current);
-        return acc;
-      }
-      if (current.comp > acc.comp) {
-        acc = [current];
-        return acc;
-      }
-    }, [])
-      .then((bestText) => {
-        this.setState({
-          [key]: bestText
-        })
+  
+  changeWinners() {
+    axios.post(`/text/prompt/${currentPrompt.id}`)
+      .then(textArr => {
+        bestOf(textArr, likes, textMostLikes);
+        bestOf(textArr, wordMatchCt, textMostWordCt);
       })
       .catch((error) => {
-        console.error(`could not set winner for ${key}`, error);
-      });
+        console.error('could not change state of winners', error);
+      })
   }
 
 
