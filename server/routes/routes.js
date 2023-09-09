@@ -8,7 +8,6 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(CLIENT_PATH));
 
 app.use('/text', textRoutes);
 app.use('/user', userRoutes);
