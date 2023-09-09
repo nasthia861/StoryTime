@@ -19,9 +19,9 @@ router.post('/text/likes/:textId', (req, res) => {
       //access like property from post object and increment count
       post.likes += 1
     } else if (action  === 'dislike') {//if post exist and action => 'dislike'
-      //access like property from post object and increment count
+      //access like property from post object and decrement count
       post.likes -= 1;
-      res.status(200).json({message: 'Action successful'})
+      res.status(201).json({message: 'Action successful'})
     }
 
   })//error handling
