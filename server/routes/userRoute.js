@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { Users } = require('../database')
+const { Users } = require('../database/index')
 
 // Middleware
 app.use(express.json());
@@ -15,14 +15,6 @@ app.get('/users', (req, res) => {
     where: {
       userId: id
     },
-    include: [{
-      model: Entry,
-      where: {user_id: id},
-      include: [{
-        model: Text,
-      }]
-    }],
-    required: true
   })
   .then((userInfo) => {
     res.send(userInfo).status(200);

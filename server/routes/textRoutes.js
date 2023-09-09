@@ -31,4 +31,20 @@ router.post('/text/likes/:textId', (req, res) => {
   })
 })
 
+router.get('/text', (req,res) => {
+  const { user_Id} = req.params;
+  Text.findAll({
+    where: {
+      user_Id: user_Id
+    }
+  })
+    .then((textData) => {
+      res.send(textData).status(200);
+    })
+    .catch((err) => {
+      console.error('Could not Get all texts', err);
+      res.sendStatus(500);
+    });
+})
+
 module.exports = router; 

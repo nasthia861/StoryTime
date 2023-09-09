@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const User = () => {
 
-  // const [user, setUser] = useState({});
+  const [userTexts, setUserTexts] = useState([]);
   // axios.get(`http://127.0.0.1:8080/users`, {
   //   params :{
   //     id
@@ -15,6 +15,12 @@ const User = () => {
   //   .catch((err) => {
   //     console.error('Could not retrieve user', err);
   //   });
+
+  axios.get('http://127.0.0.1:8080/text', {
+    params: {
+      user_Id: userId
+    }
+  })
 
     const sample = ['antman received an award', 
     'black panther was exalted to ruler', 
