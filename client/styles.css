@@ -8,3 +8,14 @@
   background-color: bisque;
   padding: 20px
 }
+
+.user-data {
+  position: absolute;
+  top: 10%;
+  left: 30%;
+  bottom: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-style: ridge;
+}
