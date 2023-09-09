@@ -1,4 +1,6 @@
 import React from 'react';
+import Homepage from './homepage.jsx';
+import User from './User.jsx'
 
 class App extends React.Component {
   constructor(){
@@ -7,7 +9,10 @@ class App extends React.Component {
 
   render(){
     return (
-      <h1>Hello World!</h1>
+      <div>
+        {/* <Homepage/> */}
+        <User/>
+      </div>
     )
   }
 }

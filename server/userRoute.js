@@ -16,9 +16,13 @@ app.get('/users', (req, res) => {
       userId: id
     },
     include: [{
-      model: Text,
-      where: {user_id: id}
-    }]
+      model: Entry,
+      where: {user_id: id},
+      include: [{
+        model: Text,
+      }]
+    }],
+    required: true
   })
   .then((userInfo) => {
     res.send(userInfo).status(200);

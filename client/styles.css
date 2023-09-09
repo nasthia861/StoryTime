@@ -1,0 +1,21 @@
+.word-container {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 50px;
+  border: 10px;
+  background-color: bisque;
+  padding: 20px
+}
+
+.user-data {
+  position: absolute;
+  top: 10%;
+  left: 35%;
+  bottom: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-style: ridge;
+}
