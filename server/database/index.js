@@ -13,37 +13,36 @@ orm.authenticate().then(() => {
 const User = orm.define('users', {
   username: Sequelize.STRING,
   password: Sequelize.STRING,
-  posts: Sequelize.ARRAY,
-  badges: Sequelize.ARRAY
+  badges: Sequelize.STRING
 }, {
   timestamps: false
 })
 
-const Entry = orm.define('entry', {
-  texts: Sequelize.ARRAY,
-  matchWords: Sequelize.ARRAY, //connect with extrnal API
+const Prompt = orm.define('prompts', {
+  name: Sequelize.STRING,
+  matchWords: Sequelize.STRING//grabbed with external api
 }, {
   timestamps: true
 });
 
-const Text = orm.define('text', {
-  text: Sequelize.STRING,
-  likes: Sequelize.NUMBER,
-  wordMatchCt: Sequelize.NUMBER
+const Text = orm.define('texts', {
+  text: Sequelize.TEXT,
+  likes: Sequelize.INTEGER,
+  wordMatchCt: Sequelize.INTEGER
 }, {
   timestamps: false
 });
 
 User.hasMany(Text);
 Text.belongsTo(User);
-Entry.hasMany(Text);
-Text.belongsTo(Entry);
+Prompt.hasMany(Text);
+Text.belongsTo(Prompt);
 
 User.sync()
-Entry.sync()
+Prompt.sync()
 Text.sync()
 
 exports.User = User;
-exports.Entry = Entry;
+exports.Prompt = Prompt;
 exports.Text = Text;
 
