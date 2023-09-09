@@ -4,7 +4,7 @@ const router = express.Router();
 const {Text} = require('../database/index') // temporary 
 
 //end point temporary until testing
-router.post('/text/likes/:textId', (req, res) => {
+router.post('/like:id', (req, res) => {
   const { id } = req.params;
   const action = req.body.action;
 
@@ -29,6 +29,19 @@ router.post('/text/likes/:textId', (req, res) => {
     console.error(err);
     res.status(500).json({error: 'Internal server error'})
   })
+})
+
+router.post('/', (req, res) => {
+  const { newText } = req.body;
+  Text.create(newText)
+    .then(() => {
+      console.log('succesfully added new text');
+      res.sendStatus(201);
+    })
+    .catch((error) => {
+      console.error('text post handler failed', error)
+      res.sendStatus(500);
+    })
 })
 
 module.exports = router; 
