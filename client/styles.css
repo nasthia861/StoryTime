@@ -52,15 +52,36 @@
 .user-data {
   position: absolute;
   top: 10%;
-  left: 30%;
-  bottom: 10%;
+  left: 40%;
+  width: auto;
+  /* bottom: 10%; */
   display: flex;
   justify-content: center;
   align-items: center;
   border-style: ridge;
 }
 
+.user-index {
+  /* background-color: cadetblue; */
+  padding-top: 50px;
+  padding-right: 30px;
+  padding-bottom: 50px;
+  padding-left: 30px;
+  display: block;
+
+}
+
+.user-ul {
+  list-style-type: none;
+}
+.user-head {
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  left: 45%;
+}
+
 .user-btn {
   grid-column: 2;
   grid-row: 1;
-}
