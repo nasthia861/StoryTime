@@ -35,11 +35,33 @@ router.post('/', (req, res) => {
   const { newText } = req.body;
   Text.create(newText)
     .then(() => {
-      console.log('succesfully added new text');
+      console.log('successfully added new text');
       res.sendStatus(201);
     })
     .catch((error) => {
       console.error('text post handler failed', error)
+      res.sendStatus(500);
+    })
+})
+
+//grabbing all the texts with a specific postId
+router.get('/prompt/:promptId', (req, res) => {
+  const { promptId } = req.params;
+  Text.findAll({
+    where: {
+      promptId: promptId
+    }
+  })
+    .then((textArr) => {
+      if(textArr.length > 0){
+        res.status(200).send(textArr);
+      } else {
+        console.log('promptId had no match')
+        res.sendStatus(404);
+      }
+    })
+    .catch((error) => {
+      console.error('get text with promptId failed', error);
       res.sendStatus(500);
     })
 })
