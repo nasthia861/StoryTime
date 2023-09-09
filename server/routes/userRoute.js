@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { Users } = require('./database')
+const { Users } = require('../database')
 
 // Middleware
 app.use(express.json());
