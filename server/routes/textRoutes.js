@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {Text} = require('../database/index');
+const {Text} = require('../database/index') // temporary 
 
 //end point temporary until testing
 router.post('/text/likes/:textId', (req, res) => {
@@ -31,5 +31,4 @@ router.post('/text/likes/:textId', (req, res) => {
   })
 })
 
-module.exports = router;
-
+module.exports = router; 
