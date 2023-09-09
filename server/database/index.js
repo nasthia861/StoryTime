@@ -4,12 +4,11 @@ const orm = new Sequelize('stories', 'root', '', {
   dialect: 'mysql'
 });
 
-try {
-  await orm.authenticate();
+orm.authenticate().then(() => {
   console.log('Connection has been established successfully.');
-} catch (error) {
-  console.error('Unable to connect to the database:', error);
-}
+}).catch((error) => {
+  console.error('Unable to connect to the database: ', error);
+});
 
 const User = orm.define('users', {
   username: Sequelize.STRING,
