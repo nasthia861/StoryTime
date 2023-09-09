@@ -20,10 +20,10 @@ const UpVote = ({initLikes, initDislikes}) => {
   return (
 
     <div>
-      <button>onClick={handleLikes}❤️‍🔥</button>
+      <button>onClick={handleLikes}❤️‍🔥🔥</button>
         <span>Likes: {likes}</span>
-        <button>onClick={handleDislikes}🗑️</button>
-        <span>Likes: {likes}</span>
+        <button>onClick={handleDislikes}🗑️🚮</button>
+        <span>Likes: {dislikes}</span>
     </div>
 
 
