@@ -35,7 +35,7 @@ router.get('/text', (req,res) => {
   const { user_Id} = req.params;
   Text.findAll({
     where: {
-      user_Id: user_Id
+      userId: user_Id
     }
   })
     .then((textData) => {
