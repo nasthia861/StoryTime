@@ -11,10 +11,14 @@ app.use(express.static(distPath));
 app.get('/users', (req, res) => {
   //Create id variable to be used as conditional
   const { id } = req.params;
-  Users.findOne({
+  Users.findAll({
     where: {
       userId: id
-    }
+    },
+    include: [{
+      model: Text,
+      where: {user_id: id}
+    }]
   })
   .then((userInfo) => {
     res.send(userInfo).status(200);

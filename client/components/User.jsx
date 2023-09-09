@@ -19,13 +19,11 @@ export default function User () {
     const sample = [a, b, c, d, e, f, g];
   return (
     <div className='user'>
-      <form>
         {
           sample.map((entry, index) => {
-           return <div entry={entry} key={entry + index}/>
+           return <p key={entry + index}>{entry}</p>
           })
         }
-      </form>
     </div>
   )
 }
