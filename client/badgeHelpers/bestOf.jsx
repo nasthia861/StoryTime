@@ -1,6 +1,6 @@
 //sets winner
-const bestOf = (array, comp, key) => {  
-  array.reduce((acc, current) => {
+const bestOf = (array, comp) => {  
+  return array.reduce((acc, current) => {
     //if there is already a tie
     if (acc.length > 1){
       if(current[comp] > acc[0][comp]){
@@ -18,13 +18,5 @@ const bestOf = (array, comp, key) => {
       return acc;
     }
   }, [])
-    .then((bestText) => {
-      this.setState({
-        [key]: bestText
-      })
-    })
-    .catch((error) => {
-      console.error(`could not set winner for ${key}`, error);
-    });
 };
 module.exports = bestOf;
