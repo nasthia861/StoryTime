@@ -1,19 +1,18 @@
 import React from 'react';
-import Homepage from './homepage.jsx';
+import {BrowserRouter as Router, Routes, Route, Switch, Redirect } from 'react-router-dom';
+import Homepage from './Homepage.jsx';
 import User from './User.jsx'
 
-class App extends React.Component {
-  constructor(){
-    super()
-  }
-
-  render(){
-    return (
-      <div>
-        {/* <Homepage/> */}
-        <User/>
-      </div>
+function App () {
+  return (
+    <div className='wrapper'>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Homepage/>} />
+          <Route path="/user" element={<User/>} />
+        </Routes>
+      </Router>
+    </div>
     )
-  }
-}
+};
 export default App

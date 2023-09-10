@@ -1,21 +1,18 @@
-import react, {useState} from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 
 const User = () => {
 
-  const [userTexts, setUserTexts] = useState([]);
-  // axios.get(`http://127.0.0.1:8080/users`, {
-  //   params :{
-  //     id
-  //   }
-  // })
-  //   .then((userData)=> {
-  //     setUser(userData)
-  //   })
-  //   .catch((err) => {
-  //     console.error('Could not retrieve user', err);
-  //   });
-  const userId = 3;
+  const [userTexts, setUserTexts] = useState(
+    ['antman received an award', 
+  'black panther was exalted to ruler', 
+  'captain america is in danger', 
+  'daredevil fell in love', 
+  'ego is a living planet',
+  'falcon is the real captain america',
+  'groot is the best guardian']);
+
+  //axios get to retrieve all texts
   axios.get('http://localhost:8080/text', {
   })
     .then((texts) =>{
@@ -33,7 +30,7 @@ const User = () => {
     'ego is a living planet',
     'falcon is the real captain america',
     'groot is the best guardian'];
-
+    console.log(userTexts);
   return (
     <div className='user' >
         <h1 className='user-head' >My Stories</h1>
