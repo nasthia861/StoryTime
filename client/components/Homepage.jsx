@@ -7,6 +7,7 @@ function Homepage() {
   const [words, setWords] = useState(['alleviate', 'run', 'no', 'why', 'infallible'])
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
+  const [user, setUser] = useState({name: "me", time: "3:00p.m."})
 
   //useEffect to fetch data from database upon mounting
 
@@ -28,7 +29,7 @@ function Homepage() {
   //function to handle user submit
   const handleSubmit = () => {
     //sets story to current story plus users input
-    setStory(`${story} <br>${input}`)
+    setStory(` ${story} <br>${user.name}: ${input}`)
     setInput('')
   }
 

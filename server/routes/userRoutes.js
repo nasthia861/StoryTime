@@ -6,19 +6,7 @@ const { User } = require('../database/index')
 router.get('/', (req, res) => {
   //Create id variable to be used as conditional
   const { id } = req.params;
-  User.findAll({
-    where: {
-      userId: id
-    },
-    include: [{
-      model: Entry,
-      where: {user_id: id},
-      include: [{
-        model: Text,
-      }]
-    }],
-    required: true
-  })
+  User.findAll({})
   .then((userInfo) => {
     res.send(userInfo).status(200);
   })

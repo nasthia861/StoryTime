@@ -81,3 +81,8 @@
   display: flex;
   left: 45%;
 }
+
+.user-btn {
+  grid-column: 2;
+  grid-row: 1;
+}
