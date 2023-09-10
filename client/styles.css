@@ -51,13 +51,13 @@
   width: auto;
   /* bottom: 10%; */
   display: flex;
+  background-color: bisque;
   justify-content: center;
   align-items: center;
   border-style: ridge;
 }
 
 .user-index {
-  /* background-color: cadetblue; */
   padding-top: 50px;
   padding-right: 30px;
   padding-bottom: 50px;
@@ -69,10 +69,12 @@
 .user-ul {
   list-style-type: none;
 }
+
 .user-head {
   position: absolute;
   justify-content: center;
   align-items: center;
   display: flex;
   left: 45%;
+  padding-bottom: 50px;
 }

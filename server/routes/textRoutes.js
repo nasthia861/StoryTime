@@ -32,12 +32,12 @@ router.post('/like:id', (req, res) => {
 })
 
 //Get all text by a user
-router.get('/text', (req,res) => {
+router.get('/', (req,res) => {
   const { user_Id} = req.params;
   Text.findAll({
-    where: {
-      userId: user_Id
-    }
+    // where: {
+    //   userId: user_Id
+    // }
   })
     .then((textData) => {
       res.send(textData).status(200);

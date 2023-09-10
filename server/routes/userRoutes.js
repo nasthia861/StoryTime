@@ -10,14 +10,6 @@ router.get('/', (req, res) => {
     where: {
       userId: id
     },
-    include: [{
-      model: Entry,
-      where: {user_id: id},
-      include: [{
-        model: Text,
-      }]
-    }],
-    required: true
   })
   .then((userInfo) => {
     res.send(userInfo).status(200);

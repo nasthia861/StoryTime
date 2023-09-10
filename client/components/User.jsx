@@ -16,17 +16,15 @@ const User = () => {
   //     console.error('Could not retrieve user', err);
   //   });
   const userId = 3;
-  axios.get('http://127.0.0.1:8080/text', {
-    params: {
-      user_Id: userId
-    }
+  axios.get('http://localhost:8080/text', {
   })
-    .then((userTexts) =>{
-      setUserTexts(userTexts);
+    .then((texts) =>{
+      setUserTexts(texts);
     })
     .catch((err) => {
-      console.error('Could not retrieve texts', err);
+      console.error('Could not retrieve texts!!', err);
     });
+    
 
     const sample = ['antman received an award', 
     'black panther was exalted to ruler', 
@@ -37,7 +35,7 @@ const User = () => {
     'groot is the best guardian'];
 
   return (
-    <div>
+    <div className='user' >
         <h1 className='user-head' >My Stories</h1>
       <div className='user-data'>
         <ul className='user-ul'>
