@@ -1,38 +1,18 @@
 import React from 'react';
-import Homepage from './homepage.jsx';
-import User from './User.jsx';
-import axios from 'axios';
-import bestOf from '../badgeHelpers/bestOf.jsx'
+import {BrowserRouter as Router, Routes, Route, Switch, Redirect } from 'react-router-dom';
+import Homepage from './Homepage.jsx';
+import User from './User.jsx'
 
-class App extends React.Component {
-  constructor(){
-    super()
-    this.setState() = {
-      currentPrompt: {},
-      textMostLikes: [],
-      textMostWordCt: [],
-    }
-  }
-  
-  changeWinners() {
-    axios.post(`/text/prompt/${currentPrompt.id}`)
-      .then(textArr => {
-        bestOf(textArr, likes, textMostLikes);
-        bestOf(textArr, wordMatchCt, textMostWordCt);
-      })
-      .catch((error) => {
-        console.error('could not change state of winners', error);
-      })
-  }
-
-
-  render(){
-    return (
-      <div>
-        {/* <Homepage/> */}
-        <User/>
-      </div>
+function App () {
+  return (
+    <div className='wrapper'>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Homepage/>} />
+          <Route path="/user" element={<User/>} />
+        </Routes>
+      </Router>
+    </div>
     )
-  }
-}
+};
 export default App
