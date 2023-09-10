@@ -1,12 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 import axios from'axios';
+import bestOf from '../badgeHelpers/bestOf.jsx'
 
 function Homepage() {
   //setting states of genrated word, current story, and input using hooks
   const [words, setWords] = useState(['alleviate', 'run', 'no', 'why', 'infallible'])
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
+  const [mostLikes, setMostLikes] = useState([])
+  const [mostWords, setMostWords] = useState([])
 
   //useEffect to fetch data from database upon mounting
 
@@ -20,7 +23,23 @@ function Homepage() {
   //   })
   // }, [])
 
-  //funciton to handle input change
+  //changes state of winners
+  const changeWinners = () => {
+    axios.get(`/text/prompt/${currentPrompt.id}`)
+      .then(textArr => {
+        bestOf(textArr, likes)
+          .then((best) => setMostLikes(best))
+          .catch((error) => console.error('could not set most likes', error));
+        bestOf(textArr, wordMatchCt)
+          .then((best) => setMostWords(best))
+          .catch((error) => console.error('could not set most wordMatchCt', error));
+      })
+      .catch((error) => {
+        console.error('could not change state of winners', error);
+      })
+  }
+
+  //function to handle input change
   const handleInput = (event) => {
     setInput(event.target.value)
   }
