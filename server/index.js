@@ -7,6 +7,10 @@ const port = 8080;
 const app = express()
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
+// Middleware for parsing JSON and form data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 
 
