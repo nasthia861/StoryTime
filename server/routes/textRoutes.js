@@ -18,19 +18,15 @@ router.get('/:id', (req, res) => {
   })
 })
 
-//end point temporary until testing
+//post to update likes and dislikes
 router.post('/:id', (req, res) => {
-  const { id, likes } = req.params;
+  const { id } = req.params;
   const { action } = req.body;
-
-  // if (!['likes', 'dislikes'].includes(action)) {
-  //   res.status(400)
-  // }
 
   Text.findOne({where: { id: id}})
   .then((text) => {
       if (!text) {
-        return res.status(404).json({ error: 'Text not found' });
+        return res.status(404).send({ error: 'Text not found' });
       }
 
       if (action === 'like') {
@@ -41,16 +37,16 @@ router.post('/:id', (req, res) => {
 
       return text.save()
         .then(() => {
-          res.status(200).json({ message: 'Action successful' });
+          res.status(200).send({ message: 'Action successful' });
         })
         .catch((error) => {
           console.error(error);
-          res.status(500).json({ error: 'Internal server error' });
+          res.status(500).send({ error: 'Internal server error' });
         });
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).send({ error: 'Internal server error' });
     });
 });
 
