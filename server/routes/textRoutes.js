@@ -1,35 +1,58 @@
 const express = require('express');
 const router = express.Router();
 
-const {Text} = require('../database/index') // temporary 
+const {Text} = require('../database/index');
 
-//end point temporary until testing
-router.post('/like:id', (req, res) => {
+//get text by text id
+router.get('/:id', (req, res) => {
   const { id } = req.params;
-  const action = req.body.action;
-
-  Text.findByPk(id) //find post by PRIMARY KEY
-  .then((post) => {
-    //validate post exist => send 404 otherwise
-    if (!post) {
-      res.status(404).json({error: 'Post not Found'});
-    }
-    //if post exist and action => 'like'
-    if ( action === 'like') {
-      //access like property from post object and increment count
-      post.likes += 1
-    } else if (action  === 'dislike') {//if post exist and action => 'dislike'
-      //access like property from post object and increment count
-      post.likes -= 1;
-      res.status(200).json({message: 'Action successful'})
-    }
-
-  })//error handling
+  Text.findOne({
+    where: {id: id}
+  })
+  .then((textObj) => {
+    res.status(200).send(textObj);
+  })
   .catch((err) => {
-    console.error(err);
-    res.status(500).json({error: 'Internal server error'})
+    console.error(err.message);
+    res.status(404);
   })
 })
+
+//end point temporary until testing
+router.post('/:id', (req, res) => {
+  const { id, likes } = req.params;
+  const { action } = req.body;
+
+  // if (!['likes', 'dislikes'].includes(action)) {
+  //   res.status(400)
+  // }
+
+  Text.findOne({where: { id: id}})
+  .then((text) => {
+      if (!text) {
+        return res.status(404).json({ error: 'Text not found' });
+      }
+
+      if (action === 'like') {
+        text.likes += 1;
+      } else if (action === 'dislike') {
+        text.likes -= 1;
+      }
+
+      return text.save()
+        .then(() => {
+          res.status(200).json({ message: 'Action successful' });
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).json({ error: 'Internal server error' });
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+});
 
 //Get all text by a user
 router.get('/', (req,res) => {
