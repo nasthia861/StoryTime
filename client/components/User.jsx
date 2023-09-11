@@ -7,13 +7,7 @@ const User = () => {
   const [userTexts, setUserTexts] = useState([]);
   const [userId, setUserId] = useState(1);
 
-  //axios request to retrieve user texts by id
-  useEffect(() => {
-    getUserTexts(userId);
-    getUserBadges(userId);
-  });
-
-  getUserTexts = (id) => {
+  const getUserTexts = (id) => {
     axios.get(`http://127.0.0.1:8080/text/${id}`)
     .then((texts) =>{
       setUserTexts(texts.data);
@@ -21,7 +15,13 @@ const User = () => {
     .catch((err) => {
       console.error('Could not retrieve texts!!', err);
     });
-  })
+  };
+  
+  //axios request to retrieve user texts by id
+  useEffect(() => {
+    getUserTexts(userId);
+    getUserBadges(userId);
+  });
 
   return (
     <div>
