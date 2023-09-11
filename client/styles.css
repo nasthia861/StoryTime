@@ -86,3 +86,16 @@
   grid-column: 2;
   grid-row: 1;
 }
+
+.upvote-btn {
+  background-color: blue;
+  color:darkolivegreen;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.liked {
+  background-color: slateblue;
+}
