@@ -99,14 +99,32 @@
 }
 
 .upvote-btn {
-  background-color: blue;
-  color:darkolivegreen;
+  background: none;
   border: none;
-  border-radius: 5px;
+  border-radius: 0px;
   padding: 5px 10px;
   cursor: pointer;
 }
 
 .liked {
   background-color: slateblue;
+
+
+}
+
+.text-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  
+}
+
+
+
+.text-content {
+  flex-grow: 1;
 }

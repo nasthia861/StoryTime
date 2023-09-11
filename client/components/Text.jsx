@@ -18,11 +18,15 @@ const Text = ({text}) => {
 
 
   return (
-    <div>  
-      <br/>
+    <div className="text-container">
+      <div className="upvote-container">
+       </div>
+        <div className='text-context'>  
       <p>{prompt}</p>
       <UpVote text={text}/>
     </div>
+    </div>
+   
   )
 }
 export default Text;
