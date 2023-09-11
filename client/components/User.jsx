@@ -20,8 +20,8 @@ const User = () => {
 
   return (
     <div>
-      <Link to='/'>
-        <button>HomePage</button>
+      <Link to='/' >
+        <button className='user-home-button'>HomePage</button>
       </Link>
       <div className='user' >
         <h1 className='user-head' >My Stories</h1>
