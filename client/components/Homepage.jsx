@@ -4,11 +4,12 @@ import axios from'axios';
 import bestOf from '../badgeHelpers/bestOf.jsx'
 
 function Homepage() {
-  //setting states of genrated word, current story, and input using hooks
+
+  //setting states of generated word, current story, and input using hooks
+  const [words, setWords] = useState(['alleviate', 'run', 'no', 'why', 'infallible'])
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
   const [prompt, setPrompt] = useState([])
-  const [words, setwords] = useState([])
   const [lastUpdate, setLastUpdate] = useState()
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
