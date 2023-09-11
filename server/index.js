@@ -58,6 +58,6 @@ passport.deserializeUser(async (id, done) => {
 });
 
 app.listen(port, () => {
-  console.log(`Listening on : http://localhost:${port}`)
+  console.log(`Listening on : http://127.0.0.1:${port}`)
 })
 

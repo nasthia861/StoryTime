@@ -19,10 +19,22 @@ const User = orm.define('users', {
 })
 
 const Prompt = orm.define('prompts', {
-  name: Sequelize.STRING,
   matchWords: Sequelize.STRING//grabbed with external api
 }, {
   timestamps: true
+});
+
+const Badges = orm.define('badges', {
+  mostLikes: {
+    type: DataTypes.STRING,
+    defaultValue: 'No winner yet'
+  },
+  mostWordMatchCt: {
+    type: DataTypes.STRING,
+    defaultValue: 'No winner yet'
+  }
+}, {
+  timestamps: false
 });
 
 const Text = orm.define('texts', {
@@ -43,12 +55,16 @@ User.hasMany(Text);
 Text.belongsTo(User);
 Prompt.hasMany(Text);
 Text.belongsTo(Prompt);
+Prompt.hasOne(Badges);
+Badges.belongsTo(Prompt);
 
 User.sync()
 Prompt.sync()
 Text.sync()
+Badges.sync()
 
 exports.User = User;
 exports.Prompt = Prompt;
 exports.Text = Text;
+exports.Badges = Badges;
 
