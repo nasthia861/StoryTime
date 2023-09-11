@@ -19,7 +19,6 @@ const User = orm.define('users', {
 })
 
 const Prompt = orm.define('prompts', {
-  name: Sequelize.STRING,
   matchWords: Sequelize.STRING//grabbed with external api
 }, {
   timestamps: true

@@ -13,15 +13,31 @@ function Homepage() {
 
   //useEffect to fetch data from database upon mounting
 
-  // useEffect(() => {
-  //   axios.get('/api/words')
-  //   .then(response => {
-  //     setWords(response.data)
-  //   })
-  //   .catch(err => {
-  //     console.error('Error getting words:', err)
-  //   })
-  // }, [])
+  useEffect(() => {
+
+    const interval = setInterval(() => {
+      axios.get('https://random-word-api.herokuapp.com/word?number=5')
+      .then(response => {
+        setWords(response.data)
+        const words = response.data.join(' ')
+        
+        axios.post('/prompt', {matchWords: words})
+        .then((response) => {
+          console.log('Data Submitted!', response.data)
+        })
+        .catch((err) => {
+          console.error("Could not Submit!", err)
+        })
+
+      })
+      .catch(err => {
+        console.error('Error getting words:', err)
+      })
+
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   //changes state of winners
   const changeWinners = () => {
@@ -47,7 +63,7 @@ function Homepage() {
   //function to handle user submit
   const handleSubmit = () => {
     //sets story to current story plus users input
-    setStory(` ${story} <br>${user.name}: ${input}`)
+    setStory(` ${story} <br>${input}`)
     setInput('')
   }
 
