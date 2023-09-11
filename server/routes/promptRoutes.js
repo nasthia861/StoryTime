@@ -3,8 +3,7 @@ const router = express.Router();
 const { Prompt } = require('../database/index'); 
 
 router.post('/', (req, res) => {
-  const { newPrompt } = req.body;
-  Prompt.create(newPrompt)
+  Prompt.create(req.body)
     .then(() => {
       console.log('successfully added new prompt');
       res.sendStatus(201);
