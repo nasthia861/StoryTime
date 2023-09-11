@@ -87,6 +87,12 @@ body, html {
   list-style-type: none;
 }
 
+.user-badges {
+  align-items: right;
+  color: black;
+  background: white;
+}
+
 .user-head {
   position: absolute;
   justify-content: center;
