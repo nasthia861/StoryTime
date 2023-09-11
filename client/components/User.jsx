@@ -6,17 +6,8 @@ const User = () => {
 
   const [userTexts, setUserTexts] = useState([]);
   const [userId, setUserId] = useState(1);
-  // axios.get(`http://127.0.0.1:8080/users`, {
-  //   params :{
-  //     id
-  //   }
-  // })
-  //   .then((userData)=> {
-  //     setUser(userData)
-  //   })
-  //   .catch((err) => {
-  //     console.error('Could not retrieve user', err);
-  //   });
+
+  //axios request to retrieve user texts by id
   useEffect(() => {
     axios.get(`http://127.0.0.1:8080/text/${userId}`)
     .then((texts) =>{
@@ -26,14 +17,6 @@ const User = () => {
       console.error('Could not retrieve texts!!', err);
     });
   })
-    
-    // const sample = ['antman received an award', 
-    // 'black panther was exalted to ruler', 
-    // 'captain america is in danger', 
-    // 'daredevil fell in love', 
-    // 'ego is a living planet',
-    // 'falcon is the real captain america',
-    // 'groot is the best guardian'];
 
   return (
     <div>
