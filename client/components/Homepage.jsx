@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import axios from'axios';
 import bestOf from '../badgeHelpers/bestOf.jsx'
 import UpVote from './UpVote.jsx';
+import Text from './Text.jsx';
 
 function Homepage() {
   //setting states of genrated word, current story, and input using hooks
@@ -88,9 +89,8 @@ function Homepage() {
             </Link>
           </div>
           <div>
-            <UpVote text={{id: 1, likes: 5 }} />
+            <Text text={{id: 1}} />
           </div>
-
         </div>
 
     </div>

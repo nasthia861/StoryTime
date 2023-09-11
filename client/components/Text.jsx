@@ -2,25 +2,26 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import UpVote from './UpVote.jsx';
 
-const Text = ({textId}) => {
+const Text = ({text}) => {
+  console.log(text)
   
-  const [text, setText] = useState('');
+  const [prompt, setText] = useState('');
 
   useEffect(() => {
 
-    axios.get(`/text/${textId.id}`)
-    axios.get(`/text/${textId.id}`)
+    axios.get(`/text/${text.id}`)
     .then((textData) => {
-      setText(textData.text);
+      setText(textData.data.text);
     })
     .catch((err) => console.error(`Error getting text:${err}`))
-  }, [textId])
+  }, [text])
 
 
   return (
-    <div> 
-      <p>{text}</p>
-      <UpVote textId={textId}/>
+    <div>  
+      <br/>
+      <p>{prompt}</p>
+      <UpVote text={text}/>
     </div>
   )
 }
