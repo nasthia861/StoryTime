@@ -82,6 +82,7 @@
   left: 45%;
 }
 
-/* .user-btn {
+.user-btn {
   grid-column: 2;
-  grid-row: 1; */
+  grid-row: 1;
+}
