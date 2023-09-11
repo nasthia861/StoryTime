@@ -10,7 +10,6 @@ function Homepage() {
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
   const [prompt, setPrompt] = useState([])
-  const [words, setwords] = useState([])
   const [lastUpdate, setLastUpdate] = useState()
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
