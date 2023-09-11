@@ -1,4 +1,4 @@
-import react, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom'
 
@@ -18,22 +18,7 @@ const User = () => {
     .catch((err) => {
       console.error('Could not retrieve texts!!', err);
     });
-  }
-  
-  const getUserBadges = (id) => {
-    axios.get(`http://127.0.0.1:8080/user/${id}`)
-    .then((userData) => {
-      setUserBadges(userData.data.badges);
-    })
-    .catch((error) => {
-      console.error('could not get user badges', error)
-    });
-  }
-  
-  useEffect(() => {
-    getUserTexts(userId);
-    getUserBadges(userId);
-  });
+
   return (
     <div>
       <Link to='/' >
