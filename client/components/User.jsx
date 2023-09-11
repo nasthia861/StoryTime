@@ -9,7 +9,12 @@ const User = () => {
 
   //axios request to retrieve user texts by id
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8080/text/${userId}`)
+    getUserTexts(userId);
+    getUserBadges(userId);
+  });
+
+  getUserTexts = (id) => {
+    axios.get(`http://127.0.0.1:8080/text/${id}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
