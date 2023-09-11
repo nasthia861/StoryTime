@@ -49,6 +49,7 @@ function Homepage() {
     //sets story to current story plus users input
     setStory(`${story} <br>${input}`)
     setInput('')
+    
   }
 
   
