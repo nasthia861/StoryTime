@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 
 const UpVote = ({initLikes, initDislikes}) => {
@@ -10,11 +11,18 @@ const UpVote = ({initLikes, initDislikes}) => {
   const [dislikes, setDislikes] = useState(initDislikes);
 
   const handleLikes = () => {
+    axios.post(`/text/${text.id}`, { action: 'likes'})
+    .then((textObj) => {
+      if (textObj.status === 200) {
+        setLikes(likes + 1);
+      }
+    })
+    .catch((err) => console.error('Error trying to like:', err))
 
   };
 
   const handleDislikes = () => {
-
+    axios.post('/text')
   };
 
   return (
@@ -32,3 +40,5 @@ const UpVote = ({initLikes, initDislikes}) => {
 
 
 }
+
+export default UpVote;
