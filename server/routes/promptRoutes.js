@@ -6,7 +6,7 @@ router.post('/', (req, res) => {
   const { newPrompt } = req.body;
   Prompt.create(newPrompt)
     .then(() => {
-      console.log('succesfully added new prompt');
+      console.log('successfully added new prompt');
       res.sendStatus(201);
     })
     .catch((error) => {
