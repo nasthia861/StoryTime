@@ -51,9 +51,13 @@ router.post('/:id', (req, res) => {
 });
 
 //Get all text by a user
-router.get('/', (req,res) => {
-  const { user_Id} = req.params;
-  Text.findAll({})
+router.get('/:userId', (req,res) => {
+  const { userId } = req.params;
+  Text.findAll({
+    where: {
+      userId: userId
+    }
+  })
     .then((textData) => {
       res.send(textData).status(200);
     })
