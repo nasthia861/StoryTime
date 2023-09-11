@@ -27,7 +27,6 @@ const UpVote = ({text}) => {
     .catch((err) => console.error(`Error liking: ${err}`))
 
   };
-
   const handleDislikes = () => {
     axios.post(`http://127.0.0.1:8080/text/${text.id}`, {action: 'dislike'})
     .then((textObj) => {
@@ -40,18 +39,14 @@ const UpVote = ({text}) => {
 
 
   return (
-
     <div>
         <button className='upvote-btn' onClick={handleLikes}> ⬆️</button>
         <span>{likes}</span>
         <button className='upvote-btn' onClick={handleDislikes}>⬇️</button>
     </div>
-
-
   )
 
 
 
 }
-
 export default UpVote;

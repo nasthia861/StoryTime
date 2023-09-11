@@ -1,5 +1,7 @@
-.body {
-  background-color:aliceblue;
+body, html {
+  background-image: url(HD-wallpaper-blue-gradient-ombre.jpg);
+  background-repeat: repeat-x;
+  background-size: cover;
 }
 
 .wrapper {
@@ -15,7 +17,10 @@
   grid-column: 1;
   grid-row: 1;
   font-size: 35px;
-  background-color: bisque;
+  background: #E2CB76;
+  background: -moz-radial-gradient(center, #E2CB76 0%, #D4DB8A 46%, #96A2D5 100%);
+  background: -webkit-radial-gradient(center, #E2CB76 0%, #D4DB8A 46%, #96A2D5 100%);
+  background: radial-gradient(ellipse at center, #E2CB76 0%, #D4DB8A 46%, #96A2D5 100%);
   padding: 20px;
   text-align: center;
 }
@@ -25,7 +30,10 @@
   grid-row: 2;
   font-size: 20px;
   border-color: black;
-  background-color: bisque;
+  background: #96A2D5;
+  background: -moz-radial-gradient(center, #96A2D5 0%, #D4DB8A 46%, #E2CB76 100%);
+  background: -webkit-radial-gradient(center, #96A2D5 0%, #D4DB8A 46%, #E2CB76 100%);
+  background: radial-gradient(ellipse at center, #96A2D5 0%, #D4DB8A 46%, #E2CB76 100%);
   padding: 20px;
   text-align: center;
   border-style:inset;
@@ -57,7 +65,10 @@
   width: auto;
   /* bottom: 10%; */
   display: flex;
-  background-color: bisque;
+  background: #FBFE8C;
+  background: -moz-linear-gradient(left, #FBFE8C 0%, #C4DB93 42%, #C9BDFF 100%);
+  background: -webkit-linear-gradient(left, #FBFE8C 0%, #C4DB93 42%, #C9BDFF 100%);
+  background: linear-gradient(to right, #FBFE8C 0%, #C4DB93 42%, #C9BDFF 100%);
   justify-content: center;
   align-items: center;
   border-style: ridge;
@@ -76,12 +87,23 @@
   list-style-type: none;
 }
 
+.user-badges {
+  align-items: right;
+  color: black;
+  background: white;
+}
+
 .user-head {
   position: absolute;
   justify-content: center;
   align-items: center;
   display: flex;
   left: 45%;
+  font-family: 'Courier New', Courier, monospace;
+  color: #FFFFFF;
+  text-shadow: 3px 5px 2px #474747;
+  color: #FFFFFF;
+  background: transparent;
 }
 
 .user-btn {
@@ -90,13 +112,22 @@
   width: 150px;
   border-radius: 12px;
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  background: #f8e40c;
+  background: -moz-linear-gradient(top, #f8e40c 0%, #CBC047 38%, #1c86cc 100%);
+  background: -webkit-linear-gradient(top, #f8e40c 0%, #CBC047 38%, #1c86cc 100%);
+  background: linear-gradient(to bottom, #f8e40c 0%, #CBC047 38%, #1c86cc 100%);
 }
 
 .user-home-button {
   width: 150px;
   border-radius: 12px;
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  background: #f8e40c;
+  background: -moz-linear-gradient(top, #f8e40c 0%, #CBC047 38%, #1c86cc 100%);
+  background: -webkit-linear-gradient(top, #f8e40c 0%, #CBC047 38%, #1c86cc 100%);
+  background: linear-gradient(to bottom, #f8e40c 0%, #CBC047 38%, #1c86cc 100%);
 }
+
 
 .upvote-btn {
   background: none;

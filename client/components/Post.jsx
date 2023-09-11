@@ -1,7 +1,7 @@
 import React from 'react';
-import UpVote from './UpVote'
+import UpVote from './UpVote.jsx'
 
-const postItem = ({text}) => {
+const Post = ({text}) => {
 
   return (
     <div>
@@ -14,3 +14,5 @@ const postItem = ({text}) => {
     </div>
   )
 }
+
+export default Post;

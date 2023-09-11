@@ -53,4 +53,15 @@ router.post('/', (req, res) => {
     })
 })
 
+// API route to get user information
+router.get('/user', (req, res) => {
+  if (req.isAuthenticated()) {
+    // Return user data if authenticated
+    res.json({ user: req.user });
+  } else {
+    // Return an empty object if not authenticated
+    res.json({});
+  }
+});
+
 module.exports = router;
