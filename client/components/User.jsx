@@ -9,7 +9,12 @@ const User = () => {
 
   //axios request to retrieve user texts by id
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8080/text/${userId}`)
+    getUserTexts(userId);
+    getUserBadges(userId);
+  });
+
+  getUserTexts = (id) => {
+    axios.get(`http://127.0.0.1:8080/text/${id}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
@@ -24,7 +29,7 @@ const User = () => {
         <button className='user-home-button'>HomePage</button>
       </Link>
       <div className='user' >
-        <h1 className='user-head' >My Stories</h1>
+        <h1 className='user-head' >MY STORIES</h1>
           <div className='user-data'>
             <ul className='user-ul'>
         {

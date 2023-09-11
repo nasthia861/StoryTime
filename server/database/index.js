@@ -24,6 +24,19 @@ const Prompt = orm.define('prompts', {
   timestamps: true
 });
 
+const Badges = orm.define('badges', {
+  mostLikes: {
+    type: DataTypes.STRING,
+    defaultValue: 'No winner yet'
+  },
+  mostWordMatchCt: {
+    type: DataTypes.STRING,
+    defaultValue: 'No winner yet'
+  }
+}, {
+  timestamps: false
+});
+
 const Text = orm.define('texts', {
   text: Sequelize.TEXT,
   likes: {
@@ -42,12 +55,16 @@ User.hasMany(Text);
 Text.belongsTo(User);
 Prompt.hasMany(Text);
 Text.belongsTo(Prompt);
+Prompt.hasOne(Badges);
+Badges.belongsTo(Prompt);
 
 User.sync()
 Prompt.sync()
 Text.sync()
+Badges.sync()
 
 exports.User = User;
 exports.Prompt = Prompt;
 exports.Text = Text;
+exports.Badges = Badges;
 

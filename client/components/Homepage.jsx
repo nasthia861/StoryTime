@@ -12,6 +12,7 @@ function Homepage() {
   const [lastUpdate, setLastUpdate] = useState()
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
+  const [currentPrompt, setCurrentPrompt] = useState(1);
 
   //useEffect to fetch data from database upon mounting
 
@@ -89,6 +90,7 @@ function Homepage() {
 
   //changes state of winners
   const changeWinners = () => {
+    //grab texts with the promptid from current prompt
     axios.get(`/text/prompt/${currentPrompt.id}`)
       .then(textArr => {
         bestOf(textArr, likes)
@@ -113,7 +115,7 @@ function Homepage() {
     //sets story to current story plus users input
     setStory(` ${story} <br>${input}`)
     setInput('')
-    
+
   }
 
   
