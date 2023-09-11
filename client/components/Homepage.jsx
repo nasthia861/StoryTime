@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 import axios from'axios';
 import bestOf from '../badgeHelpers/bestOf.jsx'
-import UpVote from './UpVote.jsx';
 import Text from './Text.jsx';
 
 function Homepage() {
@@ -12,7 +11,7 @@ function Homepage() {
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
   const [prompt, setPrompt] = useState([])
-  const [words, setwords] = useState([])
+  //const [words, setwords] = useState([])
   const [lastUpdate, setLastUpdate] = useState()
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
