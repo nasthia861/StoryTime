@@ -24,7 +24,7 @@ const User = () => {
         <button className='user-home-button'>HomePage</button>
       </Link>
       <div className='user' >
-        <h1 className='user-head' >My Stories</h1>
+        <h1 className='user-head' >MY STORIES</h1>
           <div className='user-data'>
             <ul className='user-ul'>
         {
