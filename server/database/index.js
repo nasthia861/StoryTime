@@ -20,7 +20,6 @@ const User = orm.define('users', {
 
 const Prompt = orm.define('prompts', {
   matchWords: Sequelize.STRING,//grabbed with external api
-  round: Sequelize.INTEGER,
 }, {
   timestamps: true
 });
@@ -80,5 +79,3 @@ exports.User = User;
 exports.Prompt = Prompt;
 exports.Text = Text;
 exports.Badges = Badges;
-
-

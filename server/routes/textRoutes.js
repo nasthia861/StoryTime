@@ -53,7 +53,6 @@ router.post('/likes/:id', (req, res) => {
 //post to update winner status
 router.post('/winner/:id', (req, res) => {
   const { id } = req.params;
-  const { action } = req.body;
 
   Text.findOne({where: { id: id}})
   .then((text) => {
