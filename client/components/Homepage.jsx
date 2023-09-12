@@ -9,11 +9,11 @@ function Homepage() {
   //setting states of generated word, current story, and input using hooks
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
-  const [prompt, setPrompt] = useState([])
-  const [lastUpdate, setLastUpdate] = useState()
+  const [words, setWords] = useState([])
+  const [lastUpdate, setLastUpdate] = useState('')
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
-  const [currentPrompt, setCurrentPrompt] = useState(1);
+  const [currentPrompt, setCurrentPrompt] = useState({});
 
   //useEffect to fetch data from database upon mounting
 
@@ -23,13 +23,13 @@ function Homepage() {
               console.log(response.data)
               const wordsForDb = response.data.join(' ')
               axios.post('/prompt', {matchWords: wordsForDb})
-              .then((response) => {
-                console.log('Data Submitted!', response.data)
+              .then(() => {
                 axios.get('/prompt')
                 .then((response) => {
-                  console.log("hello", response.data)
+                  console.log("this", response.data[response.data.length - 1])
                   const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-                  setwords(wordArray)
+                  setCurrentPrompt(response.data[response.data.length - 1])
+                  setWords(wordArray)
                 })
                 .catch((err) => {
                 console.error("Could not get prompts", err)
@@ -54,8 +54,8 @@ function Homepage() {
 
       }else{
         const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-        setwords(wordArray)
-        console.log('ayy', response.data)
+        setWords(wordArray)
+        setCurrentPrompt(response.data[response.data.length - 1])
         }
     
     })
@@ -95,8 +95,10 @@ function Homepage() {
   //function to handle user submit
   const handleSubmit = () => {
     //sets story to current story plus users input
-    setStory(` ${story} <br>${input}`)
-    setInput('')
+    if(input !== ''){
+      setStory(` ${story} <br>${input}`)
+      setInput('')
+    }
 
   }
 
@@ -128,7 +130,7 @@ function Homepage() {
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
 
-          <div >
+          <div className='user-div'>
             <Link to="/user">
               <button className='user-btn'>User</button>
             </Link>
