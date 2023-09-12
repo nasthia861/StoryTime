@@ -38,7 +38,7 @@ const Badges = orm.define('badges', {
 });
 
 const Text = orm.define('texts', {
-  text: Sequelize.TEXT,
+  text: Sequelize.STRING,
   likes: {
     type: DataTypes.INTEGER,
     defaultValue: 0
