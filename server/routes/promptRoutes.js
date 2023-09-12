@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
     })
 })
 
-//get prompt by text id
+//get prompt by id
 router.get('/:id', (req, res) => {
   const { id } = req.params;
   Prompt.findOne({

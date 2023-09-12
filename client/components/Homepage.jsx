@@ -6,10 +6,10 @@ import bestOf from '../badgeHelpers/bestOf.jsx'
 function Homepage() {
 
   //setting states of generated word, current story, and input using hooks
-  const [words, setWords] = useState(['alleviate', 'run', 'no', 'why', 'infallible'])
+  const [words, setWords] = useState([])
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
-  const [prompt, setPrompt] = useState([])
+  const [prompt, setPrompt] = useState(1)
   const [lastUpdate, setLastUpdate] = useState()
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
@@ -18,76 +18,66 @@ function Homepage() {
   //useEffect to fetch data from database upon mounting
 
   useEffect(() => {
-      
-      axios.get('/prompt')
+    getMatchWords();
+    setInterval(getNewPost, 36000000);// this is where to change interval time
+
+  })
+  
+  const getLatestPrompt = () => {
+    axios.get('/prompt/')
+      .then(allPrompts => allPrompts[])
+  }
+
+  const getMatchWords = () => {
+    axios.get(`/prompt/${currentPrompt}`)
       .then((response) => {
-        if(response.data.length === 0){
-            axios.get('https://random-word-api.herokuapp.com/word?number=5')
+        if(response.data.matchWords.length === 0){
+          axios.get('https://random-word-api.herokuapp.com/word?number=5')
             .then((response) => {
-              console.log(response.data)
-              const wordsForDb = response.data.join(' ')
-              axios.post('/prompt', {matchWords: wordsForDb})
+            //console.log(response.data)
+            const wordsForDb = response.data.join(' ')
+            axios.post('/prompt', {matchWords: wordsForDb})
               .then((response) => {
                 console.log('Data Submitted!', response.data)
                 axios.get('/prompt')
                 .then((response) => {
                   console.log("hello", response.data)
                   const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-                  setwords(wordArray)
+                  setWords(wordArray);
                 })
                 .catch((err) => {
-                console.log("Could not get prompts", err)
+                  console.log("Could not get prompts", err)
                 })
-    
               })
               .catch((err) => {
                 console.error("Could not Submit!", err)
               })
-
-        })
-
-      }else{
-        const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-        setwords(wordArray)
-        console.log('ayy', response.data)
+            })
+        }else{
+          const wordArray = response.data.matchWords.split(' ')
+          setWords(wordArray)
+          console.log('ayy', response.data)
         }
-    
-    })
-    .catch((err) => {
-      console.error('Error getting words:', err)
       })
-      
-    const interval = setInterval(() => {
-        axios.get("https://random-word-api.herokuapp.com/word?number=5")
-        .then((response) => {
-          const wordsForDb = response.data.join(' ')
-          axios.post('/prompt', {matchWords: wordsForDb})
-          .then((response) => {
-            console.log('Data Submitted!', response.data)
-            axios.get('/prompt')
-            .then((response) => {
-              console.log("hello", response.data)
-              const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-              setwords(wordArray)
-            })
-            .catch((err) => {
-            console.log("Could not get prompts", err)
-            })
-           })
+      .catch((err) => {
+        console.error('Error getting words:', err)
+      })
+  } 
+        
+  const getNewPost = () => {
+    axios.get("https://random-word-api.herokuapp.com/word?number=5")
+      .then((response) => {
+        const wordsForDb = response.data.join(' ')
+        axios.post('/prompt', {matchWords: wordsForDb})
+          .then(setCurrentPrompt(currentPrompt + 1))
           .catch((err) => {
-            console.error("Could not Submit!", err)
+            console.error("Could not update current prompt!", err)
           })
-
-        localStorage.setItem('lastUpdate', new Date().toString())
-        })
-        .catch((err) => {
-          console.log("Coldnt get words", err)
-        })
-      
-    }, 3600000) // this is where to change interval time
-
-    return () => clearInterval(interval)
-  }, [])
+      })
+      .catch((err) => {
+        console.log("Coldnt get words", err)
+      })
+  }
 
   //changes state of winners
   const changeWinners = () => {
