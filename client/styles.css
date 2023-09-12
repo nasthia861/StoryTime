@@ -131,3 +131,35 @@ body, html {
   background: -webkit-linear-gradient(top, #f8e40c 0%, #CBC047 38%, #1c86cc 100%);
   background: linear-gradient(to bottom, #f8e40c 0%, #CBC047 38%, #1c86cc 100%);
 }
+
+
+.upvote-btn {
+  background: none;
+  border: none;
+  border-radius: 0px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.liked {
+  background-color: slateblue;
+
+
+}
+
+.text-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  
+}
+
+
+
+.text-content {
+  flex-grow: 1;
+}

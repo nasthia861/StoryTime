@@ -2,14 +2,15 @@ import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 import axios from'axios';
 import bestOf from '../badgeHelpers/bestOf.jsx'
+import Text from './Text.jsx';
 
 function Homepage() {
 
   //setting states of generated word, current story, and input using hooks
-  const [words, setWords] = useState([])
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
-  const [lastUpdate, setLastUpdate] = useState()
+  const [words, setWords] = useState([])
+  const [lastUpdate, setLastUpdate] = useState('')
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
   const [currentPrompt, setCurrentPrompt] = useState({});
@@ -134,7 +135,9 @@ function Homepage() {
               <button className='user-btn'>User</button>
             </Link>
           </div>
-
+          <div>
+            <Text text={{id: 1}} />
+          </div>
         </div>
 
     </div>
