@@ -97,7 +97,6 @@ function Homepage() {
     if(input !== ''){
       setStory(` ${story} <br>${input}`)
       setInput('')
-      console.log(currentPrompt)
     }
 
   }
