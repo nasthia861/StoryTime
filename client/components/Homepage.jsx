@@ -7,11 +7,9 @@ import Text from './Text.jsx';
 function Homepage() {
 
   //setting states of generated word, current story, and input using hooks
-  const [words, setWords] = useState(['alleviate', 'run', 'no', 'why', 'infallible'])
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
   const [prompt, setPrompt] = useState([])
-  //const [words, setwords] = useState([])
   const [lastUpdate, setLastUpdate] = useState()
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
@@ -19,12 +17,8 @@ function Homepage() {
 
   //useEffect to fetch data from database upon mounting
 
-  useEffect(() => {
-      
-      axios.get('/prompt')
-      .then((response) => {
-        if(response.data.length === 0){
-            axios.get('https://random-word-api.herokuapp.com/word?number=5')
+  const getWords = () => {
+    return axios.get('https://random-word-api.herokuapp.com/word?number=5')
             .then((response) => {
               console.log(response.data)
               const wordsForDb = response.data.join(' ')
@@ -38,15 +32,25 @@ function Homepage() {
                   setwords(wordArray)
                 })
                 .catch((err) => {
-                console.log("Could not get prompts", err)
+                console.error("Could not get prompts", err)
                 })
     
               })
               .catch((err) => {
                 console.error("Could not Submit!", err)
               })
-
+          localStorage.setItem('lastUpdate', new Date().toString())
         })
+        .catch((err) => {
+          console.error("Couldnt get words!", err)
+        })
+  }
+
+  useEffect(() => {
+      axios.get('/prompt')
+      .then((response) => {
+        if(response.data.length === 0){
+        getWords()
 
       }else{
         const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
@@ -60,33 +64,8 @@ function Homepage() {
       })
       
     const interval = setInterval(() => {
-        axios.get("https://random-word-api.herokuapp.com/word?number=5")
-        .then((response) => {
-          const wordsForDb = response.data.join(' ')
-          axios.post('/prompt', {matchWords: wordsForDb})
-          .then((response) => {
-            console.log('Data Submitted!', response.data)
-            axios.get('/prompt')
-            .then((response) => {
-              console.log("hello", response.data)
-              const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-              setwords(wordArray)
-            })
-            .catch((err) => {
-            console.log("Could not get prompts", err)
-            })
-           })
-          .catch((err) => {
-            console.error("Could not Submit!", err)
-          })
-
-        localStorage.setItem('lastUpdate', new Date().toString())
-        })
-        .catch((err) => {
-          console.log("Coldnt get words", err)
-        })
-      
-    }, 3600000) // this is where to change interval time
+      getWords()
+    }, 3600000) // this is where to change interval time between prompt changes (currently set to an hour)
 
     return () => clearInterval(interval)
   }, [])
@@ -137,7 +116,6 @@ function Homepage() {
         </div>
 
         <div>
-          
           
           <input 
           className='user-input'
