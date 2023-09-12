@@ -1,6 +1,6 @@
 //sets winner
 const bestOf = (array, comp) => {  
-  return array.reduce((acc, current) => {
+  const winnersArr = array.reduce((acc, current) => {
     //if there is already a tie
     if (acc.length > 1){
       if(current[comp] > acc[0][comp]){
@@ -17,6 +17,8 @@ const bestOf = (array, comp) => {
       acc = [current];
       return acc;
     }
-  }, [])
+  }, []);
+  return winnersArr[0];
+
 };
 module.exports = bestOf;

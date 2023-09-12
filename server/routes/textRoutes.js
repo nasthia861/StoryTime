@@ -80,24 +80,26 @@ router.post('/', (req, res) => {
     })
 })
 
-//grabbing all the texts with a specific postId
-router.get('/prompt/:promptId', (req, res) => {
-  const { promptId } = req.params;
+//grabbing all the texts with a specific postId and round 
+router.get('/', (req, res) => {
+  const promptId = req.query.promptId;
+  const round = req.query.round;
   Text.findAll({
     where: {
-      promptId: promptId
+      promptId: promptId,
+      round: round
     }
   })
     .then((textArr) => {
       if(textArr.length > 0){
         res.status(200).send(textArr);
       } else {
-        console.log('promptId had no match')
+        console.log('promptId and round had no match')
         res.sendStatus(404);
       }
     })
     .catch((error) => {
-      console.error('get text with promptId failed', error);
+      console.error('get text with promptId and round failed', error);
       res.sendStatus(500);
     })
 })

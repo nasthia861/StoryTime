@@ -19,7 +19,11 @@ const User = orm.define('users', {
 })
 
 const Prompt = orm.define('prompts', {
-  matchWords: Sequelize.STRING//grabbed with external api
+  matchWords: Sequelize.STRING,//grabbed with external api
+  round: {
+    type: DataTypes.INTEGER,
+    default: 1
+  }
 }, {
   timestamps: true
 });
@@ -32,6 +36,10 @@ const Badges = orm.define('badges', {
   mostWordMatchCt: {
     type: DataTypes.STRING,
     defaultValue: 'No winner yet'
+  },
+  mostContributions: {
+    type: DataTypes.STRING,
+    defaultValue: 'No winner yet'
   }
 }, {
   timestamps: false
@@ -39,6 +47,11 @@ const Badges = orm.define('badges', {
 
 const Text = orm.define('texts', {
   text: Sequelize.TEXT,
+  round: Sequelize.INTEGER,
+  winner: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
   likes: {
     type: DataTypes.INTEGER,
     defaultValue: 0
@@ -46,7 +59,7 @@ const Text = orm.define('texts', {
   wordMatchCt: {
     type: DataTypes.INTEGER,
     defaultValue: 0
-  }
+  },
 }, {
   timestamps: false
 });

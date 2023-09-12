@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Homepage from './Homepage.jsx';
-import Login from './Login.jsx'
+import Login from './Login.jsx';
 import User from './User.jsx';
 import Post from './Post.jsx';
 

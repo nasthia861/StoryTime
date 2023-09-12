@@ -7,13 +7,14 @@ import Text from './Text.jsx';
 function Homepage() {
 
   //setting states of generated word, current story, and input using hooks
-  const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
+  const [story, setStory] = useState([])
+  const [currentRound, setRound] = useState(1)
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
-  const [lastUpdate, setLastUpdate] = useState('')
+  const [lastUpdate, setLastUpdate] = useState('')//whats this?
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
-  const [currentPrompt, setCurrentPrompt] = useState({});
+  const [currentPrompt, setCurrentPrompt] = useState({})
 
   //useEffect to fetch data from database upon mounting
 
@@ -64,7 +65,8 @@ function Homepage() {
       })
       
     const interval = setInterval(() => {
-      getWords()
+      changeWinners();
+      getWords();
     }, 3600000) // this is where to change interval time between prompt changes (currently set to an hour)
 
     return () => clearInterval(interval)
@@ -73,14 +75,14 @@ function Homepage() {
   //changes state of winners
   const changeWinners = () => {
     //grab texts with the promptid from current prompt
-    axios.get(`/text/prompt/${currentPrompt.id}`)
+    axios.get(`/text/?promptId=${currentPrompt}&round=${currentRound}`)
       .then(textArr => {
         bestOf(textArr, likes)
-          .then((best) => setMostLikes(best))
+          .then((best) => {
+            //sets the winning text to the story
+            setStory([...story, best.text]);
+          })
           .catch((error) => console.error('could not set most likes', error));
-        bestOf(textArr, wordMatchCt)
-          .then((best) => setMostWords(best))
-          .catch((error) => console.error('could not set most wordMatchCt', error));
       })
       .catch((error) => {
         console.error('could not change state of winners', error);
