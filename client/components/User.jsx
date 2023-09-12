@@ -11,8 +11,9 @@ const User = () => {
   //axios request to retrieve user texts by id
   
   const getUserTexts = (id) => {
-    axios.get(`http://127.0.0.1:8080/text/user/${id}`)
+    axios.get(`http://localhost:8080/text/user/${id}`)
     .then((texts) =>{
+      console.log(texts);
       setUserTexts(texts.data);
     })
     .catch((err) => {
@@ -21,7 +22,7 @@ const User = () => {
   }
   
   const getUserBadges = (id) => {
-    axios.get(`http://127.0.0.1:8080/user/${id}`)
+    axios.get(`http://localhost:8080/user/${id}`)
     .then((userData) => {
       setUserBadges(userData.data.badges);
     })
@@ -37,11 +38,13 @@ const User = () => {
 
   return (
     <div>
-      <Link to='/' >
-        <button className='user-home-button'>HomePage</button>
-      </Link>
-      <div className='user' >
+      <nav>
+        <Link to='/' >
+          <button className='user-home-button'>HomePage</button>
+        </Link>
+      </nav>
         <h1 className='user-head' >MY STORIES</h1>
+      <div className='user' >
           <div className='user-data'>
             <ul className='user-ul'>
         {
@@ -58,6 +61,7 @@ const User = () => {
             </ul>
           </div>
       </div>
+      <h1 className='badges-header' >Badges</h1>
       <div className='user-badges'>{userBadges}</div>
     </div>
   )
