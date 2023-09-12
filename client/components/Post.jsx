@@ -4,13 +4,13 @@ import UpVote from './UpVote.jsx'
 const Post = ({text}) => {
 
   return (
-    <div>
+    <div className="text-container">
+      <div className="upvote-container">
+       </div>
+        <div className='text-context'>  
       <p>{text.text}</p>
-      <UpVote
-      textId={text.id}
-      initialLikes={text.likes}
-      initialDislikes={text.dislikes}
-      />
+      <UpVote text={text}/>
+    </div>
     </div>
   )
 }

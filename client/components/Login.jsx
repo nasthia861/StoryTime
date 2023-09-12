@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -12,7 +13,7 @@ const Login = () => {
       const response = await axios.post('/auth/login', { username, password });
       if (response.data.message === 'Login successful.') {
         // Redirect to a protected route upon successful login
-        window.location.href = '/';
+        window.location.href = '/home';
       }
     } catch (error) {
       console.error(error);
@@ -37,6 +38,11 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
+      <Link to='/register'>
+      <button>
+        register
+      </button>
+      </Link>
     </div>
   );
 };

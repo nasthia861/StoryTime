@@ -1,28 +1,81 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 import axios from'axios';
+import Post from './Post.jsx'
 import bestOf from '../badgeHelpers/bestOf.jsx'
+// import Text from './Text.jsx';
 
 function Homepage() {
+
   //setting states of generated word, current story, and input using hooks
-  const [words, setWords] = useState(['alleviate', 'run', 'no', 'why', 'infallible'])
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
+  const [words, setWords] = useState([])
+  const [posts, setPosts] = useState([])
+  const [lastUpdate, setLastUpdate] = useState('')
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
-  const [currentPrompt, setCurrentPrompt] = useState(1);
+  const [currentPrompt, setCurrentPrompt] = useState({});
 
   //useEffect to fetch data from database upon mounting
 
-  // useEffect(() => {
-  //   axios.get('/api/words')
-  //   .then(response => {
-  //     setWords(response.data)
-  //   })
-  //   .catch(err => {
-  //     console.error('Error getting words:', err)
-  //   })
-  // }, [])
+  const getWords = () => {
+    return axios.get('https://random-word-api.herokuapp.com/word?number=5')
+            .then((response) => {
+              console.log(response.data)
+              const wordsForDb = response.data.join(' ')
+              axios.post('/prompt', {matchWords: wordsForDb})
+              .then(() => {
+                axios.get('/prompt')
+                .then((response) => {
+                  console.log("this", response.data[response.data.length - 1])
+                  const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
+                  setCurrentPrompt(response.data[response.data.length - 1])
+                  setWords(wordArray)
+                })
+                .catch((err) => {
+                console.error("Could not get prompts", err)
+                })
+    
+              })
+              .catch((err) => {
+                console.error("Could not Submit!", err)
+              })
+          localStorage.setItem('lastUpdate', new Date().toString())
+        })
+        .catch((err) => {
+          console.error("Couldnt get words!", err)
+        })
+  }
+
+  useEffect(() => {
+      axios.get('/prompt')
+      .then((response) => {
+        if(response.data.length === 0){
+        getWords()
+
+      }else{
+        const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
+        setWords(wordArray)
+        setCurrentPrompt(response.data[response.data.length - 1])
+        }
+    
+    })
+    .catch((err) => {
+      console.error('Error getting words:', err)
+      })
+    axios.get('/text')
+    .then((response) => {
+      console.log(response.data)
+      setPosts(response.data)
+    })
+      
+    const interval = setInterval(() => {
+      getWords()
+    }, 3600000) // this is where to change interval time between prompt changes (currently set to an hour)
+
+    return () => clearInterval(interval)
+  }, [])
 
   //changes state of winners
   const changeWinners = () => {
@@ -49,15 +102,40 @@ function Homepage() {
   //function to handle user submit
   const handleSubmit = () => {
     //sets story to current story plus users input
-    setStory(`${story} <br>${input}`)
-    setInput('')
+    if(input !== ''){
+      setStory(` ${story}`)
+      setInput('')
+
+      axios.post('/text', {text: input})
+      .then(() => {
+        axios.get('/text')
+        .then((response) => {
+          setPosts([response.data[response.data.length -1], ...posts])
+        })
+      })
+      .catch((err) => {
+        console.error("err", err)
+      })
+    }
 
   }
 
   
   //return dom elements and structure
   return (
-    //div for wrapper containing all homepage elements
+    <div>
+      <nav className='nav-btn' >
+      <div className='user-div'>
+        <Link to="/user">
+          <button className='user-btn'>User</button>
+        </Link>
+      <Link to=''>
+        <button className='user-btn' >Button for Logan</button>
+      </Link>
+      </div>
+      </nav>
+
+    {/* //div for wrapper containing all homepage elements */}
     <div className='wrapper'>
       <div className='word-container'>
         {words.map((word, i) => (
@@ -71,7 +149,6 @@ function Homepage() {
 
         <div>
           
-          
           <input 
           className='user-input'
           type='text'
@@ -83,16 +160,22 @@ function Homepage() {
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
 
-          <div >
-            <Link to="/user">
-              <button className='user-btn'>User</button>
-            </Link>
+          <div>
+            {
+              posts.map((post, i) => (
+                <Post key={`${i} - ${post.id}`} text={post} />
+              ))
+            }
+            
           </div>
+        </div>
 
+        <div className='posts'>
         </div>
 
     </div>
     
+  </div>
   )
 };
 

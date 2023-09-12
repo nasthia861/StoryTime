@@ -3,8 +3,7 @@ const router = express.Router();
 const { Prompt } = require('../database/index'); 
 
 router.post('/', (req, res) => {
-  const { newPrompt } = req.body;
-  Prompt.create(newPrompt)
+  Prompt.create(req.body)
     .then(() => {
       console.log('successfully added new prompt');
       res.sendStatus(201);
@@ -15,7 +14,7 @@ router.post('/', (req, res) => {
     })
 })
 
-//get prompt by text id
+//get prompt by prompt id
 router.get('/:id', (req, res) => {
   const { id } = req.params;
   Prompt.findOne({
@@ -34,11 +33,11 @@ router.get('/:id', (req, res) => {
 router.get('/', (req,res) => {
  // const { } = req.params;
   Prompt.findAll({})
-    .then((textData) => {
-      res.send(textData).status(200);
+    .then((promptData) => {
+      res.send(promptData).status(200);
     })
     .catch((err) => {
-      console.error('Could not Get all texts', err);
+      console.error('Could not Get all prompts', err);
       res.sendStatus(500);
     });
 })

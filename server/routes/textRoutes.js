@@ -51,7 +51,7 @@ router.post('/:id', (req, res) => {
 });
 
 //Get all text by a user
-router.get('/:userId', (req,res) => {
+router.get('/user/:userId', (req,res) => {
   const { userId } = req.params;
   Text.findAll({
     where: {
@@ -68,8 +68,7 @@ router.get('/:userId', (req,res) => {
 })
 
 router.post('/', (req, res) => {
-  const { newText } = req.body;
-  Text.create(newText)
+  Text.create(req.body)
     .then(() => {
       console.log('successfully added new text');
       res.sendStatus(201);
@@ -101,5 +100,17 @@ router.get('/prompt/:promptId', (req, res) => {
       res.sendStatus(500);
     })
 })
+
+router.get('/', (req,res) => {
+  // const { } = req.params;
+   Text.findAll({})
+     .then((textData) => {
+       res.send(textData).status(200);
+     })
+     .catch((err) => {
+       console.error('Could not Get all texts', err);
+       res.sendStatus(500);
+     });
+ })
 
 module.exports = router; 

@@ -11,9 +11,13 @@ const port = process.env.PORT || 8080;
 // Middleware for serving static files
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
-// Middleware for parsing JSON and URL-encoded data
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, '../dist/index.html'), function(err) {
+    if (err) {
+      res.status(500).send(err)
+    }
+  })
+})
 
 // Initialize session
 const superSecretKey = 'Dev_Dawgs_Till_I_Die';

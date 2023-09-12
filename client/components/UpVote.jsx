@@ -1,34 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 
-const UpVote = ({initLikes, initDislikes}) => {
-  //hook to initialize like count and increment
-  const [likes, setLikes] = useState(initLikes);
-  //hook to initialize dislike count and decrement
-  const [dislikes, setDislikes] = useState(initDislikes);
+const UpVote = ({text}) => {
+  const [likes, setLikes] = useState(0);
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/text/${text.id}`)
+    .then((likeCount) => {
+       setLikes(likeCount.data.likes)
+    })
+    .catch((err) => console.error(`Error getting like count:${err}`))
+  }, [text.id])
+
   const handleLikes = () => {
-    axios.post(`/text/${text.id}`, { action: 'likes'})
+    axios.post(`http://localhost:8080/text/${text.id}`, { action: 'like'})
     .then((textObj) => {
       if (textObj.status === 200) {
         setLikes(likes + 1);
       }
     })
-    .catch((err) => console.error('Error trying to like:', err))
+    .catch((err) => console.error(`Error liking: ${err}`))
 
   };
   const handleDislikes = () => {
-    axios.post('/text')
+    axios.post(`http://localhost:8080/text/${text.id}`, {action: 'dislike'})
+    .then((textObj) => {
+      if (textObj.status === 200 && likes > 0) {
+        setLikes(likes - 1)
+      }
+    })
+    .catch((err) => console.error(`Error disliking: ${err}`))
   };
+
+
   return (
     <div>
-      <button>onClick={handleLikes}❤️‍🔥🔥</button>
-        <span>Likes: {likes}</span>
-        <button>onClick={handleDislikes}🗑️🚮</button>
-        <span>Likes: {dislikes}</span>
+        <button className='upvote-btn' onClick={handleLikes}> ⬆️</button>
+        <span>{likes}</span>
+        <button className='upvote-btn' onClick={handleDislikes}>⬇️</button>
     </div>
   )
 
 
 
 }
+export default UpVote;
