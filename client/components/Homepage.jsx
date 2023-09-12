@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 import axios from'axios';
+import Post from './Post.jsx'
 import bestOf from '../badgeHelpers/bestOf.jsx'
-import Text from './Text.jsx';
+// import Text from './Text.jsx';
 
 function Homepage() {
 
@@ -11,7 +12,8 @@ function Homepage() {
   const [currentRound, setRound] = useState(1)
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
-  const [lastUpdate, setLastUpdate] = useState('')//whats this?
+  const [posts, setPosts] = useState([])
+  const [lastUpdate, setLastUpdate] = useState('')
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
   const [currentPrompt, setCurrentPrompt] = useState({})
@@ -63,6 +65,11 @@ function Homepage() {
     .catch((err) => {
       console.error('Error getting words:', err)
       })
+    axios.get('/text')
+    .then((response) => {
+      console.log(response.data)
+      setPosts(response.data)
+    })
       
     const interval = setInterval(() => {
       changeWinners();
@@ -98,8 +105,19 @@ function Homepage() {
   const handleSubmit = () => {
     //sets story to current story plus users input
     if(input !== ''){
-      setStory(` ${story} <br>${input}`)
+      setStory(` ${story}`)
       setInput('')
+
+      axios.post('/text', {text: input})
+      .then(() => {
+        axios.get('/text')
+        .then((response) => {
+          setPosts([response.data[response.data.length -1], ...posts])
+        })
+      })
+      .catch((err) => {
+        console.error("err", err)
+      })
     }
 
   }
@@ -107,7 +125,19 @@ function Homepage() {
   
   //return dom elements and structure
   return (
-    //div for wrapper containing all homepage elements
+    <div>
+      <nav className='nav-btn' >
+      <div className='user-div'>
+        <Link to="/user">
+          <button className='user-btn'>User</button>
+        </Link>
+      <Link to=''>
+        <button className='user-btn' >Button for Logan</button>
+      </Link>
+      </div>
+      </nav>
+
+    {/* //div for wrapper containing all homepage elements */}
     <div className='wrapper'>
       <div className='word-container'>
         {words.map((word, i) => (
@@ -132,18 +162,22 @@ function Homepage() {
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
 
-          <div className='user-div'>
-            <Link to="/user">
-              <button className='user-btn'>User</button>
-            </Link>
-          </div>
           <div>
-            <Text text={{id: 1}} />
+            {
+              posts.map((post, i) => (
+                <Post key={`${i} - ${post.id}`} text={post} />
+              ))
+            }
+            
           </div>
+        </div>
+
+        <div className='posts'>
         </div>
 
     </div>
     
+  </div>
   )
 };
 

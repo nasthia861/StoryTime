@@ -46,12 +46,16 @@ const Badges = orm.define('badges', {
 });
 
 const Text = orm.define('texts', {
+<<<<<<< HEAD
   text: Sequelize.TEXT,
   round: Sequelize.INTEGER,
   winner: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
+=======
+  text: Sequelize.STRING,
+>>>>>>> 3ae0642056115e584ce3cc1b012a40c78adee31f
   likes: {
     type: DataTypes.INTEGER,
     defaultValue: 0

@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
   const { newUser } = req.body;
   User.create(newUser)
     .then(() => {
-      console.log('succesfully added new user');
+      console.log('successfully added new user');
       res.sendStatus(201);
     })
     .catch((error) => {

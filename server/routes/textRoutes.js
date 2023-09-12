@@ -68,8 +68,7 @@ router.get('/user/:userId', (req,res) => {
 })
 
 router.post('/', (req, res) => {
-  const { newText } = req.body;
-  Text.create(newText)
+  Text.create(req.body)
     .then(() => {
       console.log('successfully added new text');
       res.sendStatus(201);
@@ -103,5 +102,17 @@ router.get('/', (req, res) => {
       res.sendStatus(500);
     })
 })
+
+router.get('/', (req,res) => {
+  // const { } = req.params;
+   Text.findAll({})
+     .then((textData) => {
+       res.send(textData).status(200);
+     })
+     .catch((err) => {
+       console.error('Could not Get all texts', err);
+       res.sendStatus(500);
+     });
+ })
 
 module.exports = router; 
