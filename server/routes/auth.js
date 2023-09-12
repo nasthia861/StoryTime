@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const { User } = require('../database/index')
+const bcrypt = require('bcrypt')
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.post('/register', async (req, res) => {
     // Create a new user
     const newUser = await User.create({ username, password: hashedPassword });
 
-    return res.status(201).json({ message: 'Registration successful.' });
+    return res.status(201).json({ message: 'Registration successful.', newUser });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error.' });

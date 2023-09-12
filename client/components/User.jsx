@@ -21,7 +21,7 @@ const User = () => {
     .catch((err) => {
       console.error('Could not retrieve texts!!', err);
     });
-  })
+  }
 
   return (
     <div>
