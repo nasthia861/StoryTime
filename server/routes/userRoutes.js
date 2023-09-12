@@ -44,7 +44,7 @@ router.post('/', (req, res) => {
   const { newUser } = req.body;
   User.create(newUser)
     .then(() => {
-      console.log('succesfully added new user');
+      console.log('successfully added new user');
       res.sendStatus(201);
     })
     .catch((error) => {
@@ -52,5 +52,16 @@ router.post('/', (req, res) => {
       res.sendStatus(500);
     })
 })
+
+// API route to get user information
+router.get('/user', (req, res) => {
+  if (req.isAuthenticated()) {
+    // Return user data if authenticated
+    res.json({ user: req.user });
+  } else {
+    // Return an empty object if not authenticated
+    res.json({});
+  }
+});
 
 module.exports = router;

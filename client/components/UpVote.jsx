@@ -32,3 +32,4 @@ const UpVote = ({initLikes, initDislikes}) => {
 
 
 }
+export default UpVote;
