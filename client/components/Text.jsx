@@ -3,7 +3,6 @@ import axios from 'axios';
 import UpVote from './UpVote.jsx';
 
 const Text = ({text}) => {
-  console.log(text)
   
   const [prompt, setText] = useState('');
 
