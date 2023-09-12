@@ -9,8 +9,7 @@ function Homepage() {
 
   //setting states of generated word, current story, and input using hooks
   const [story, setStory] = useState([])
-  const [storyId, setStoryId] = useState(1)
-  const [currentRound, setRound] = useState(0)
+  const [currentBadgeId, setBadgeId] = (1) 
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
   const [posts, setPosts] = useState([])
@@ -26,15 +25,14 @@ function Homepage() {
             .then((response) => {
               console.log(response.data)
               const wordsForDb = response.data.join(' ')
-              setRound(currentRound++);
+              //setRound(currentRound++);
               //creates new prompt with 
-              axios.post('/prompt', {matchWords: wordsForDb, round: currentRound})
+              axios.post('/prompt', {matchWords: wordsForDb, badgeId: currentBadgeId})
               .then(() => {
                 axios.get('/prompt')
                 .then((response) => {
-                  console.log("this", response.data[response.data.length - 1])
-                  const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
                   setCurrentPrompt(response.data[response.data.length - 1])
+                  const wordArray = currentPrompt.matchWords.split(' ')
                   setWords(wordArray)
                 })
                 .catch((err) => {
@@ -59,23 +57,25 @@ function Homepage() {
         getWords()
 
       }else{
-        const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-        setWords(wordArray)
+        //sets the most current prompt
         setCurrentPrompt(response.data[response.data.length - 1])
+        //sets the words of most current prompt
+        const wordArray = currentPrompt.matchWords.split(' ')
+        setWords(wordArray)
         }
     
     })
     .catch((err) => {
       console.error('Error getting words:', err)
       })
-    axios.get('/text')
+    //grabs all of the texts submitted for current prompt
+    axios.get(`/text/prompt/${currentPrompt.id}`)
     .then((response) => {
-      console.log(response.data)
       setPosts(response.data)
     })
       
     const interval = setInterval(() => {
-      changeWinners();
+      promptWinner();
       getWords();
     }, 3600000) // this is where to change interval time between prompt changes (currently set to an hour)
 
@@ -83,13 +83,14 @@ function Homepage() {
   }, [])
 
   //changes state of winners
-  const changeWinners = () => {
-    //grab texts with the promptid from current prompt
-    axios.get(`/text/?promptId=${currentPrompt}&round=${currentRound}`)
+  const promptWinner = () => {
+    //grab texts with the current promptId
+    axios.get(`/text/prompt/${currentPrompt}`)
       .then(textArr => {
         bestOf(textArr, likes)
           .then((best) => {
             //sets the winning text to the story
+            
             setStory([...story, best.text]);
           })
           .catch((error) => console.error('could not set most likes', error));

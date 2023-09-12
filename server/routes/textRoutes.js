@@ -19,7 +19,7 @@ router.get('/:id', (req, res) => {
 })
 
 //post to update likes and dislikes
-router.post('/:id', (req, res) => {
+router.post('/likes/:id', (req, res) => {
   const { id } = req.params;
   const { action } = req.body;
 
@@ -38,6 +38,34 @@ router.post('/:id', (req, res) => {
       return text.save()
         .then(() => {
           res.status(200).send({ message: 'Action successful' });
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send({ error: 'Internal server error' });
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send({ error: 'Internal server error' });
+    });
+});
+
+//post to update winner status
+router.post('/winner/:id', (req, res) => {
+  const { id } = req.params;
+  const { action } = req.body;
+
+  Text.findOne({where: { id: id}})
+  .then((text) => {
+      if (!text) {
+        return res.status(404).send({ error: 'Text not found' });
+      }
+
+      text.winner = true;
+
+      return text.save()
+        .then(() => {
+          res.status(200).send({ message: 'Winner Winner Chicken Dinner' });
         })
         .catch((error) => {
           console.error(error);
@@ -79,7 +107,7 @@ router.post('/', (req, res) => {
     })
 })
 
-//grabbing all the texts with a specific postId
+//grabbing all the texts with a specific promptId
 router.get('/prompt/:promptId', (req, res) => {
   const { promptId } = req.params;
   Text.findAll({
