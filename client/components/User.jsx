@@ -38,11 +38,13 @@ const User = () => {
 
   return (
     <div>
-      <Link to='/' >
-        <button className='user-home-button'>HomePage</button>
-      </Link>
-      <div className='user' >
+      <nav>
+        <Link to='/' >
+          <button className='user-home-button'>HomePage</button>
+        </Link>
+      </nav>
         <h1 className='user-head' >MY STORIES</h1>
+      <div className='user' >
           <div className='user-data'>
             <ul className='user-ul'>
         {
@@ -59,6 +61,7 @@ const User = () => {
             </ul>
           </div>
       </div>
+      <h1 className='badges-header' >Badges</h1>
       <div className='user-badges'>{userBadges}</div>
     </div>
   )

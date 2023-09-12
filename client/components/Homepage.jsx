@@ -105,7 +105,19 @@ function Homepage() {
   
   //return dom elements and structure
   return (
-    //div for wrapper containing all homepage elements
+    <div>
+      <nav className='nav-btn' >
+      <div className='user-div'>
+        <Link to="/user">
+          <button className='user-btn'>User</button>
+        </Link>
+      <Link to=''>
+        <button className='user-btn' >Button for Logan</button>
+      </Link>
+      </div>
+      </nav>
+
+    {/* //div for wrapper containing all homepage elements */}
     <div className='wrapper'>
       <div className='word-container'>
         {words.map((word, i) => (
@@ -130,11 +142,6 @@ function Homepage() {
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
 
-          <div className='user-div'>
-            <Link to="/user">
-              <button className='user-btn'>User</button>
-            </Link>
-          </div>
           <div>
             <Text text={{id: 1}} />
           </div>
@@ -142,6 +149,7 @@ function Homepage() {
 
     </div>
     
+  </div>
   )
 };
 
