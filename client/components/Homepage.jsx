@@ -22,13 +22,12 @@ function Homepage() {
   const getWords = () => {
     return axios.get('https://random-word-api.herokuapp.com/word?number=5')
             .then((response) => {
-              console.log(response.data)
               const wordsForDb = response.data.join(' ')
               axios.post('/prompt', {matchWords: wordsForDb})
               .then(() => {
                 axios.get('/prompt')
                 .then((response) => {
-                  console.log("this", response.data[response.data.length - 1])
+                  // console.log("this", response.data[response.data.length - 1])
                   const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
                   setCurrentPrompt(response.data[response.data.length - 1])
                   setWords(wordArray)
@@ -66,7 +65,7 @@ function Homepage() {
       })
     axios.get('/text')
     .then((response) => {
-      console.log(response.data)
+      // console.log(response.data)
       setPosts(response.data)
     })
       

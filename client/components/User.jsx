@@ -8,18 +8,28 @@ const User = () => {
   const [userTexts, setUserTexts] = useState([]);
   const [userBadges, setUserBadges] = useState('');
 
+ 
+  const getUserId = (username) => {
+    axios.get(`http://localhost:8080/user/${username}`)
+      .then((userData) => {
+        // setUserId(userData.data.id);
+        // console.log(userData);
+      })
+      .catch((err) => {
+        console.error('Could not retrieve user ID', err)
+      });
+  };
+ 
   //axios request to retrieve user texts by id
-  
   const getUserTexts = (id) => {
     axios.get(`http://localhost:8080/text/user/${id}`)
     .then((texts) =>{
-      console.log(texts);
       setUserTexts(texts.data);
     })
     .catch((err) => {
       console.error('Could not retrieve texts!!', err);
     });
-  }
+  };
   
   const getUserBadges = (id) => {
     axios.get(`http://localhost:8080/user/${id}`)
@@ -29,9 +39,10 @@ const User = () => {
     .catch((error) => {
       console.error('could not get user badges', error)
     });
-  }
+  };
 
   useEffect(() => {
+    getUserId('PhreezorBurn')
     getUserTexts(userId);
     getUserBadges(userId);
   });
