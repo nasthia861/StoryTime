@@ -3,14 +3,10 @@ import axios from 'axios';
 
 
 const UpVote = ({text}) => {
-  console.log(text)
-
- // const { likes } = text;
-
   const [likes, setLikes] = useState(0);
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8080/text/${text.id}`)
+    axios.get(`http://localhost:8080/text/${text.id}`)
     .then((likeCount) => {
        setLikes(likeCount.data.likes)
     })
@@ -18,7 +14,7 @@ const UpVote = ({text}) => {
   }, [text.id])
 
   const handleLikes = () => {
-    axios.post(`http://127.0.0.1:8080/text/${text.id}`, { action: 'like'})
+    axios.post(`http://localhost:8080/text/${text.id}`, { action: 'like'})
     .then((textObj) => {
       if (textObj.status === 200) {
         setLikes(likes + 1);
@@ -28,9 +24,9 @@ const UpVote = ({text}) => {
 
   };
   const handleDislikes = () => {
-    axios.post(`http://127.0.0.1:8080/text/${text.id}`, {action: 'dislike'})
+    axios.post(`http://localhost:8080/text/${text.id}`, {action: 'dislike'})
     .then((textObj) => {
-      if (textObj === 200 && likes > 0) {
+      if (textObj.status === 200 && likes > 0) {
         setLikes(likes - 1)
       }
     })

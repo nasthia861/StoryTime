@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom'
 import axios from'axios';
+import Post from './Post.jsx'
 import bestOf from '../badgeHelpers/bestOf.jsx'
-import Text from './Text.jsx';
+// import Text from './Text.jsx';
 
 function Homepage() {
 
@@ -10,6 +11,7 @@ function Homepage() {
   const [story, setStory] = useState(['Why run to alleviate infallible pain?'])
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
+  const [posts, setPosts] = useState([])
   const [lastUpdate, setLastUpdate] = useState('')
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
@@ -96,8 +98,19 @@ function Homepage() {
   const handleSubmit = () => {
     //sets story to current story plus users input
     if(input !== ''){
-      setStory(` ${story} <br>${input}`)
+      setStory(` ${story}`)
       setInput('')
+
+      axios.post('/text', {text: input})
+      .then(() => {
+        axios.get('/text')
+        .then((response) => {
+          setPosts([response.data[response.data.length -1], ...posts])
+        })
+      })
+      .catch((err) => {
+        console.error("err", err)
+      })
     }
 
   }
@@ -136,8 +149,16 @@ function Homepage() {
             </Link>
           </div>
           <div>
-            <Text text={{id: 1}} />
+            {
+              posts.map((post, i) => (
+                <Post key={`${i} - ${post.id}`} text={post} />
+              ))
+            }
+            
           </div>
+        </div>
+
+        <div className='posts'>
         </div>
 
     </div>
