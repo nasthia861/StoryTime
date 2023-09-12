@@ -12,6 +12,14 @@ const port = 8080;
 
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, '../dist/index.html'), function(err) {
+    if (err) {
+      res.status(500).send(err)
+    }
+  })
+})
+
 // Initialize session
 app.use(session({
   secret: 'your_secret_key',

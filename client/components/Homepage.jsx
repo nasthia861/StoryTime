@@ -29,7 +29,7 @@ function Homepage() {
                 .then((response) => {
                   console.log("hello", response.data)
                   const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-                  setwords(wordArray)
+                  setWords(wordArray)
                 })
                 .catch((err) => {
                 console.error("Could not get prompts", err)
@@ -54,7 +54,7 @@ function Homepage() {
 
       }else{
         const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-        setwords(wordArray)
+        setWords(wordArray)
         console.log('ayy', response.data)
         }
     
