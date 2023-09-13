@@ -33,10 +33,7 @@ function Homepage() {
   //useEffect to fetch data from database upon mounting
   let latestPrompt;
   let latestBadgeStory;
-  let latestStory = story;
-  let allPosts = posts
-  
-  
+  let allPosts = posts;
 
   const getWords = () => {
     return axios.get('https://random-word-api.herokuapp.com/word?number=5')
@@ -88,23 +85,23 @@ function Homepage() {
 
   useEffect(() => {
     //grabs latest prompt
-      axios.get('/prompt')
-      .then((response) => {
-        if(response.data.length === 0){
-        getWords()
-        }else{
-          latestPrompt = response.data[response.data.length - 1]
-          //sets the words of most current prompt
-          const wordArray = latestPrompt.matchWords.split(' ')
-          setWords(wordArray)
-          //sets the most current prompt
-          setCurrentPrompt(latestPrompt)
-          }
-      
-        })
-      .catch((err) => {
-        console.error('Error getting words:', err)
+    axios.get('/prompt')
+    .then((response) => {
+      if(response.data.length === 0){
+      getWords()
+      }else{
+        latestPrompt = response.data[response.data.length - 1]
+        //sets the words of most current prompt
+        const wordArray = latestPrompt.matchWords.split(' ')
+        setWords(wordArray)
+        //sets the most current prompt
+        setCurrentPrompt(latestPrompt)
+        }
+    
       })
+    .catch((err) => {
+      console.error('Error getting words:', err)
+    })
     
     //grabs the most current story
     axios.get('/badges')
@@ -114,7 +111,6 @@ function Homepage() {
         }else{
           //sets the most current badge
           latestBadgeStory = response.data[response.data.length - 1]
-          console.log('latestbadgestory', latestBadgeStory)
           setBadgeId(latestBadgeStory.id)
         }
       })
@@ -131,15 +127,21 @@ function Homepage() {
             setPosts(response.data)
           })
           .catch((error) => console.error('could not get latest prompt', error));
-     })
+      })
+      .catch((error) => console.error('error getting all prompts', error));
 
-     //grabs all of the prompt id with the badge, 
      //grabs all of the texts with the matching prompt id and winner set to true
+
+     axios.get(`/text/winner/1/${currentBadgeId}`)
+      .then((winnerArr) => {
+        setStory(winnerArr.data)
+      })
+      .catch((error) => console.error('could not grab winner texts for story'));
       
     const promptInterval = setInterval(() => {
       promptWinner(allPosts)
       setPosts((posts) => ([]))
-      setStory((story) => ([...story]))
+      //setStory((story) => ([...story]))
       getWords();
     }, 30000) // this is where to change interval time between prompt changes (currently set to an hour)
 
@@ -156,8 +158,6 @@ function Homepage() {
   }, [])
 
   useEffect(() => {
-    
-
     //update the timer every second
     const timer = setInterval(() => {
       setRemainingTime(prevRemainingTime => {
@@ -170,10 +170,10 @@ function Homepage() {
 
     //cleanup
     return () => {
-      clearInterval(appInterval);
       clearInterval(timer);
     };
   }, [actionInterval]);
+
   const minutes = Math.floor(remainingTime / 60000);
   const seconds = Math.floor((remainingTime % 60000) / 1000);
 
@@ -189,7 +189,7 @@ function Homepage() {
               //changes the winning state in the text db
               console.log("here", best)
               axios.post(`/text/winner/${best.id}`)
-              setStory((story) => ([...story, best.text]));
+              setStory(best.text);
   
             })
             .catch((error) => console.error('could not set most likes', error));
@@ -232,39 +232,40 @@ function Homepage() {
   //return dom elements and structure
   return (
     <div>
-      
-      <nav className='nav-btn' >
-      <div className='user-div'>
-        <Link to="/user">
-          <button className='user-btn'>User</button>
-        </Link>
-      <Link to=''>
-        <button className='user-btn' >Button for Logan</button>
-      </Link>
-      <div>
-        <Timer minutes={minutes} seconds={seconds} />
-      </div>
-      </div>
-      </nav>
+        <nav className='nav-btn' >
+          <div className='user-div'>
+            <Link to="/user">
+              <button className='user-btn'>User</button>
+            </Link>
+            <Link to=''>
+              <button className='user-btn' >Button for Logan</button>
+            </Link>
+            <div>
+              <Timer minutes={minutes} seconds={seconds} />
+            </div>
+          </div>
+        </nav>
 
-    {/* //div for wrapper containing all homepage elements */}
-    <div className='wrapper'>
-      
-      <div className='word-container'>
-        {words.map((word, i) => (
-        <span key={i}>{word } </span>
-      ))}
-      </div>
-      
-        <div className='story-container'>
+
+      <div className='wrapper'>
+        
+        <div className='word-container'>
+          {
+            words.map((word, i) => {
+              return <span key={i}>{word} </span>
+            })
+          }
+        </div>
+        
+         <div className='story-container'>
           {
             story.map((submission, i) => {
-              return <div key={i}>{submission}</div>
+              return <div key={i}>{submission.text}</div>
             })
           }
         </div>
 
-        <div >
+        <div className='post-submission'>
           
           <textarea 
           className='user-input'
@@ -278,24 +279,21 @@ function Homepage() {
             {textCount}/150
           </div>
           <div className='submit'>
-          <button className='submit-btn' onClick={handleSubmit}>Submit</button>
+            <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
-
           <div className='posts-container'>
             {
               posts.map((post) => {
-                return <Post key={post.id} text={post}/>
+                return <Post key={post.id} text={post.text}/>
               })
             }
           </div>
+
         </div>
 
-        <div className='posts'>
-        </div>
-
+      </div>
+      
     </div>
-    
-  </div>
   )
 };
 

@@ -148,7 +148,7 @@ router.get('/winner/:id/:badgeId', (req, res) => {
 
   Text.findAll({
     where: {
-      id: id,
+      winner: id,
     },
     include: [
       {
