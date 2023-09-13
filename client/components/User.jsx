@@ -8,6 +8,14 @@ const User = () => {
   const [userTexts, setUserTexts] = useState([]);
   const [userBadges, setUserBadges] = useState('');
 
+  useEffect(() => {
+    // Retrieve user ID from local storage
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      setUserId(parseInt(storedUserId)); // Convert to integer if necessary
+    }
+  }, []);
+
   //axios request to retrieve user texts by id
   
   const getUserTexts = (id) => {
@@ -39,7 +47,7 @@ const User = () => {
   return (
     <div>
       <nav>
-        <Link to='/' >
+        <Link to='/home' >
           <button className='user-home-button'>HomePage</button>
         </Link>
       </nav>

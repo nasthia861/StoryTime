@@ -11,6 +11,9 @@ const Register = () => {
     try {
       const response = await axios.post('/auth/register', { username, password });
       if (response.status === 201) {
+        // Set user ID in local storage
+        localStorage.setItem('userId', response.data.userId);
+
         // Registration successful, you can redirect to the login page or another route
         window.location.href = '/home';
       }

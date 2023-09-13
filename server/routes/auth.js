@@ -25,8 +25,9 @@ router.post('/register', async (req, res) => {
 
     // Create a new user
     const newUser = await User.create({ username, password: hashedPassword });
+    const userID = newUser.id;
 
-    return res.status(201).json({ message: 'Registration successful.', newUser });
+    return res.status(201).json({ message: 'Registration successful.', newUser, userID });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error.' });
@@ -37,7 +38,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', passport.authenticate('local'), (req, res) => {
   const userID = req.user.id
   console.log('this is the current user id ---------->', userID)
-  return res.json({ message: 'Login successful.' });
+  return res.json({ message: 'Login successful.', userID });
 });
 
 // User logout
