@@ -7,7 +7,6 @@ import bestOf from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
 function Homepage() {
-
   //setting states of generated word, current story, and input using hooks
   //building story from post winners
   const [story, setStory] = useState([])
@@ -185,19 +184,7 @@ function Homepage() {
   
   //return dom elements and structure
   return (
-    <div>
-      <nav className='nav-btn' >
-      <div className='user-div'>
-        <Link to="/user">
-          <button className='user-btn'>User</button>
-        </Link>
-      <Link to=''>
-        <button className='user-btn' >Button for Logan</button>
-      </Link>
-      </div>
-      </nav>
-
-    {/* //div for wrapper containing all homepage elements */}
+    //div for wrapper containing all homepage elements
     <div className='wrapper'>
       <div className='word-container'>
         {words.map((word, i) => (
@@ -215,6 +202,7 @@ function Homepage() {
 
         <div>
           
+          
           <input 
           className='user-input'
           type='text'
@@ -226,22 +214,16 @@ function Homepage() {
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
 
-          <div>
-            {
-              posts.map((post, i) => (
-                <Post key={`${i} - ${post.id}`} text={post} />
-              ))
-            }
-            
+          <div >
+            <Link to="/user">
+              <button className='user-btn'>User</button>
+            </Link>
           </div>
-        </div>
 
-        <div className='posts'>
         </div>
 
     </div>
     
-  </div>
   )
 };
 

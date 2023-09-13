@@ -49,10 +49,10 @@ const User = () => {
             <ul className='user-ul'>
         {
           userTexts.map((entry) => {
-            return <Link to="/user/text" 
-            className='user-index' 
-            entry={entry} 
-            key={entry.id}> 
+            return <Link to="/user/text"
+            className='user-index'
+            entry={entry}
+            key={entry.id}>
                {entry.text}
             </Link>
           })
