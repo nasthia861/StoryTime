@@ -25,6 +25,7 @@ function Homepage() {
   let latestPrompt;
   let latestBadgeStory;
   let latestStory = story;
+  
 
   const getWords = () => {
     return axios.get('https://random-word-api.herokuapp.com/word?number=5')
@@ -110,19 +111,28 @@ function Homepage() {
       })
 
     // grabs all of the texts submitted for current prompt
-    axios.get('/prompt')
-      .then((response) => {
-        const latestPrompt = response.data[response.data.length - 1];
-        axios.get(`/text/prompt/${latestPrompt.id}`)
-          .then((response) => {
-            setPosts(response.data)
-          })
-          .catch((error) => console.error('could not get latest prompt', error));
-     })
+    if(posts.length > 0){
+
+      axios.get('/prompt')
+        .then((response) => {
+          const latestPrompt = response.data[response.data.length - 1];
+          axios.get(`/text/prompt/${latestPrompt.id}`)
+            .then((response) => {
+              setPosts(response.data)
+            })
+            .catch((error) => console.error('could not get latest prompt', error));
+       })
+    }
       
     const promptInterval = setInterval(() => {
-      promptWinner()
+      let allPosts
+
+      setPosts((posts) => {allPosts = posts; return posts})
+
+      promptWinner(allPosts)
       console.log('storyArr', story);
+      setPosts((posts) => ([]))
+      setStory((story) => ([...story]))
       getWords();
     }, 30000) // this is where to change interval time between prompt changes (currently set to an hour)
 
@@ -139,22 +149,26 @@ function Homepage() {
   }, [])
 
   //changes state of winners
-  const promptWinner = () => {
+  const promptWinner = (allPosts) => {
     //grab texts with the current promptId
-    axios.get(`/text/prompt/${latestPrompt.id}`)
-      .then((textArr) => {
-        bestOf(textArr.data)
-          .then((best) => {
-            //changes the winning state in the text db
-            axios.post(`/text/winner/${best.id}`)
-            setStory((story) => ([...story, best.text]));
+    if(allPosts !== undefined){
 
-          })
-          .catch((error) => console.error('could not set most likes', error));
-      })
-      .catch((error) => {
-        console.error('could not get text in prompt', error);
-      })
+      axios.get(`/text/prompt/${latestPrompt.id}`)
+        .then((textArr) => {
+          bestOf(textArr.data)
+            .then((best) => {
+              //changes the winning state in the text db
+              console.log(best)
+              axios.post(`/text/winner/${best.id}`)
+              setStory((story) => ([...story, best.text]));
+  
+            })
+            .catch((error) => console.error('could not set most likes', error));
+        })
+        .catch((error) => {
+          console.error('could not get text in prompt', error);
+        })
+    }
   }
 
   //function to handle input change
@@ -169,6 +183,7 @@ function Homepage() {
     if(input !== ''){
       //setStory(` ${story}`)
       setInput('')
+      setTextCount(0)
       //add userId as well once its ready
       axios.post('/text', {text: input, promptId: currentPrompt.id})
       .then(() => {
