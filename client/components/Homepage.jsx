@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import axios from'axios';
 import Post from './Post.jsx';
+import Timer from './Timer.jsx'
 import bestOf from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
@@ -15,14 +16,27 @@ function Homepage() {
   const [words, setWords] = useState([])
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
+  const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
   //current round of submittions for story, holds words and 
   const [currentPrompt, setCurrentPrompt] = useState({})
+  
+
+  //set the starting time for the timer
+  const actionInterval = 30000; // 30 seconds for testing
+  const storedTargetTime = localStorage.getItem('targetTime');
+  const initialTargetTime = storedTargetTime ? parseInt(storedTargetTime, 10) : Date.now() + actionInterval;
+
+  //calculate the remaining time based on the target time and current time
+  const [remainingTime, setRemainingTime] = useState(initialTargetTime - Date.now());
 
   //useEffect to fetch data from database upon mounting
   let latestPrompt;
   let latestBadgeStory;
   let latestStory = story;
+  let allPosts = posts
+  
+  
 
   const getWords = () => {
     return axios.get('https://random-word-api.herokuapp.com/word?number=5')
@@ -110,9 +124,7 @@ function Homepage() {
     // grabs all of the texts submitted for current prompt
     axios.get('/prompt')
       .then((response) => {
-        console.log('response', response.data[response.data.length - 1]);
         const latestPrompt = response.data[response.data.length - 1];
-        console.log('latestPrompt', latestPrompt.id);
         axios.get(`/text/prompt/${latestPrompt.id}`)
           .then((response) => {
             console.log('response.data', response.data)
@@ -122,8 +134,9 @@ function Homepage() {
      })
       
     const promptInterval = setInterval(() => {
-      promptWinner()
-      console.log('storyArr', story);
+      promptWinner(allPosts)
+      setPosts((posts) => ([]))
+      setStory((story) => ([...story]))
       getWords();
     }, 30000) // this is where to change interval time between prompt changes (currently set to an hour)
 
@@ -139,28 +152,55 @@ function Homepage() {
 
   }, [])
 
-  //changes state of winners
-  const promptWinner = () => {
-    //grab texts with the current promptId
-    axios.get(`/text/prompt/${latestPrompt.id}`)
-      .then((textArr) => {
-        bestOf(textArr.data)
-          .then((best) => {
-            //changes the winning state in the text db
-            axios.post(`/text/winner/${best.id}`)
-            setStory((story) => ([...story, best.text]));
+  useEffect(() => {
+    
 
-          })
-          .catch((error) => console.error('could not set most likes', error));
-      })
-      .catch((error) => {
-        console.error('could not get text in prompt', error);
-      })
+    //update the timer every second
+    const timer = setInterval(() => {
+      setRemainingTime(prevRemainingTime => {
+        if (prevRemainingTime <= 0) {
+          return actionInterval;
+        }
+        return prevRemainingTime - 1000;
+      });
+    }, 1000);
+
+    //cleanup
+    return () => {
+      clearInterval(appInterval);
+      clearInterval(timer);
+    };
+  }, [actionInterval]);
+  const minutes = Math.floor(remainingTime / 60000);
+  const seconds = Math.floor((remainingTime % 60000) / 1000);
+
+  //changes state of winners
+  const promptWinner = (allPosts) => {
+    //grab texts with the current promptId
+    if(allPosts !== undefined){
+      axios.get(`/text/prompt/${latestPrompt.id}`)
+        .then((textArr) => {
+          console.log("textarr", textArr)
+          bestOf(textArr.data)
+            .then((best) => {
+              //changes the winning state in the text db
+              console.log("here", best)
+              axios.post(`/text/winner/${best.id}`)
+              setStory((story) => ([...story, best.text]));
+  
+            })
+            .catch((error) => console.error('could not set most likes', error));
+        })
+        .catch((error) => {
+          console.error('could not get text in prompt', error);
+        })
+    }
   }
 
   //function to handle input change
   const handleInput = (event) => {
     setInput(event.target.value)
+    setTextCount(event.target.value.length)
   }
 
   //function to handle user submit
@@ -169,13 +209,13 @@ function Homepage() {
     if(input !== ''){
       //setStory(` ${story}`)
       setInput('')
+      setTextCount(0)
       //add userId as well once its ready
       axios.post('/text', {text: input, promptId: currentPrompt.id})
       .then(() => {
         axios.get('/text')
         .then((response) => {
-          console.log(response.data[response.data.length -1].text);
-          setPosts((posts) => ([...posts, response.data[response.data.length -1]].text));
+          setPosts((posts) => ([...posts, response.data[response.data.length -1]]));
         })
       })
       .catch((err) => {
@@ -189,6 +229,7 @@ function Homepage() {
   //return dom elements and structure
   return (
     <div>
+      
       <nav className='nav-btn' >
       <div className='user-div'>
         <Link to="/user">
@@ -197,11 +238,15 @@ function Homepage() {
       <Link to=''>
         <button className='user-btn' >Button for Logan</button>
       </Link>
+      <div>
+        <Timer minutes={minutes} seconds={seconds} />
+      </div>
       </div>
       </nav>
 
     {/* //div for wrapper containing all homepage elements */}
     <div className='wrapper'>
+      
       <div className='word-container'>
         {words.map((word, i) => (
         <span key={i}>{word } </span>
@@ -216,15 +261,19 @@ function Homepage() {
           }
         </div>
 
-        <div>
+        <div >
           
-          <input 
+          <textarea 
           className='user-input'
           type='text'
           placeholder='Add to the story!' 
           onChange={handleInput}
           value={input}
+          maxLength={150}
           />
+          <div className='text-count'>
+            {textCount}/150
+          </div>
           <div className='submit'>
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
