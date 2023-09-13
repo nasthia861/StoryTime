@@ -8,7 +8,6 @@ import bestOf from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
 function Homepage() {
-
   //setting states of generated word, current story, and input using hooks
   //building story from post winners
   const [story, setStory] = useState([])
@@ -35,6 +34,8 @@ function Homepage() {
   let latestPrompt;
   let latestBadgeStory;
   let latestStory = story;
+  let allPosts = posts
+  
   
 
   const getWords = () => {
@@ -121,26 +122,19 @@ function Homepage() {
       })
 
     // grabs all of the texts submitted for current prompt
-    if(posts.length > 0){
-
-      axios.get('/prompt')
-        .then((response) => {
-          const latestPrompt = response.data[response.data.length - 1];
-          axios.get(`/text/prompt/${latestPrompt.id}`)
-            .then((response) => {
-              setPosts(response.data)
-            })
-            .catch((error) => console.error('could not get latest prompt', error));
-       })
-    }
+    axios.get('/prompt')
+      .then((response) => {
+        const latestPrompt = response.data[response.data.length - 1];
+        axios.get(`/text/prompt/${latestPrompt.id}`)
+          .then((response) => {
+            console.log('response.data', response.data)
+            setPosts(response.data)
+          })
+          .catch((error) => console.error('could not get latest prompt', error));
+     })
       
     const promptInterval = setInterval(() => {
-      let allPosts
-
-      setPosts((posts) => {allPosts = posts; return posts})
-
       promptWinner(allPosts)
-      console.log('storyArr', story);
       setPosts((posts) => ([]))
       setStory((story) => ([...story]))
       getWords();
@@ -184,13 +178,13 @@ function Homepage() {
   const promptWinner = (allPosts) => {
     //grab texts with the current promptId
     if(allPosts !== undefined){
-
       axios.get(`/text/prompt/${latestPrompt.id}`)
         .then((textArr) => {
+          console.log("textarr", textArr)
           bestOf(textArr.data)
             .then((best) => {
               //changes the winning state in the text db
-              console.log(best)
+              console.log("here", best)
               axios.post(`/text/winner/${best.id}`)
               setStory((story) => ([...story, best.text]));
   
@@ -221,7 +215,7 @@ function Homepage() {
       .then(() => {
         axios.get('/text')
         .then((response) => {
-          setPosts([response.data[response.data.length -1], ...posts])
+          setPosts((posts) => ([...posts, response.data[response.data.length -1]]));
         })
       })
       .catch((err) => {
@@ -285,10 +279,10 @@ function Homepage() {
           </div>
 
           <div>
-            {
-              posts.map((post, i) => (
-                <Post key={`${i} - ${post.id}`} text={post} />
-              ))
+          {
+              posts.map((post) => {
+                return <Post key={post.id} text={post}/>
+              })
             }
             
           </div>
