@@ -3,6 +3,7 @@ import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import axios from'axios';
 import Post from './Post.jsx';
+import Timer from './Timer.jsx'
 import bestOf from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
@@ -20,6 +21,15 @@ function Homepage() {
   const [lastUpdate, setLastUpdate] = useState('')
   //current round of submittions for story, holds words and 
   const [currentPrompt, setCurrentPrompt] = useState({})
+  
+
+  //set the starting time for the timer
+  const actionInterval = 30000; // 30 seconds for testing
+  const storedTargetTime = localStorage.getItem('targetTime');
+  const initialTargetTime = storedTargetTime ? parseInt(storedTargetTime, 10) : Date.now() + actionInterval;
+
+  //calculate the remaining time based on the target time and current time
+  const [remainingTime, setRemainingTime] = useState(initialTargetTime - Date.now());
 
   //useEffect to fetch data from database upon mounting
   let latestPrompt;
@@ -148,6 +158,28 @@ function Homepage() {
 
   }, [])
 
+  useEffect(() => {
+    
+
+    //update the timer every second
+    const timer = setInterval(() => {
+      setRemainingTime(prevRemainingTime => {
+        if (prevRemainingTime <= 0) {
+          return actionInterval;
+        }
+        return prevRemainingTime - 1000;
+      });
+    }, 1000);
+
+    //cleanup
+    return () => {
+      clearInterval(appInterval);
+      clearInterval(timer);
+    };
+  }, [actionInterval]);
+  const minutes = Math.floor(remainingTime / 60000);
+  const seconds = Math.floor((remainingTime % 60000) / 1000);
+
   //changes state of winners
   const promptWinner = (allPosts) => {
     //grab texts with the current promptId
@@ -203,6 +235,7 @@ function Homepage() {
   //return dom elements and structure
   return (
     <div>
+      
       <nav className='nav-btn' >
       <div className='user-div'>
         <Link to="/user">
@@ -211,11 +244,15 @@ function Homepage() {
       <Link to=''>
         <button className='user-btn' >Button for Logan</button>
       </Link>
+      <div>
+        <Timer minutes={minutes} seconds={seconds} />
+      </div>
       </div>
       </nav>
 
     {/* //div for wrapper containing all homepage elements */}
     <div className='wrapper'>
+      
       <div className='word-container'>
         {words.map((word, i) => (
         <span key={i}>{word } </span>

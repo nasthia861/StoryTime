@@ -78,6 +78,10 @@ body, html {
   color:#ccc
 }
 
+.live-timer {
+  color:#ccc
+}
+
 .user-data {
   position: absolute;
   top: 15%;
