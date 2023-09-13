@@ -110,12 +110,9 @@ function Homepage() {
     // grabs all of the texts submitted for current prompt
     axios.get('/prompt')
       .then((response) => {
-        console.log('response', response.data[response.data.length - 1]);
         const latestPrompt = response.data[response.data.length - 1];
-        console.log('latestPrompt', latestPrompt.id);
         axios.get(`/text/prompt/${latestPrompt.id}`)
           .then((response) => {
-            console.log('response.data', response.data)
             setPosts(response.data)
           })
           .catch((error) => console.error('could not get latest prompt', error));
@@ -123,7 +120,6 @@ function Homepage() {
       
     const promptInterval = setInterval(() => {
       promptWinner()
-      console.log('storyArr', story);
       getWords();
     }, 30000) // this is where to change interval time between prompt changes (currently set to an hour)
 
@@ -174,8 +170,7 @@ function Homepage() {
       .then(() => {
         axios.get('/text')
         .then((response) => {
-          console.log(response.data[response.data.length -1].text);
-          setPosts((posts) => ([...posts, response.data[response.data.length -1]].text));
+          setPosts((posts) => ([...posts, response.data[response.data.length -1]]));
         })
       })
       .catch((err) => {
@@ -229,13 +224,12 @@ function Homepage() {
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
 
-          <div>
+          <div className='posts-container'>
             {
-              posts.map((post, i) => (
-                <Post key={`${i} - ${post.id}`} text={post} />
-              ))
+              posts.map((post) => {
+                return <Post key={post.id} text={post}/>
+              })
             }
-            
           </div>
         </div>
 
