@@ -42,7 +42,7 @@ const User = () => {
   return (
     <div>
       <nav>
-        <Link to='/' >
+        <Link to='/home' >
           <button className='user-home-button'>HomePage</button>
         </Link>
       </nav>
