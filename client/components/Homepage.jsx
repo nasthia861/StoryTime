@@ -230,10 +230,10 @@ function Homepage() {
           </div>
 
           <div>
-            {
-              posts.map((post, i) => (
-                <Post key={`${i} - ${post.id}`} text={post} />
-              ))
+          {
+              posts.map((post) => {
+                return <Post key={post.id} text={post}/>
+              })
             }
             
           </div>
