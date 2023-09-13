@@ -83,8 +83,29 @@ function Homepage() {
       .catch((error) => console.error('could not create new badge', error));
   }
 
+    //changes state of winners
+  const promptWinner = (allPosts) => {
+    //grab texts with the current promptId
+    if(allPosts !== undefined){
+      axios.get(`/text/prompt/${latestPrompt.id}`)
+        .then((textArr) => {
+          bestOf(textArr.data)
+            .then((best) => {
+              //changes the winning state in the text db
+              axios.post(`/text/winner/${best.id}`)
+              //adds to story state
+              setStory((story) => ([...story, best.text]))
+            })
+            .catch((error) => console.error('could not set most likes', error));
+        })
+        .catch((error) => {
+          console.error('could not get text in prompt', error);
+        })
+    }
+  }
+
   useEffect(() => {
-    //grabs latest prompt
+    //grabs latest prompt, texts submitted to prompt, and 
     axios.get('/prompt')
     .then((response) => {
       if(response.data.length === 0){
@@ -96,8 +117,12 @@ function Homepage() {
         setWords(wordArray)
         //sets the most current prompt
         setCurrentPrompt(latestPrompt)
+        axios.get(`/text/prompt/${latestPrompt.id}`)
+          .then((response) => {
+            setPosts(response.data)
+          })
+          .catch((error) => console.error('could not get latest prompt', error));
         }
-    
       })
     .catch((err) => {
       console.error('Error getting words:', err)
@@ -118,20 +143,8 @@ function Homepage() {
         console.error('Error getting story:', err)
       })
 
-    // grabs all of the texts submitted for current prompt
-    axios.get('/prompt')
-      .then((response) => {
-        const latestPrompt = response.data[response.data.length - 1];
-        axios.get(`/text/prompt/${latestPrompt.id}`)
-          .then((response) => {
-            setPosts(response.data)
-          })
-          .catch((error) => console.error('could not get latest prompt', error));
-      })
-      .catch((error) => console.error('error getting all prompts', error));
 
      //grabs all of the texts with the matching prompt id and winner set to true
-
      axios.get(`/text/winner/1/${currentBadgeId}`)
       .then((winnerArr) => {
         setStory(winnerArr.data)
@@ -141,7 +154,7 @@ function Homepage() {
     const promptInterval = setInterval(() => {
       promptWinner(allPosts)
       setPosts((posts) => ([]))
-      //setStory((story) => ([...story]))
+      setStory((story) => ([...story]))
       getWords();
     }, 30000) // this is where to change interval time between prompt changes (currently set to an hour)
 
@@ -176,29 +189,6 @@ function Homepage() {
 
   const minutes = Math.floor(remainingTime / 60000);
   const seconds = Math.floor((remainingTime % 60000) / 1000);
-
-  //changes state of winners
-  const promptWinner = (allPosts) => {
-    //grab texts with the current promptId
-    if(allPosts !== undefined){
-      axios.get(`/text/prompt/${latestPrompt.id}`)
-        .then((textArr) => {
-          console.log("textarr", textArr)
-          bestOf(textArr.data)
-            .then((best) => {
-              //changes the winning state in the text db
-              console.log("here", best)
-              axios.post(`/text/winner/${best.id}`)
-              setStory(best.text);
-  
-            })
-            .catch((error) => console.error('could not set most likes', error));
-        })
-        .catch((error) => {
-          console.error('could not get text in prompt', error);
-        })
-    }
-  }
 
   //function to handle input change
   const handleInput = (event) => {
@@ -281,14 +271,14 @@ function Homepage() {
           <div className='submit'>
             <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
-          <div className='posts-container'>
-            {
-              posts.map((post) => {
-                return <Post key={post.id} text={post.text}/>
-              })
-            }
-          </div>
 
+        </div>
+        <div className='posts-container'>
+          {
+            posts.map((post) => {
+              return <Post key={post.id} text={post}/>
+            })
+          }
         </div>
 
       </div>
