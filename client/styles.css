@@ -46,6 +46,20 @@ body, html {
   width: 100%;
   height: 40px;
   overflow-wrap: break-word;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  color: #666;
+  box-shadow: inset 0 0 0.25rem #ddd;
+  &:focus {
+    outline: none;
+    border: 1px solid darken(#ddd, 5%);
+    box-shadow: inset 0 0 0.5rem darken(#ddd, 5%);
+  }
+  &[placeholder] { 
+    font-style: italic;
+    font-size: 0.875rem;
+  }
 }
 
 .submit{
@@ -58,6 +72,14 @@ body, html {
 .submit-btn {
   padding: 20px;
   border-radius: 12px;
+}
+
+.text-count {
+  color:#ccc
+}
+
+.live-timer {
+  color:#ccc
 }
 
 .user-data {
