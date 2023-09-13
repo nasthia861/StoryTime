@@ -12,10 +12,12 @@ function Homepage() {
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
   const [posts, setPosts] = useState([])
+  const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
   const [mostLikes, setMostLikes] = useState([])
   const [mostWords, setMostWords] = useState([])
   const [currentPrompt, setCurrentPrompt] = useState({});
+  
 
   //useEffect to fetch data from database upon mounting
 
@@ -97,6 +99,7 @@ function Homepage() {
   //function to handle input change
   const handleInput = (event) => {
     setInput(event.target.value)
+    setTextCount(event.target.value.length)
   }
 
   //function to handle user submit
@@ -147,15 +150,19 @@ function Homepage() {
           <p dangerouslySetInnerHTML={{__html: story}} ></p>
         </div>
 
-        <div>
+        <div >
           
-          <input 
+          <textarea 
           className='user-input'
           type='text'
           placeholder='Add to the story!' 
           onChange={handleInput}
           value={input}
+          maxLength={150}
           />
+          <div className='text-count'>
+            {textCount}/150
+          </div>
           <div className='submit'>
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
