@@ -13,6 +13,7 @@ const Login = () => {
       const response = await axios.post('/auth/login', { username, password });
       if (response.data.message === 'Login successful.') {
         localStorage.setItem('userId', response.data.userId);
+        localStorage.setItem('user_name', response.data.user_name);
 
         // Redirect to a protected route upon successful login
         window.location.href = '/home';

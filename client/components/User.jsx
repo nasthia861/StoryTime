@@ -16,6 +16,14 @@ const User = () => {
     }
   }, []);
 
+  // useEffect(() => {
+  //   // Retrieve username from local storage
+  //   const storedUsername = localStorage.getItem('user_name');
+  //   if (storedUsername) {
+  //     setUserId(storedUsername);
+  //   }
+  // }, []);
+
   //axios request to retrieve user texts by id
   
   const getUserTexts = (id) => {
