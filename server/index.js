@@ -11,6 +11,10 @@ const port = process.env.PORT || 8080;
 // Middleware for serving static files
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
+// Require and use routes
+const { app: routesApp } = require('./routes/routes');
+app.use('/', routesApp); // Mount routes
+
 app.get('/*', function(req, res) {
   res.sendFile(path.join(__dirname, '../dist/index.html'), function(err) {
     if (err) {
@@ -70,11 +74,11 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// Require and use routes
-const { app: routesApp } = require('./routes/routes');
-app.use('/', routesApp); // Mount routes
+// // Require and use routes
+// const { app: routesApp } = require('./routes/routes');
+// app.use('/', routesApp); // Mount routes
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port http://127.0.0.1:${port}`);
 });
