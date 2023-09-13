@@ -25,7 +25,7 @@ const User = () => {
  
   //axios request to retrieve user texts by id
   const getUserTexts = (id) => {
-    axios.get(`http://127.0.0.1:8080/text/user/${id}`)
+    axios.get(`http://localhost:8080/text/user/${id}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
