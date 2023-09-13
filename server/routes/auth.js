@@ -35,6 +35,8 @@ router.post('/register', async (req, res) => {
 
 // User login
 router.post('/login', passport.authenticate('local'), (req, res) => {
+  const userID = req.user.id
+  console.log('this is the current user id ---------->', userID)
   return res.json({ message: 'Login successful.' });
 });
 
