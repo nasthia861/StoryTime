@@ -8,20 +8,20 @@ const { User } = require('./database/index')
 const app = express();
 const port = process.env.PORT || 8080;
 
+// // Require and use routes
+// const { app: routesApp } = require('./routes/routes');
+// app.use('/', routesApp); // Mount routes
 // Middleware for serving static files
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
-// Require and use routes
-const { app: routesApp } = require('./routes/routes');
-app.use('/', routesApp); // Mount routes
 
-app.get('/*', function(req, res) {
-  res.sendFile(path.join(__dirname, '../dist/index.html'), function(err) {
-    if (err) {
-      res.status(500).send(err)
-    }
-  })
-})
+// app.get('/*', function(req, res) {
+//   res.sendFile(path.join(__dirname, '../dist/index.html'), function(err) {
+//     if (err) {
+//       res.status(500).send(err)
+//     }
+//   })
+// })
 
 // Initialize session
 const superSecretKey = 'Dev_Dawgs_Till_I_Die';
@@ -32,11 +32,12 @@ app.use(
     resave: false,
     saveUninitialized: true,
   })
-);
-
-// Initialize Passport.js
-app.use(passport.initialize());
-app.use(passport.session());
+  );
+  
+  // Initialize Passport.js
+  app.use(passport.initialize());
+  app.use(passport.session());
+  
 
 // Passport.js local strategy for user login
 passport.use(
@@ -74,9 +75,17 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// // Require and use routes
-// const { app: routesApp } = require('./routes/routes');
-// app.use('/', routesApp); // Mount routes
+// Require and use routes
+const { app: routesApp } = require('./routes/routes');
+app.use('/', routesApp); // Mount routes
+
+app.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname, '../dist/index.html'), function(err) {
+      if (err) {
+        res.status(500).send(err)
+      }
+    })
+  })
 
 // Start the server
 app.listen(port, () => {
