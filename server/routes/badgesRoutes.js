@@ -2,9 +2,19 @@ const express = require('express');
 const router = express.Router();
 const { Badges } = require('../database/index'); 
 
+router.get('/', (req, res) => {
+  Badges.findAll({})
+    .then((badges) => {
+      res.status(200).send(badges)
+    })
+    .catch((error) => {
+      console.error('could not get all badges', error)
+      res.sendStatus(500);
+    })
+})
+
 router.post('/', (req, res) => {
-  const { newBadges } = req.body;
-  Badges.create(newBadges)
+  Badges.create(req.body)
     .then(() => {
       console.log('successfully added new badges');
       res.sendStatus(201);
