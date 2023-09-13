@@ -24,6 +24,7 @@ function Homepage() {
   //useEffect to fetch data from database upon mounting
   let latestPrompt;
   let latestBadgeStory;
+  let latestStory = story;
 
   const getWords = () => {
     return axios.get('https://random-word-api.herokuapp.com/word?number=5')
@@ -42,6 +43,8 @@ function Homepage() {
                   setWords(wordArray)
                   //sets current prompt to latest
                   setCurrentPrompt(latestPrompt);
+                  //sets prompts to zero
+                  setPosts([]);
                 })
                 .catch((err) => {
                 console.error("Could not get prompts", err)
@@ -106,7 +109,7 @@ function Homepage() {
         console.error('Error getting story:', err)
       })
 
-    //grabs all of the texts submitted for current prompt
+    // grabs all of the texts submitted for current prompt
     axios.get('/prompt')
       .then((response) => {
         const latestPrompt = response.data[response.data.length - 1];
@@ -115,10 +118,11 @@ function Homepage() {
             setPosts(response.data)
           })
           .catch((error) => console.error('could not get latest prompt', error));
-      })
+     })
       
     const promptInterval = setInterval(() => {
       promptWinner()
+      console.log('storyArr', story);
       getWords();
     }, 30000) // this is where to change interval time between prompt changes (currently set to an hour)
 
@@ -141,14 +145,10 @@ function Homepage() {
       .then((textArr) => {
         bestOf(textArr.data)
           .then((best) => {
-            console.log(best.text);
             //changes the winning state in the text db
             axios.post(`/text/winner/${best.id}`)
-            .then(() => {
-              //sets the winning text to the story
-              setStory([...story, best.text]);
-            })
-            .catch((error) => console.error('could not change winner text state'));
+            setStory((story) => ([...story, best.text]));
+
           })
           .catch((error) => console.error('could not set most likes', error));
       })
@@ -208,7 +208,11 @@ function Homepage() {
       </div>
       
         <div className='story-container'>
-          <p dangerouslySetInnerHTML={{__html: story}} ></p>
+          {
+            story.map((submission, i) => {
+              return <div key={i}>{submission}</div>
+            })
+          }
         </div>
 
         <div >
