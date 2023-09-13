@@ -4,36 +4,39 @@ import {Link} from 'react-router-dom'
 
 const User = () => {
 
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState();
   const [userTexts, setUserTexts] = useState([]);
   const [userBadges, setUserBadges] = useState('');
+  const  [username, setUsername] = useState('PhreezorBurn');
 
+ 
+  const getUserId = (username) => {
+    axios.get(`/user/${username}`)
+      .then((userData) => {
+        userData.data.forEach(element => {
+          setUserId(element.id);
+          setUserBadges(element.badges);
+        });
+      })
+      .catch((err) => {
+        console.error('Could not retrieve user ID', err)
+      });
+  };
+ 
   //axios request to retrieve user texts by id
-  
   const getUserTexts = (id) => {
     axios.get(`http://127.0.0.1:8080/text/user/${id}`)
     .then((texts) =>{
-      console.log(texts);
       setUserTexts(texts.data);
     })
     .catch((err) => {
       console.error('Could not retrieve texts!!', err);
     });
-  }
-  
-  const getUserBadges = (id) => {
-    axios.get(`http://127.0.0.1:8080/user/${id}`)
-    .then((userData) => {
-      setUserBadges(userData.data.badges);
-    })
-    .catch((error) => {
-      console.error('could not get user badges', error)
-    });
-  }
+  };
 
   useEffect(() => {
+    getUserId(username)
     getUserTexts(userId);
-    getUserBadges(userId);
   });
 
   return (
