@@ -11,10 +11,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/auth', auth);
 app.use('/text', textRoutes);
 app.use('/user', userRoutes);
 app.use('/prompt', promptRoutes);
-app.use('/auth', auth);
 app.use('/badges', badgesRoutes);
 
 module.exports.app = app;

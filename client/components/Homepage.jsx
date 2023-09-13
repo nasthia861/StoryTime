@@ -7,7 +7,6 @@ import bestOf from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
 function Homepage() {
-
   //setting states of generated word, current story, and input using hooks
   //building story from post winners
   const [story, setStory] = useState([])
@@ -111,9 +110,12 @@ function Homepage() {
     // grabs all of the texts submitted for current prompt
     axios.get('/prompt')
       .then((response) => {
+        console.log('response', response.data[response.data.length - 1]);
         const latestPrompt = response.data[response.data.length - 1];
+        console.log('latestPrompt', latestPrompt.id);
         axios.get(`/text/prompt/${latestPrompt.id}`)
           .then((response) => {
+            console.log('response.data', response.data)
             setPosts(response.data)
           })
           .catch((error) => console.error('could not get latest prompt', error));
@@ -172,7 +174,8 @@ function Homepage() {
       .then(() => {
         axios.get('/text')
         .then((response) => {
-          setPosts([response.data[response.data.length -1], ...posts])
+          console.log(response.data[response.data.length -1].text);
+          setPosts((posts) => ([...posts, response.data[response.data.length -1]].text));
         })
       })
       .catch((err) => {

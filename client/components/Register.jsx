@@ -12,7 +12,7 @@ const Register = () => {
       const response = await axios.post('/auth/register', { username, password });
       if (response.status === 201) {
         // Registration successful, you can redirect to the login page or another route
-        window.location.href = '/';
+        window.location.href = '/home';
       }
     } catch (error) {
       console.error(error);

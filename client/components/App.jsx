@@ -4,6 +4,9 @@ import Homepage from './Homepage.jsx';
 import Login from './Login.jsx'
 import User from './User.jsx';
 import Post from './Post.jsx';
+import Register from './Register.jsx';
+
+
 
 
 function App () {
@@ -11,8 +14,9 @@ function App () {
     <div className='wrapper'>
       <Router>
         <Routes>
-          {/* <Route path="/" element={<Login/>} /> */}
-          <Route path="/" element={<Homepage/>} />
+          <Route path="/" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
+          <Route path="/home" element={<Homepage/>} />
           <Route exact path="/user" element={<User/>} />
           <Route path="/text/id" element={<Post/>} />
         </Routes>
