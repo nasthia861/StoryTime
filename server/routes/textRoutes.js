@@ -94,6 +94,7 @@ router.get('/user/:userId', (req,res) => {
     });
 })
 
+//post a new text
 router.post('/', (req, res) => {
   Text.create(req.body)
     .then(() => {
@@ -128,6 +129,7 @@ router.get('/prompt/:promptId', (req, res) => {
     })
 })
 
+//get all texts
 router.get('/', (req,res) => {
   // const { } = req.params;
    Text.findAll({})
@@ -139,5 +141,7 @@ router.get('/', (req,res) => {
        res.sendStatus(500);
      });
  })
+
+
 
 module.exports = router; 

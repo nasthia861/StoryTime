@@ -98,8 +98,9 @@ function Homepage() {
         if(response.data.length === 0){
         newStory();
         }else{
-        //sets the most current badge
+          //sets the most current badge
           latestBadgeStory = response.data[response.data.length - 1]
+          console.log('latestbadgestory', latestBadgeStory)
           setBadgeId(latestBadgeStory.id)
         }
       })
@@ -117,6 +118,9 @@ function Homepage() {
           })
           .catch((error) => console.error('could not get latest prompt', error));
      })
+
+     //grabs all of the prompt id with the badge, 
+     //grabs all of the texts with the matching prompt id and winner set to true
       
     const promptInterval = setInterval(() => {
       promptWinner()
