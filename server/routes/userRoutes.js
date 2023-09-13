@@ -3,15 +3,14 @@ const router = express.Router();
 const { User } = require('../database/index')
 
 //User GET request
-router.get('/', (req, res) => {
-  const { username } = req.body;
+router.get('/:username', (req, res) => {
+  const { username } = req.params;
   User.findAll({
     where: {
       username: username
     },
   })
   .then((userInfo) => {
-    console.log(userInfo);
     res.send(userInfo).status(200);
   })
   .catch((err) => {
