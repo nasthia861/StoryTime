@@ -32,7 +32,6 @@ function Homepage() {
   //useEffect to fetch data from database upon mounting
   let latestPrompt;
   let latestBadgeStory;
-  let latestStory = story;
   let allPosts = posts
   
   
@@ -84,6 +83,28 @@ function Homepage() {
       .catch((error) => console.error('could not create new badge', error));
   }
 
+  //changes state of winners
+  const promptWinner = (allPosts) => {
+    //grab texts with the current promptId
+    if(allPosts !== undefined){
+      axios.get(`/text/prompt/${latestPrompt.id}`)
+        .then((textArr) => {
+          bestOf(textArr.data)
+            .then((best) => {
+              //changes the winning state in the text db
+              axios.post(`/text/winner/${best.id}`)
+              //should rerender story to show new text
+              setStory((story) => ([...story, best]));
+              //setPosts((posts) => ([...posts, response.data[0]]))
+            })
+            .catch((error) => console.error('could not set most likes', error));
+        })
+        .catch((error) => {
+          console.error('could not get text in prompt', error);
+        })
+    }
+  }
+
   useEffect(() => {
     //grabs latest prompt
       axios.get('/prompt/find/last')
@@ -129,7 +150,6 @@ function Homepage() {
     axios.get(`/text/winner/1/${currentBadgeId}`)
     .then((winnerArr) => {
       //sets story to an array of text obj
-      console.log(winnerArr.data);
       setStory(winnerArr.data)
     })
     .catch((error) => console.error('could not grab winner texts for story'));
@@ -137,7 +157,6 @@ function Homepage() {
     const promptInterval = setInterval(() => {
       promptWinner(allPosts)
       setPosts((posts) => ([]))
-      setStory((story) => ([...story]))
       getWords();
     }, 30000) // this is where to change interval time between prompt changes (currently set to an hour)
 
@@ -175,28 +194,6 @@ function Homepage() {
   const minutes = Math.floor(remainingTime / 60000);
   const seconds = Math.floor((remainingTime % 60000) / 1000);
 
-  //changes state of winners
-  const promptWinner = (allPosts) => {
-    //grab texts with the current promptId
-    if(allPosts !== undefined){
-      axios.get(`/text/prompt/${latestPrompt.id}`)
-        .then((textArr) => {
-          console.log("textarr", textArr)
-          bestOf(textArr.data)
-            .then((best) => {
-              //changes the winning state in the text db
-              console.log("here", best)
-              axios.post(`/text/winner/${best.id}`)
-              setStory((story) => ([...story, best.text]));
-  
-            })
-            .catch((error) => console.error('could not set most likes', error));
-        })
-        .catch((error) => {
-          console.error('could not get text in prompt', error);
-        })
-    }
-  }
 
   //function to handle input change
   const handleInput = (event) => {
