@@ -16,6 +16,7 @@ function Homepage() {
   const [words, setWords] = useState([])
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
+  const [user, setUser] = useState({id: 2});
   const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
   const [currentPrompt, setCurrentPrompt] = useState({})
@@ -107,6 +108,17 @@ function Homepage() {
       })
   }
 
+  const awardCeremony = () => {
+    //grab all winning submissions
+      //pass them through function that checks for most overall likes
+        //send badge to user that owns winning text
+      //pass them through function that checks for most matched words
+        //send badge to user/s that owns winning text/s
+      //grab user that made the most contributions for the whole story
+        //send badge to user
+    //update badges info in db to include user info of winners
+  }
+
   useEffect(() => {
     //grabs latest prompt, sets words, renders any submissions
       axios.get('/prompt/find/last')
@@ -165,8 +177,9 @@ function Homepage() {
       newRound();
     }, 10000) // this is where to change interval time between prompt changes (currently set to an hour)
 
-    //resets the story to start a new one, starts a new round
+    //send badges, resets the story to start a new one, starts a new round
     const storyInterval = setInterval(() => {
+      awardCeremony();
       newStory()
       newRound();
     }, 30000)
@@ -210,13 +223,10 @@ function Homepage() {
 
   //function to handle user submit
   const handleSubmit = () => {
-    //sets story to current story plus users input
     if(input !== ''){
-      //setStory(` ${story}`)
       setInput('')
       setTextCount(0)
-      //add userId as well once its ready
-      axios.post('/text', {text: input, promptId: currentPrompt.id})
+      axios.post('/text', {text: input, userId: user.id , promptId: currentPrompt.id })
       .then(() => {
         axios.get('/text/find/last')
         .then((response) => {
