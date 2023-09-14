@@ -142,6 +142,22 @@ router.get('/', (req,res) => {
     });
 })
 
+//get last text submitted
+router.get('/find/last', (req,res) => {
+  Prompt.findAll({
+    limit: 1,
+    order: [['id', 'DESC']]
+  })
+    .then((lastText) => {
+      res.send(lastText).status(200);
+    })
+    .catch((err) => {
+      console.error('Could not Get last Text submitted', err);
+      res.sendStatus(500);
+    });
+})
+
+
 router.get('/winner/:id/:badgeId', (req, res) => {
   const { id, badgeId } = req.params;
 
