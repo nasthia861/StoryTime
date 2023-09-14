@@ -112,7 +112,6 @@ router.get('/prompt/:promptId', (req, res) => {
   Text.findAll({
     where: {
       promptId: promptId,
-      round: round
     }
   })
     .then((textArr) => {
@@ -144,7 +143,7 @@ router.get('/', (req,res) => {
 
 //get last text submitted
 router.get('/find/last', (req,res) => {
-  Prompt.findAll({
+  Text.findAll({
     limit: 1,
     order: [['id', 'DESC']]
   })

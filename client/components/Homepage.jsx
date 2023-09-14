@@ -18,7 +18,6 @@ function Homepage() {
   const [posts, setPosts] = useState([])
   const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
-  //current round of submittions for story, holds words and 
   const [currentPrompt, setCurrentPrompt] = useState({})
   
 
@@ -42,14 +41,13 @@ function Homepage() {
     return axios.get('https://random-word-api.herokuapp.com/word?number=5')
             .then((response) => {
               const wordsForDb = response.data.join(' ')
-              //setRound(currentRound++);
               //creates new prompt with 
               axios.post('/prompt', {matchWords: wordsForDb, badgeId: currentBadgeId})
               .then(() => {
                 //grabs all prompts
-                axios.get('/prompt')
+                axios.get('/prompt/find/last')
                 .then((response) => {
-                  latestPrompt = response.data[response.data.length - 1]
+                  latestPrompt = response.data[0]
                   const wordArray = latestPrompt.matchWords.split(' ')
                   //sets words for prompt
                   setWords(wordArray)
@@ -76,9 +74,9 @@ function Homepage() {
   const newStory = () => {
     axios.post('/badges')
       .then(() => {
-        axios.get('/badges')
+        axios.get('/badges/find/last')
           .then((response) => {
-            latestBadgeStory = response.data[response.data.length - 1]
+            latestBadgeStory = response.data[0]
             setBadgeId(latestBadgeStory.id)
           })
           .catch((error) => console.error('could not get badges', error))
@@ -88,12 +86,12 @@ function Homepage() {
 
   useEffect(() => {
     //grabs latest prompt
-      axios.get('/prompt')
+      axios.get('/prompt/find/last')
       .then((response) => {
         if(response.data.length === 0){
         getWords()
         }else{
-          latestPrompt = response.data[response.data.length - 1]
+          latestPrompt = response.data[0]
           //sets the words of most current prompt
           const wordArray = latestPrompt.matchWords.split(' ')
           setWords(wordArray)
@@ -107,13 +105,13 @@ function Homepage() {
       })
     
     //grabs the most current story
-    axios.get('/badges')
+    axios.get('/badges/find/last')
       .then((response) => {
         if(response.data.length === 0){
         newStory();
         }else{
         //sets the most current badge
-          latestBadgeStory = response.data[response.data.length - 1]
+          latestBadgeStory = response.data[0]
           setBadgeId(latestBadgeStory.id)
         }
       })
@@ -122,15 +120,14 @@ function Homepage() {
       })
 
     // grabs all of the texts submitted for current prompt
-    axios.get('/prompt')
+    axios.get('/prompt/find/last')
       .then((response) => {
-        const latestPrompt = response.data[response.data.length - 1];
+        const latestPrompt = response.data[0]
         axios.get(`/text/prompt/${latestPrompt.id}`)
           .then((response) => {
-            console.log('response.data', response.data)
             setPosts(response.data)
           })
-          .catch((error) => console.error('could not get latest prompt', error));
+          .catch((error) => console.error('could not get latest prompt submissions', error));
      })
       
     const promptInterval = setInterval(() => {
@@ -213,9 +210,9 @@ function Homepage() {
       //add userId as well once its ready
       axios.post('/text', {text: input, promptId: currentPrompt.id})
       .then(() => {
-        axios.get('/text')
+        axios.get('/text/find/last')
         .then((response) => {
-          setPosts((posts) => ([...posts, response.data[response.data.length -1]]));
+          setPosts((posts) => ([...posts, response.data[0]]));
         })
       })
       .catch((err) => {
