@@ -1,38 +1,62 @@
-import React, {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom'
+import React from 'react';
+import {useState, useEffect} from 'react';
+import {Link} from 'react-router-dom';
 import axios from'axios';
-import Post from './Post.jsx'
-import bestOf from '../badgeHelpers/bestOf.jsx'
+import Post from './Post.jsx';
+import Timer from './Timer.jsx'
+import bestOf from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
 function Homepage() {
-
   //setting states of generated word, current story, and input using hooks
+  //building story from post winners
   const [story, setStory] = useState([])
-  const [currentRound, setRound] = useState(1)
+  const [currentBadgeId, setBadgeId] = useState(1) 
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
+  //contenders for next part of the story
   const [posts, setPosts] = useState([])
+  const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
-  const [mostLikes, setMostLikes] = useState([])
-  const [mostWords, setMostWords] = useState([])
+  //current round of submittions for story, holds words and 
   const [currentPrompt, setCurrentPrompt] = useState({})
+  
+
+  //set the starting time for the timer
+  const actionInterval = 30000; // 30 seconds for testing
+  const storedTargetTime = localStorage.getItem('targetTime');
+  const initialTargetTime = storedTargetTime ? parseInt(storedTargetTime, 10) : Date.now() + actionInterval;
+
+  //calculate the remaining time based on the target time and current time
+  const [remainingTime, setRemainingTime] = useState(initialTargetTime - Date.now());
 
   //useEffect to fetch data from database upon mounting
+  let latestPrompt;
+  let latestBadgeStory;
+  let latestStory = story;
+  let allPosts = posts
+  
+  
 
   const getWords = () => {
     return axios.get('https://random-word-api.herokuapp.com/word?number=5')
             .then((response) => {
-              console.log(response.data)
               const wordsForDb = response.data.join(' ')
-              axios.post('/prompt', {matchWords: wordsForDb})
+              //setRound(currentRound++);
+              //creates new prompt with 
+              axios.post('/prompt', {matchWords: wordsForDb, badgeId: currentBadgeId})
               .then(() => {
+                //grabs all prompts
                 axios.get('/prompt')
                 .then((response) => {
-                  console.log("this", response.data[response.data.length - 1])
-                  const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-                  setCurrentPrompt(response.data[response.data.length - 1])
+                  latestPrompt = response.data[response.data.length - 1]
+                  const wordArray = latestPrompt.matchWords.split(' ')
+                  //sets words for prompt
                   setWords(wordArray)
+                  //sets current prompt to latest
+                  setCurrentPrompt(latestPrompt);
+                  //sets prompts to zero
+                  setPosts([]);
                 })
                 .catch((err) => {
                 console.error("Could not get prompts", err)
@@ -49,70 +73,149 @@ function Homepage() {
         })
   }
 
+  const newStory = () => {
+    axios.post('/badges')
+      .then(() => {
+        axios.get('/badges')
+          .then((response) => {
+            latestBadgeStory = response.data[response.data.length - 1]
+            setBadgeId(latestBadgeStory.id)
+          })
+          .catch((error) => console.error('could not get badges', error))
+      })
+      .catch((error) => console.error('could not create new badge', error));
+  }
+
   useEffect(() => {
+    //grabs latest prompt
       axios.get('/prompt')
       .then((response) => {
         if(response.data.length === 0){
         getWords()
-
-      }else{
-        const wordArray = response.data[response.data.length - 1].matchWords.split(' ')
-        setWords(wordArray)
-        setCurrentPrompt(response.data[response.data.length - 1])
-        }
-    
-    })
-    .catch((err) => {
-      console.error('Error getting words:', err)
-      })
-    axios.get('/text')
-    .then((response) => {
-      console.log(response.data)
-      setPosts(response.data)
-    })
+        }else{
+          latestPrompt = response.data[response.data.length - 1]
+          //sets the words of most current prompt
+          const wordArray = latestPrompt.matchWords.split(' ')
+          setWords(wordArray)
+          //sets the most current prompt
+          setCurrentPrompt(latestPrompt)
+          }
       
-    const interval = setInterval(() => {
-      changeWinners();
-      getWords();
-    }, 3600000) // this is where to change interval time between prompt changes (currently set to an hour)
+        })
+      .catch((err) => {
+        console.error('Error getting words:', err)
+      })
+    
+    //grabs the most current story
+    axios.get('/badges')
+      .then((response) => {
+        if(response.data.length === 0){
+        newStory();
+        }else{
+        //sets the most current badge
+          latestBadgeStory = response.data[response.data.length - 1]
+          setBadgeId(latestBadgeStory.id)
+        }
+      })
+      .catch((err) => {
+        console.error('Error getting story:', err)
+      })
 
-    return () => clearInterval(interval)
+    // grabs all of the texts submitted for current prompt
+    axios.get('/prompt')
+      .then((response) => {
+        const latestPrompt = response.data[response.data.length - 1];
+        axios.get(`/text/prompt/${latestPrompt.id}`)
+          .then((response) => {
+            console.log('response.data', response.data)
+            setPosts(response.data)
+          })
+          .catch((error) => console.error('could not get latest prompt', error));
+     })
+      
+    const promptInterval = setInterval(() => {
+      promptWinner(allPosts)
+      setPosts((posts) => ([]))
+      setStory((story) => ([...story]))
+      getWords();
+    }, 30000) // this is where to change interval time between prompt changes (currently set to an hour)
+
+    const storyInterval = setInterval(() => {
+      setBadgeId(currentBadgeId++);
+    }, 300000)
+    
+    return () => {
+      clearInterval(promptInterval);
+      clearInterval(storyInterval);
+    }
+
+
   }, [])
 
+  useEffect(() => {
+    
+
+    //update the timer every second
+    const timer = setInterval(() => {
+      setRemainingTime(prevRemainingTime => {
+        if (prevRemainingTime <= 0) {
+          return actionInterval;
+        }
+        return prevRemainingTime - 1000;
+      });
+    }, 1000);
+
+    //cleanup
+    return () => {
+      clearInterval(appInterval);
+      clearInterval(timer);
+    };
+  }, [actionInterval]);
+  const minutes = Math.floor(remainingTime / 60000);
+  const seconds = Math.floor((remainingTime % 60000) / 1000);
+
   //changes state of winners
-  const changeWinners = () => {
-    //grab texts with the promptid from current prompt
-    axios.get(`/text/?promptId=${currentPrompt}&round=${currentRound}`)
-      .then(textArr => {
-        bestOf(textArr, likes)
-          .then((best) => {
-            //sets the winning text to the story
-            setStory([...story, best.text]);
-          })
-          .catch((error) => console.error('could not set most likes', error));
-      })
-      .catch((error) => {
-        console.error('could not change state of winners', error);
-      })
+  const promptWinner = (allPosts) => {
+    //grab texts with the current promptId
+    if(allPosts !== undefined){
+      axios.get(`/text/prompt/${latestPrompt.id}`)
+        .then((textArr) => {
+          console.log("textarr", textArr)
+          bestOf(textArr.data)
+            .then((best) => {
+              //changes the winning state in the text db
+              console.log("here", best)
+              axios.post(`/text/winner/${best.id}`)
+              setStory((story) => ([...story, best.text]));
+  
+            })
+            .catch((error) => console.error('could not set most likes', error));
+        })
+        .catch((error) => {
+          console.error('could not get text in prompt', error);
+        })
+    }
   }
 
   //function to handle input change
   const handleInput = (event) => {
     setInput(event.target.value)
+    setTextCount(event.target.value.length)
   }
 
   //function to handle user submit
   const handleSubmit = () => {
     //sets story to current story plus users input
     if(input !== ''){
-      setStory(` ${story}`)
+      //setStory(` ${story}`)
       setInput('')
-
-      axios.post('/text', {text: input})
+      setTextCount(0)
+      //add userId as well once its ready
+      axios.post('/text', {text: input, promptId: currentPrompt.id})
       .then(() => {
         axios.get('/text')
         .then((response) => {
-          setPosts([response.data[response.data.length -1], ...posts])
+          setPosts((posts) => ([...posts, response.data[response.data.length -1]]));
         })
       })
       .catch((err) => {
@@ -126,6 +229,7 @@ function Homepage() {
   //return dom elements and structure
   return (
     <div>
+      
       <nav className='nav-btn' >
       <div className='user-div'>
         <Link to="/user">
@@ -134,11 +238,15 @@ function Homepage() {
       <Link to=''>
         <button className='user-btn' >Button for Logan</button>
       </Link>
+      <div>
+        <Timer minutes={minutes} seconds={seconds} />
+      </div>
       </div>
       </nav>
 
     {/* //div for wrapper containing all homepage elements */}
     <div className='wrapper'>
+      
       <div className='word-container'>
         {words.map((word, i) => (
         <span key={i}>{word } </span>
@@ -146,27 +254,35 @@ function Homepage() {
       </div>
       
         <div className='story-container'>
-          <p dangerouslySetInnerHTML={{__html: story}} ></p>
+          {
+            story.map((submission, i) => {
+              return <div key={i}>{submission}</div>
+            })
+          }
         </div>
 
-        <div>
+        <div >
           
-          <input 
+          <textarea 
           className='user-input'
           type='text'
           placeholder='Add to the story!' 
           onChange={handleInput}
           value={input}
+          maxLength={150}
           />
+          <div className='text-count'>
+            {textCount}/150
+          </div>
           <div className='submit'>
           <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
 
           <div>
-            {
-              posts.map((post, i) => (
-                <Post key={`${i} - ${post.id}`} text={post} />
-              ))
+          {
+              posts.map((post) => {
+                return <Post key={post.id} text={post}/>
+              })
             }
             
           </div>

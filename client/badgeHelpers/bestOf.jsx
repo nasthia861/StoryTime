@@ -1,24 +1,16 @@
 //sets winner
-const bestOf = (array, comp) => {  
-  const winnersArr = array.reduce((acc, current) => {
-    //if there is already a tie
-    if (acc.length > 1){
-      if(current[comp] > acc[0][comp]){
-        acc = [current];
-        return acc;
-      }
-    }
-    //for ties
-    if (current[comp] === acc[comp]){
-      acc.push(current);
-      return acc;
-    }
-    if (current[comp] > acc[comp]) {
-      acc = [current];
-      return acc;
-    }
-  }, []);
-  return winnersArr[0];
-
+const bestOf = (array) => {  
+ return new Promise((resolve, reject) => {
+   resolve(array.reduce((acc, current) => {
+     //if there is already a tie
+     if(current.likes > acc.likes){
+       acc = current;
+       return acc;
+     }
+     if (current.likes <= acc.likes) {
+       return acc;
+     }
+   }))
+ })
 };
 module.exports = bestOf;

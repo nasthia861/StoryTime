@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {Text} = require('../database/index');
+const {Text, Prompt} = require('../database/index');
 
 //get text by text id
 router.get('/:id', (req, res) => {
@@ -19,7 +19,7 @@ router.get('/:id', (req, res) => {
 })
 
 //post to update likes and dislikes
-router.post('/:id', (req, res) => {
+router.post('/likes/:id', (req, res) => {
   const { id } = req.params;
   const { action } = req.body;
 
@@ -38,6 +38,33 @@ router.post('/:id', (req, res) => {
       return text.save()
         .then(() => {
           res.status(200).send({ message: 'Action successful' });
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send({ error: 'Internal server error' });
+        });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send({ error: 'Internal server error' });
+    });
+});
+
+//post to update winner status
+router.post('/winner/:id', (req, res) => {
+  const { id } = req.params;
+
+  Text.findOne({where: { id: id}})
+  .then((text) => {
+      if (!text) {
+        return res.status(404).send({ error: 'Text not found' });
+      }
+
+      text.winner = true;
+
+      return text.save()
+        .then(() => {
+          res.status(200).send({ message: 'Winner Winner Chicken Dinner' });
         })
         .catch((error) => {
           console.error(error);
@@ -79,10 +106,9 @@ router.post('/', (req, res) => {
     })
 })
 
-//grabbing all the texts with a specific postId and round 
-router.get('/', (req, res) => {
-  const promptId = req.query.promptId;
-  const round = req.query.round;
+//grabbing all the texts with a specific promptId
+router.get('/prompt/:promptId', (req, res) => {
+  const { promptId } = req.params;
   Text.findAll({
     where: {
       promptId: promptId,
@@ -104,15 +130,41 @@ router.get('/', (req, res) => {
 })
 
 router.get('/', (req,res) => {
-  // const { } = req.params;
-   Text.findAll({})
-     .then((textData) => {
-       res.send(textData).status(200);
-     })
-     .catch((err) => {
-       console.error('Could not Get all texts', err);
-       res.sendStatus(500);
-     });
- })
+// const { } = req.params;
+  Text.findAll({})
+    .then((textData) => {
+      res.send(textData).status(200);
+    })
+    .catch((err) => {
+      console.error('Could not Get all texts', err);
+      res.sendStatus(500);
+    });
+})
+
+router.get('/winner/:id/:badgeId', (req, res) => {
+  const { id, badgeId } = req.params;
+
+
+  Text.findAll({
+    where: {
+      id: id,
+    },
+    include: [
+      {
+        model: Prompt,
+        where: {
+          badgeId: badgeId,
+        }
+      }
+    ]
+  })
+  .then((texts) => {
+    res.status(200).send(texts)
+  })
+  .catch((err) => {
+    console.error('Error:', err);
+    res.status(500);
+  });
+});
 
 module.exports = router; 

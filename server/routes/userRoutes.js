@@ -2,6 +2,23 @@ const express = require('express');
 const router = express.Router();
 const { User } = require('../database/index')
 
+//User GET request
+router.get('/:username', (req, res) => {
+  const { username } = req.params;
+  User.findAll({
+    where: {
+      username: username
+    },
+  })
+  .then((userInfo) => {
+    res.send(userInfo).status(200);
+  })
+  .catch((err) => {
+    console.error('Could not GET user data', err);
+    res.sendStatus(500);
+  })
+});
+
 router.get('/:id', (req, res) => {
   const { id } = req.params;
   User.findByPk(id)
@@ -37,5 +54,7 @@ router.get('/user', (req, res) => {
     res.json({});
   }
 });
+
+
 
 module.exports = router;

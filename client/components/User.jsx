@@ -4,42 +4,45 @@ import {Link} from 'react-router-dom'
 
 const User = () => {
 
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState();
   const [userTexts, setUserTexts] = useState([]);
   const [userBadges, setUserBadges] = useState('');
+  const  [username, setUsername] = useState('yeauxDejuan');
 
+ 
+  const getUserId = (username) => {
+    axios.get(`/user/${username}`)
+      .then((userData) => {
+        userData.data.forEach(element => {
+          setUserId(element.id);
+          setUserBadges(element.badges);
+        });
+      })
+      .catch((err) => {
+        console.error('Could not retrieve user ID', err)
+      });
+  };
+ 
   //axios request to retrieve user texts by id
-  
   const getUserTexts = (id) => {
-    axios.get(`http://localhost:8080/text/user/${id}`)
+    axios.get(`http://127.0.0.1:8080/text/user/${id}`)
     .then((texts) =>{
-      console.log(texts);
       setUserTexts(texts.data);
     })
     .catch((err) => {
       console.error('Could not retrieve texts!!', err);
     });
-  }
-  
-  const getUserBadges = (id) => {
-    axios.get(`http://localhost:8080/user/${id}`)
-    .then((userData) => {
-      setUserBadges(userData.data.badges);
-    })
-    .catch((error) => {
-      console.error('could not get user badges', error)
-    });
-  }
+  };
 
   useEffect(() => {
+    getUserId(username)
     getUserTexts(userId);
-    getUserBadges(userId);
   });
 
   return (
     <div>
       <nav>
-        <Link to='/' >
+        <Link to='/home' >
           <button className='user-home-button'>HomePage</button>
         </Link>
       </nav>
@@ -49,11 +52,20 @@ const User = () => {
             <ul className='user-ul'>
         {
           userTexts.map((entry) => {
-            return <Link to="/user/text" 
-            className='user-index' 
-            entry={entry} 
-            key={entry.id}> 
-               {entry.text}
+            return <Link
+             to={`/user/text/${entry.id}`}
+            className='user-index'
+            entry={entry}
+            key={entry.id}>
+              <div>
+                <strong> Response:</strong> {entry.text}
+              </div>
+              <div>
+              <strong> Prompt:</strong> {entry.text}
+              </div>
+
+               {/* {entry.text} */}
+
             </Link>
           })
         }
