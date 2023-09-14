@@ -124,6 +124,15 @@ function Homepage() {
       .catch((err) => {
         console.error('Error getting story:', err)
       })
+
+    //grabs all of the texts with the matching prompt id and winner set to true
+    axios.get(`/text/winner/1/${currentBadgeId}`)
+    .then((winnerArr) => {
+      //sets story to an array of text obj
+      console.log(winnerArr.data);
+      setStory(winnerArr.data)
+    })
+    .catch((error) => console.error('could not grab winner texts for story'));
       
     const promptInterval = setInterval(() => {
       promptWinner(allPosts)
@@ -248,7 +257,7 @@ function Homepage() {
         <div className='story-container'>
           {
             story.map((submission, i) => {
-              return <div key={i}>{submission}</div>
+              return <div key={submission.id}>{submission.text}</div>
             })
           }
         </div>
