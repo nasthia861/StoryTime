@@ -95,6 +95,12 @@ function Homepage() {
           //sets the words of most current prompt
           const wordArray = latestPrompt.matchWords.split(' ')
           setWords(wordArray)
+          //grabs all submissions for current prompt
+          axios.get(`/text/prompt/${latestPrompt.id}`)
+          .then((response) => {
+            setPosts(response.data)
+          })
+          .catch((error) => console.error('could not get latest prompt submissions', error));
           //sets the most current prompt
           setCurrentPrompt(latestPrompt)
           }
@@ -118,17 +124,6 @@ function Homepage() {
       .catch((err) => {
         console.error('Error getting story:', err)
       })
-
-    // grabs all of the texts submitted for current prompt
-    axios.get('/prompt/find/last')
-      .then((response) => {
-        const latestPrompt = response.data[0]
-        axios.get(`/text/prompt/${latestPrompt.id}`)
-          .then((response) => {
-            setPosts(response.data)
-          })
-          .catch((error) => console.error('could not get latest prompt submissions', error));
-     })
       
     const promptInterval = setInterval(() => {
       promptWinner(allPosts)
