@@ -7,7 +7,7 @@ const User = () => {
   const [userId, setUserId] = useState();
   const [userTexts, setUserTexts] = useState([]);
   const [userBadges, setUserBadges] = useState({likeable: 0, contributor: 0, wordsMatcher: 0});
-  const  [username, setUsername] = useState('yeauxDejuan');
+  const  [username, setUsername] = useState('thirduser');
 
  
   const getUserId = (username) => {

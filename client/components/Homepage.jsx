@@ -206,11 +206,10 @@ function Homepage() {
     const promptInterval = setInterval(() => {
       promptWinner()
       newRound();
-    }, 10000) // this is where to change interval time between prompt changes (currently set to an hour)
+    }, 100000) // this is where to change interval time between prompt changes (currently set to an hour)
     
     return () => {
       clearInterval(promptInterval);
-      clearInterval(storyInterval);
     }
 
 
@@ -230,7 +229,7 @@ function Homepage() {
       awardCeremony();
       newStory()
       newRound();
-    }, 30000)
+    }, 300000)
 
   }, [currentBadgeId])
 
