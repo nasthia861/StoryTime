@@ -16,7 +16,7 @@ function Homepage() {
   const [words, setWords] = useState([])
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
-  const [user, setUser] = useState({id: 2});
+  const [user, setUser] = useState({});
   const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
   const [currentPrompt, setCurrentPrompt] = useState({})
@@ -95,13 +95,12 @@ function Homepage() {
       .then((textArr) => {
         //runs through function to determine submission with most likes
         bestOf(textArr.data)
-          .then((best) => {
-            //changes the winning state in the text db
-            axios.post(`/text/winner/${best.id}`)
-            //rerenders story to show new text
-            setStory((story) => ([...story, best]));
-          })
-          .catch((error) => console.error('could not set most likes', error));
+      })
+      .then((best) => {
+        //changes the winning state in the text db
+        axios.post(`/text/winner/${best.id}`)
+        //rerenders story to show new text
+        setStory((story) => ([...story, best]));
       })
       .catch((error) => {
         console.error('no posts submitted', error);
@@ -110,13 +109,47 @@ function Homepage() {
 
   const awardCeremony = () => {
     //grab all winning submissions
+    axios.get(`/text/winner/1/${currentBadgeId}`)
       //pass them through function that checks for most overall likes
-        //send badge to user that owns winning text
-      //pass them through function that checks for most matched words
-        //send badge to user/s that owns winning text/s
-      //grab user that made the most contributions for the whole story
-        //send badge to user
-    //update badges info in db to include user info of winners
+      .then((textArr) => {
+        bestOf(textArr.data)
+      //send badge to user that owns winning text
+          .then((text) => {
+            axios.post(`/user/badges/${text.userId}`, { badge: 'Most Likeable Submission' })
+          })
+
+  //       //pass them through function that checks for most matched words
+  //       bestMatched(textArr.data)
+  //       //send badge to user/s that owns winning text/s
+  //         .then((texts) => {
+  //           //single winner
+  //           if(texts.length === 1){
+  //             axios.post(`/user/badges/${texts.userId}`, { badge: 'Word Matcher' })
+  //             //multiple winners
+  //           } else if (texts.length > 1) {
+  //             texts.forEach((text) => {
+  //               axios.post(`/user/badges/${text.userId}`, { badge: 'Word Matcher' })
+  //             })
+  //           }
+  //         })
+  //       //grab user that made the most contributions for the whole story
+  //       mostContribution(textArr.data)
+  //       //send badge to user/s
+  //         .then((texts) => {
+  //           //single winner
+  //           if(texts.length === 1){
+  //             axios.post(`/user/badges/${texts.userId}`, { badge: 'Word Matcher' })
+  //             //multiple winners
+  //           } else if (texts.length > 1) {
+  //             texts.forEach((text) => {
+  //               axios.post(`/user/badges/${text.userId}`, { badge: 'Word Matcher' })
+  //             })
+            // }
+          })
+        
+    //   })
+    //   .catch((error) => console.error('failed to grab all winning submissions', error))
+    // //update badges info in db to include user info of winners
   }
 
   useEffect(() => {
@@ -207,7 +240,6 @@ function Homepage() {
 
     //cleanup
     return () => {
-      clearInterval(appInterval);
       clearInterval(timer);
     };
   }, [actionInterval]);
