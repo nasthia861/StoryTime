@@ -6,36 +6,34 @@ const User = () => {
 
   const [userId, setUserId] = useState();
   const [userTexts, setUserTexts] = useState([]);
-  const [userBadges, setUserBadges] = useState({likeable: 0, contributor: 0, wordsMatcher: 0});
-  const  [username, setUsername] = useState('thirduser');
+  const [userBadgesSt, setUserBadgesSt] = useState('');
+  const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
+  const [username, setUsername] = useState('thirduser');
 
  
   const getUserId = (username) => {
     axios.get(`/user/${username}`)
       .then((userData) => {
-        userData.data.forEach(element => {
-          setUserId(element.id);
-          setUserBadges(element.badges);
-          element.badges.split('+').forEach((badge) => {
-            switch(badge) {
-              case 'likeable':
-                return setUserBadges(userBadges.likeable += 1);
-              case 'contributor': 
-                return setUserBadges(userBadges.contributor += 1);
-              case 'wordsMatcher':
-                return setUserBadges(userBadges.wordsMatcher += 1);
-            }
-          })
-        });
+        let user = userData.data[0];
+          setUserBadgesSt(user.badges)
+          setUserId(user.id);
       })
       .catch((err) => {
         console.error('Could not retrieve user ID', err)
       });
   };
  
+  const manipulateBadgeData = () => {
+    userBadgesSt.split('+').forEach((badge) => {
+      if(badge.length > 0){
+        setUserBadgeObj((userBadgeObj) => ({...userBadgeObj, [badge]: userBadgeObj[badge]+1}));
+      }
+    })
+  }
+
   //axios request to retrieve user texts by id
   const getUserTexts = (id) => {
-    axios.get(`http://127.0.0.1:8080/text/user/${id}`)
+    axios.get(`/text/user/${id}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
@@ -44,10 +42,20 @@ const User = () => {
     });
   };
 
+  //runs when dom is compounded
   useEffect(() => {
-    getUserId(username)
+    getUserId(username);
+  }, []);
+
+  //runs when userId changes
+  useEffect(() => {
     getUserTexts(userId);
-  });
+  }, [userId])
+  
+  //runs when userBadgeSt changes
+  useEffect(() => {
+    manipulateBadgeData();
+  }, [userBadgesSt])
 
   return (
     <div>
@@ -84,17 +92,17 @@ const User = () => {
           </div>
       </div>
       <h1 className='badges-header' >Badges</h1>
-      <div className='user-badges'>
+      <div>
         {
-          Object.entries(userBadges).map((category, i) => {
-            if(category[1] > 0) {
-              return <div className='beginner-badge' id={i} text={category[0]} />
+          Object.entries(userBadgeObj).map((category, i) => {
+            if(category[1] >= 10) {
+              return <div><div className='gold-badge' id={i}>{category[0]}</div><br/></div>
             }
-            if(category[1] > 5) {
-              return <div className='advanced-badge' id={i} text={category[0]} />
+            if(category[1] >= 5) {
+              return <div><div className='bronze-badge' id={i}>{category[0]}</div><br/></div>
             }
-            if(category[1] > 10) {
-              return <div className='master-badge' id={i} text={category[0]} />
+            if(category[1] > 0 ) {
+              return <div><div className='silver-badge' id={i}>{category[0]}</div><br/></div>
             }
           })
         }

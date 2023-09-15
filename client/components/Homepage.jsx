@@ -128,11 +128,11 @@ function Homepage() {
   //         .then((texts) => {
   //           //single winner
   //           if(texts.length === 1){
-  //             axios.post(`/user/badges/${texts.userId}`, { badge: 'Word Matcher' })
+  //             axios.post(`/user/badges/${texts.userId}`, { badge: 'Matcher' })
   //             //multiple winners
   //           } else if (texts.length > 1) {
   //             texts.forEach((text) => {
-  //               axios.post(`/user/badges/${text.userId}`, { badge: 'Word Matcher' })
+  //               axios.post(`/user/badges/${text.userId}`, { badge: 'Matcher' })
   //             })
   //           }
   //         })
@@ -142,11 +142,11 @@ function Homepage() {
   //         .then((texts) => {
   //           //single winner
   //           if(texts.length === 1){
-  //             axios.post(`/user/badges/${texts.userId}`, { badge: 'Word Matcher' })
+  //             axios.post(`/user/badges/${texts.userId}`, { badge: 'Contributor' })
   //             //multiple winners
   //           } else if (texts.length > 1) {
   //             texts.forEach((text) => {
-  //               axios.post(`/user/badges/${text.userId}`, { badge: 'Word Matcher' })
+  //               axios.post(`/user/badges/${text.userId}`, { badge: 'Contributor' })
   //             })
   //           // }
   //         })

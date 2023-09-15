@@ -70,10 +70,10 @@ router.post('/badges/:id', (req, res) => {
         return res.status(404).send({ error: 'User not found' });
       }
 
-      if(user.badges === null && !user.badges) {
-        user.badges = `${badge}`;
+      if(user.badges === null || !user.badges) {
+        user.badges = `${badge}+`;
       } else {
-        user.badges = `+${badge}`;
+        user.badges += `${badge}+`;
       }
 
       return user.save()

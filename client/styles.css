@@ -117,8 +117,45 @@ body, html {
   padding: 5px;
   align-items: right;
   color: black;
-  background: #f8e40c;
-  border: 11px dashed #1C6EA4;
+  background: #69a1d9;
+  border: 11px #1C6EA4;
+}
+
+.silver-badge {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 15%;
+  text-align: center;
+  padding: 5px;
+  align-items: right;
+  color: black;
+  background: -moz-linear-gradient(left, #f2f2f2 0%, #c1c3c3 42%, #8d9091 100%);
+  background: -webkit-linear-gradient(left, #f2f2f2 0%, #c1c3c3 42%, #8d9091 100%);
+  background: linear-gradient(to right, #f2f2f2 0%, #c1c3c3 42%, #8d9091 100%);
+  border: 8px dashed silver;
+}
+
+.bronze-badge {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 15%;
+  text-align: center;
+  padding: 5px;
+  color: black;
+  background: -moz-linear-gradient(left, #e9d4b3 0%, #b68d4c 100%);
+  background: -webkit-linear-gradient(left, #e9d4b3 0%, #b68d4c 100%);
+  background: linear-gradient(to right, #e9d4b3 0%, #b68d4c 100%);
+  border: 8px dashed #cd7f32;
+}
+
+.gold-badge {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 15%;
+  text-align: center;
+  padding: 5px;
+  color: black;
+  background: -moz-linear-gradient(left, #f4f1d2 0%, #feb645 100%);
+  background: -webkit-linear-gradient(left, #e4e0ae 0%, #feb645 100%);
+  background: linear-gradient(to right, #FCF6BA 0%, #feb645 100%);
+  border: 8px dashed gold;
 }
 
 .badges-header {
