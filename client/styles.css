@@ -207,3 +207,9 @@ body, html {
 .text-content {
   flex-grow: 1;
 }
+
+.user-entry-box {
+  border: 2px solid blue;
+  padding: 20px; 
+  margin-bottom: 10px; 
+}

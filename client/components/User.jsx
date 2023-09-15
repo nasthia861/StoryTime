@@ -4,19 +4,19 @@ import {Link} from 'react-router-dom'
 
 const User = () => {
 
-  const [userId, setUserId] = useState();
+  const [userId, setUserId] = useState(1);
   const [userTexts, setUserTexts] = useState([]);
   const [userBadges, setUserBadges] = useState('');
   const  [username, setUsername] = useState('yeauxDejuan');
+  const [badgeId, setBadgeId] = useState(1)
 
  
   const getUserId = (username) => {
     axios.get(`/user/${username}`)
       .then((userData) => {
-        userData.data.forEach(element => {
-          setUserId(element.id);
-          setUserBadges(element.badges);
-        });
+       const user = userData.data[0];
+          setUserId(user.id);
+          setUserBadges(user.badges);
       })
       .catch((err) => {
         console.error('Could not retrieve user ID', err)
@@ -24,8 +24,8 @@ const User = () => {
   };
  
   //axios request to retrieve user texts by id
-  const getUserTexts = (id) => {
-    axios.get(`http://127.0.0.1:8080/text/user/${id}`)
+  const getStoryWithResponse = (id, badgeId) => {
+    axios.get(`http://127.0.0.1:8080/text/winner/${id}/${badgeId}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
@@ -36,8 +36,9 @@ const User = () => {
 
   useEffect(() => {
     getUserId(username)
-    getUserTexts(userId);
-  });
+    getStoryWithResponse(userId, badgeId);
+  }, [username, badgeId]); // dependency array prevents constant rendering, syncs with state 
+  //console.log(userTexts)
 
   return (
     <div>
@@ -46,29 +47,28 @@ const User = () => {
           <button className='user-home-button'>HomePage</button>
         </Link>
       </nav>
-        <h1 className='user-head' >MY STORIES</h1>
+        <h1 className='user-head'>MY STORIES</h1>
       <div className='user' >
           <div className='user-data'>
             <ul className='user-ul'>
-        {
-          userTexts.map((entry) => {
-            return <Link
-             to={`/user/text/${entry.id}`}
-            className='user-index'
-            entry={entry}
-            key={entry.id}>
-              <div>
-                <strong> Response:</strong> {entry.text}
+        {userTexts.map((entry, index) => {
+            return (
+              <div key={entry.id} className='user-entry-box'>
+                <Link
+                  to={`/user/text/${entry.id}`}
+                  className='user-index'
+                  entry={entry}
+                >
+                  <div>
+                    <strong>Story:</strong> {entry.prompt.matchWords}
+                  </div>
+                  <div>
+                    <strong>Response:</strong> {entry.text}
+                  </div>
+                </Link>
               </div>
-              <div>
-              <strong> Prompt:</strong> {entry.text}
-              </div>
-
-               {/* {entry.text} */}
-
-            </Link>
-          })
-        }
+            );
+          })}
 
             </ul>
           </div>
