@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 
 const User = () => {
 
-  const [userId, setUserId] = useState();
+  const [userId, setUserId] = useState(1);
   const [userTexts, setUserTexts] = useState([]);
   const [userBadgesSt, setUserBadgesSt] = useState('');
   const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
@@ -32,8 +32,8 @@ const User = () => {
   }
 
   //axios request to retrieve user texts by id
-  const getUserTexts = (id) => {
-    axios.get(`/text/user/${id}`)
+  const getStoryWithResponse = (id, badgeId) => {
+    axios.get(`/text/winner/1/${badgeId}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
@@ -64,29 +64,28 @@ const User = () => {
           <button className='user-home-button'>HomePage</button>
         </Link>
       </nav>
-        <h1 className='user-head' >MY STORIES</h1>
+        <h1 className='user-head'>MY STORIES</h1>
       <div className='user' >
           <div className='user-data'>
             <ul className='user-ul'>
-        {
-          userTexts.map((entry) => {
-            return <Link
-             to={`/user/text/${entry.id}`}
-            className='user-index'
-            entry={entry}
-            key={entry.id}>
-              <div>
-                <strong> Response:</strong> {entry.text}
+        {userTexts.map((entry, index) => {
+            return (
+              <div key={entry.id} className='user-entry-box'>
+                <Link
+                  to={`/user/text/${entry.id}`}
+                  className='user-index'
+                  entry={entry}
+                >
+                  <div>
+                    <strong>Story:</strong> {entry.prompt.matchWords}
+                  </div>
+                  <div>
+                    <strong>Response:</strong> {entry.text}
+                  </div>
+                </Link>
               </div>
-              <div>
-              <strong> Prompt:</strong> {entry.text}
-              </div>
-
-               {/* {entry.text} */}
-
-            </Link>
-          })
-        }
+            );
+          })}
 
             </ul>
           </div>
