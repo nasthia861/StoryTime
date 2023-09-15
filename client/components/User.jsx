@@ -9,6 +9,7 @@ const User = () => {
   const [userBadgesSt, setUserBadgesSt] = useState('');
   const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
   const [username, setUsername] = useState('thirduser');
+  const [badgeId, setBadgeId] = useState(1)
 
  
   const getUserId = (username) => {
@@ -32,7 +33,7 @@ const User = () => {
   }
 
   //axios request to retrieve user texts by id
-  const getStoryWithResponse = (id, badgeId) => {
+  const getStoryWithResponse = (badgeId) => {
     axios.get(`/text/winner/1/${badgeId}`)
     .then((texts) =>{
       setUserTexts(texts.data);
@@ -45,12 +46,8 @@ const User = () => {
   //runs when dom is compounded
   useEffect(() => {
     getUserId(username);
+    getStoryWithResponse(badgeId)
   }, []);
-
-  //runs when userId changes
-  useEffect(() => {
-    getUserTexts(userId);
-  }, [userId])
   
   //runs when userBadgeSt changes
   useEffect(() => {
