@@ -16,7 +16,7 @@ function Homepage() {
   const [words, setWords] = useState([])
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
-  const [user, setUser] = useState({});
+  const [userId, setUser] = useState(3);
   const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
   const [currentPrompt, setCurrentPrompt] = useState({})
@@ -108,16 +108,19 @@ function Homepage() {
       })
   }
 
-  // const awardCeremony = () => {
-  //   //grab all winning submissions
-  //   axios.get(`/text/winner/1/${currentBadgeId}`)
-  //     //pass them through function that checks for most overall likes
-  //     .then((textArr) => {
-  //       bestOf(textArr.data)
-  //     //send badge to user that owns winning text
-  //         .then((text) => {
-  //           axios.post(`/user/badges/${text.userId}`, { badge: 'Most Likeable Submission' })
-  //         })
+  const awardCeremony = () => {
+    //grab all winning submissions
+    // console.log('Welcome to award show #', currentBadgeId)
+    axios.get(`/text/winner/1/${currentBadgeId}`)
+      //pass them through function that checks for most overall likes
+      .then((textArr) => {
+        console.log('contestants', textArr)
+        bestOf(textArr.data)
+      //send badge to user that owns winning text
+          .then((text) => {
+            // console.log('and the winner is', text)
+            axios.post(`/user/badges/${text.userId}`, { badge: 'Likeable' })
+          })
 
   //       //pass them through function that checks for most matched words
   //       bestMatched(textArr.data)
@@ -148,10 +151,10 @@ function Homepage() {
   //           // }
   //         })
         
-  //     })
-  //     .catch((error) => console.error('failed to grab all winning submissions', error))
+      })
+      .catch((error) => console.error('failed to grab all winning submissions', error))
   //   //update badges info in db to include user info of winners
-  // }
+  }
 
   useEffect(() => {
 
@@ -204,13 +207,6 @@ function Homepage() {
       promptWinner()
       newRound();
     }, 10000) // this is where to change interval time between prompt changes (currently set to an hour)
-
-    //send badges, resets the story to start a new one, starts a new round
-    const storyInterval = setInterval(() => {
-      //awardCeremony();
-      newStory()
-      newRound();
-    }, 300000)
     
     return () => {
       clearInterval(promptInterval);
@@ -229,6 +225,13 @@ function Homepage() {
         setStory(winnerArr.data)
       })
       .catch((error) => console.error('could not grab winner texts for story'));
+    
+    const storyInterval = setInterval(() => {
+      awardCeremony();
+      newStory()
+      newRound();
+    }, 30000)
+
   }, [currentBadgeId])
 
   useEffect(() => {
@@ -262,7 +265,7 @@ function Homepage() {
     if(input !== ''){
       setInput('')
       setTextCount(0)
-      axios.post('/text', {text: input, userId: user.id , promptId: currentPrompt.id })
+      axios.post('/text', {text: input, userId: userId , promptId: currentPrompt.id })
       .then(() => {
         axios.get('/text/find/last')
         .then((response) => {

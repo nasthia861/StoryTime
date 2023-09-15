@@ -6,7 +6,7 @@ const User = () => {
 
   const [userId, setUserId] = useState();
   const [userTexts, setUserTexts] = useState([]);
-  const [userBadges, setUserBadges] = useState('');
+  const [userBadges, setUserBadges] = useState({likeable: 0, contributor: 0, wordsMatcher: 0});
   const  [username, setUsername] = useState('yeauxDejuan');
 
  
@@ -16,6 +16,16 @@ const User = () => {
         userData.data.forEach(element => {
           setUserId(element.id);
           setUserBadges(element.badges);
+          element.badges.split('+').forEach((badge) => {
+            switch(badge) {
+              case 'likeable':
+                return setUserBadges(userBadges.likeable += 1);
+              case 'contributor': 
+                return setUserBadges(userBadges.contributor += 1);
+              case 'wordsMatcher':
+                return setUserBadges(userBadges.wordsMatcher += 1);
+            }
+          })
         });
       })
       .catch((err) => {
@@ -74,7 +84,21 @@ const User = () => {
           </div>
       </div>
       <h1 className='badges-header' >Badges</h1>
-      <div className='user-badges'>{userBadges}</div>
+      <div className='user-badges'>
+        {
+          Object.entries(userBadges).map((category, i) => {
+            if(category[1] > 0) {
+              return <div className='beginner-badge' id={i} text={category[0]} />
+            }
+            if(category[1] > 5) {
+              return <div className='advanced-badge' id={i} text={category[0]} />
+            }
+            if(category[1] > 10) {
+              return <div className='master-badge' id={i} text={category[0]} />
+            }
+          })
+        }
+      </div>
     </div>
   )
 }
