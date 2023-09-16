@@ -8,7 +8,7 @@ const User = () => {
   const [userTexts, setUserTexts] = useState([]);
   const [userBadgesSt, setUserBadgesSt] = useState('');
   const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
-  const [username, setUsername] = useState('thirduser');
+  const [username, setUsername] = useState('yeauxdejuan');
   const [badgeId, setBadgeId] = useState(1)
 
  
@@ -78,6 +78,14 @@ const User = () => {
                   </div>
                   <div>
                     <strong>Response:</strong> {entry.text}
+                  </div>
+                  <div className='small-text'>
+                    <strong>Likes:</strong> {entry.likes} &nbsp;&nbsp;&nbsp;
+                    <strong>Created:</strong> {entry.prompt.createdAt.substring(0, 10)}
+
+                  </div>
+                  <div className='small-text'>
+
                   </div>
                 </Link>
               </div>
