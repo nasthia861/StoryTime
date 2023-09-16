@@ -9,11 +9,19 @@ import bestOf from '../badgeHelpers/bestOf.jsx';
 
 function Homepage() {
   //setting states of generated word, current story, and input using hooks
+
+  // Initialize the user state with data from local storage
+  const [user, setUserObj] = useState({
+    id: localStorage.getItem('user_id'),
+    username: localStorage.getItem('user_name'),
+  });
+
   //building story from post winners
   const [story, setStory] = useState([])
   const [currentBadgeId, setBadgeId] = useState() 
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
+
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
   const [userId, setUser] = useState(3);
@@ -33,6 +41,20 @@ function Homepage() {
   //useEffect to fetch data from database upon mounting
   let latestPrompt;
   let latestBadgeStory;
+
+  
+  // Check user authentication
+  // useEffect(() => {
+  //   axios.get('/auth/check')
+  //     .then((response) => {
+  //       const { userID, user_name } = response.data;
+  //       setUserObj({ id: userID, username: user_name })
+  //       console.log('this is t he current user --------->', user);
+  //     })
+  //     .catch((error) => {
+  //       setUser(null); // User is not authenticated
+  //     });
+  // }, []);
 
   //creates a new round of submissions for the next iteration of the main story
   const newRound = () => {
@@ -58,7 +80,6 @@ function Homepage() {
                 .catch((err) => {
                 console.error("Could not get prompts", err)
                 })
-    
               })
               .catch((err) => {
                 console.error("Could not Submit!", err)
@@ -275,10 +296,8 @@ function Homepage() {
         console.error("err", err)
       })
     }
-
   }
 
-  
   //return dom elements and structure
   return (
     <div>
@@ -288,7 +307,7 @@ function Homepage() {
               <button className='user-btn'>User</button>
             </Link>
             <Link to=''>
-              <button className='user-btn' >Button for Logan</button>
+              <button className='user-btn' >{user.username}</button>
             </Link>
             <div>
               <Timer minutes={minutes} seconds={seconds} />
@@ -298,7 +317,7 @@ function Homepage() {
 
 
       <div className='wrapper'>
-        
+
         <div className='word-container'>
           {
             words.map((word, i) => {
@@ -306,7 +325,7 @@ function Homepage() {
             })
           }
         </div>
-        
+
          <div className='story-container'>
           {
             story.map((submission, i) => {
@@ -316,11 +335,11 @@ function Homepage() {
         </div>
 
         <div className='post-submission'>
-          
-          <textarea 
+
+          <textarea
           className='user-input'
           type='text'
-          placeholder='Add to the story!' 
+          placeholder='Add to the story!'
           onChange={handleInput}
           value={input}
           maxLength={150}
