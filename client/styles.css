@@ -233,8 +233,6 @@ body, html {
 
 .liked {
   background-color: slateblue;
-
-
 }
 
 .text-container {
@@ -255,14 +253,17 @@ body, html {
 }
 
 .user-entry-box {
-  display: block;
-  text-align: left;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: flex-start;
+  justify-content: space-between;
   margin: 10px;
   border: 2px solid blue;
   padding: 20px; 
   margin-bottom: 10px;
   background-color: rgb(214, 214, 133);
-  width: 300px;
+  width: 450px;
   height:auto;
   overflow: hidden;
 }
@@ -270,4 +271,9 @@ body, html {
   list-style-type: none;
   padding: 0;
   text-align: center
+}
+
+.small-text {
+  font-size: 15px;
+  margin-top: 15px;
 }
