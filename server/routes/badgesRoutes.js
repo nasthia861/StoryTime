@@ -28,6 +28,7 @@ router.get('/find/last', (req, res) => {
     });
 })
 
+//create new badge
 router.post('/', (req, res) => {
   Badges.create(req.body)
     .then(() => {
@@ -56,24 +57,33 @@ router.get('/:promptId', (req, res) => {
     ])
 })
 
-//changes badges by promptId
-router.put('/:promptId', (req, res) => {
-  const { promptId } = req.params;
-  const { changes } = req.body
-  Badges.update( 
-    {
-      mostLikes: changes.mostLikes,
-      mostWordMatchCt: changes.mostWordMatchCt
-    },
-    {where: {promptId: promptId}}
-  )
-    .then((data) => {
-      console.log(data);
-      res.sendStatus(201)
+
+//post to update winner status in badge
+router.post('/:id/:action', (req, res) => {
+  const { id , action } = req.params;
+  const { newValue } = req.body
+
+  Badges.findOne({where: { id: id}})
+  .then((badge) => {
+      if (!badge) {
+        return res.status(404).send({ error: 'Badge not found' });
+      }
+
+      badge[action] = newValue
+
+      return badge.save()
+        .then(() => {
+          res.status(200).send({ message: 'winner selected' });
+        })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send({ error: 'Internal server error' });
+        });
     })
-    .catch(() => {
-      res.sendStatus(500)
-    })
-})
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send({ error: 'Internal server error' });
+    });
+});
 
 module.exports = router;

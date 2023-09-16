@@ -24,14 +24,16 @@ const mostContribution = (array) => {
         subUserObj[submission.userId] = 1
       }
     })
-    console.log('about to hit resolve', subUserObj);
     resolve(Object.entries(subUserObj).reduce((acc, current) => {
       if(current[1] > acc[1]){
         acc = current;
       }
       if(current[1] === acc[1]){
-        acc = acc.concat(current);
+        if(current[0] !== acc[0]){
+          acc = acc.concat(current);
+        }
       }
+      //console.log('acc', acc)
       return acc;
     }))
   })
@@ -39,17 +41,25 @@ const mostContribution = (array) => {
 
 const bestMatched = (array) => {
   return new Promise((resolve, reject) => {
-    resolve(array.map((submission) => {
+    let userWordCt = {}  
+    array.forEach((submission) => {
       let matchWordsArr = submission.prompt.matchWords.split(' ');
       let textArr = submission.text.split(' ');
       let wordMatchCt = matchWordsArr.filter(word => textArr.includes(word)).length
-      return [submission.userId, wordMatchCt];
-    }).reduce((acc, current) => {
+      if(userWordCt[submission.userId]) {
+        userWordCt[submission.userId] = userWordCt[submission.userId] + wordMatchCt
+      } else {
+        userWordCt[submission.userId] = wordMatchCt
+      }
+    })
+    resolve(Object.entries(userWordCt).reduce((acc, current) => {
       if(current[1] > acc[1]){
         acc = current;
       }
       if(current[1] === acc[1]){
-        acc = acc.concat(current);
+        if(current[0] !== acc[0]){
+          acc = acc.concat(current);
+        }
       }
       return acc;
     }))
