@@ -16,7 +16,7 @@ function Homepage() {
   const [words, setWords] = useState([])
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
-  const [userId, setUser] = useState(3);
+  const [userId, setUser] = useState(2);
   const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
   const [currentPrompt, setCurrentPrompt] = useState({})
@@ -40,6 +40,7 @@ function Homepage() {
             .then((response) => {
               const wordsForDb = response.data.join(' ')
               //creates new prompt with new matchWords and current story id
+              console.log(latestBadgeStory.id);
               axios.post('/prompt', {matchWords: wordsForDb, badgeId: latestBadgeStory.id})
               .then(() => {
                 //grabs latest prompt
@@ -79,6 +80,7 @@ function Homepage() {
           .then((response) => {
             latestBadgeStory = response.data[0]
             //sets the new story state id
+            console.log(latestBadgeStory);
             setBadgeId(latestBadgeStory.id)
             //setStory([]);
           })
@@ -108,49 +110,64 @@ function Homepage() {
 
   const awardCeremony = () => {
     //grab all winning submissions
+    console.log('Welcome to award show #', currentBadgeId)
     axios.get(`/text/winner/1/${currentBadgeId}`)
       //pass them through function that checks for most overall likes
       .then((textArr) => {
+        console.log('contestants', textArr)
         //send badge to user that owns text with overall most likes
         bestOf(textArr.data)
           .then((text) => {
+            console.log('for most overall likes', text)
             axios.post(`/user/badges/${text.userId}`, { badge: 'Likeable' })
+              .catch(console.error('could not post to user badges'))
             axios.post(`/badges/${currentBadgeId}/mostLikes`, { newValue: text.userId})
+              .catch(console.error('could not update badges for story'))
           })
         //send badge to user/s that made the most contributions
         mostContribution(textArr.data)
         //send badge to user/s
           .then((winnerArr) => {
+            console.log('for best contributor/s [id, contribution count]', winnerArr);
             //single winner
             if(winnerArr.length === 2){
                 axios.post(`/user/badges/${winnerArr[0]}`, { badge: 'Contributor' })
+                  .catch(console.error('could not post to user badges'))
                 axios.post(`/badges/${currentBadgeId}/mostContributions`, { newValue: winnerArr[0]})
+                  .catch(console.error('could not post to user badges'))
             //multiple winners
             } else if (winnerArr.length > 2) {
               let multipleWinnersId = ''
               for(let x = 0; x < winnerArr.length; x+=2){
                 axios.post(`/user/badges/${winnerArr[x]}`, { badge: 'Contributor' })
+                  .catch(console.error('could not post to user badges'))
                 multipleWinnersId += `${winnerArr[x]}...`
               }
               axios.post(`/badges/${currentBadgeId}/mostContributions`, { newValue: multipleWinnersId})
+                .catch(console.error('could not post to user badges'))
             }
           })
         //pass them through function that checks for most matched words
         bestMatched(textArr.data)
         //send badge to user/s that owns winning text/s
           .then((winnerArr) => {
+            console.log('for best word matcher/s [id, word match count]', winnerArr);
             //single winner
             if(winnerArr.length === 2){
                 axios.post(`/user/badges/${winnerArr[0]}`, { badge: 'Matcher' })
+                  .catch(console.error('could not post to user badges'))
                 axios.post(`/badges/${currentBadgeId}/mostWordMatchCt`, { newValue: winnerArr[0]})
+                  .catch(console.error('could not post to user badges'))
             //multiple winners
             } else if (winnerArr.length > 2) {
               let multipleWinnersId = ''
               for(let x = 0; x < winnerArr.length; x+=2){
                 axios.post(`/user/badges/${winnerArr[x]}`, { badge: 'Matcher' })
+                  .catch(console.error('could not post to user badges'))
                 multipleWinnersId += `${winnerArr[x]}...`
               }
               axios.post(`/badges/${currentBadgeId}/mostWordMatchCt `, { newValue: multipleWinnersId})
+                .catch(console.error('could not post to user badges'))
             }
           })
       })
@@ -169,6 +186,8 @@ function Homepage() {
         }else{
         //sets the most current badge
           latestBadgeStory = response.data[0]
+          //latestStoryId = latestBadgeStory.id
+          //console.log('hitting at render', latestBadgeStory);
           setBadgeId(latestBadgeStory.id)
         }
       })
@@ -185,6 +204,7 @@ function Homepage() {
         }else{
           latestPrompt = response.data[0]
           //sets the words of most current prompt
+          //console.log(latestPrompt.current);
           const wordArray = latestPrompt.matchWords.split(' ')
           setWords(wordArray)
           //sets the most current prompt
