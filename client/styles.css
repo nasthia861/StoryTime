@@ -1,4 +1,7 @@
 body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
   background-image: url(./images/HD-wallpaper-blue-gradient-ombre.jpg);
   background-repeat: repeat-x;
   background-size: cover;
@@ -205,13 +208,16 @@ body, html {
 }
 
 .user-entry-box {
-  display: inline-block;
+  display: block;
   text-align: left;
   margin: 10px;
   border: 2px solid blue;
   padding: 20px; 
-  margin-bottom: 10px; 
-  background-color: white;
+  margin-bottom: 10px;
+  background-color: rgb(214, 214, 133);
+  width: 300px;
+  height:auto;
+  overflow: hidden;
 }
 .user-ul {
   list-style-type: none;
