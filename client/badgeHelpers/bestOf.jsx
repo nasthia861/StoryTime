@@ -35,5 +35,25 @@ const mostContribution = (array) => {
       return acc;
     }))
   })
-  }
-export {bestOf, mostContribution}
+}
+
+const bestMatched = (array) => {
+  return new Promise((resolve, reject) => {
+    resolve(array.map((submission) => {
+      let matchWordsArr = submission.prompt.matchWords.split(' ');
+      let textArr = submission.text.split(' ');
+      let wordMatchCt = matchWordsArr.filter(word => textArr.includes(word)).length
+      return [submission.userId, wordMatchCt];
+    }).reduce((acc, current) => {
+      if(current[1] > acc[1]){
+        acc = current;
+      }
+      if(current[1] === acc[1]){
+        acc = acc.concat(current);
+      }
+      return acc;
+    }))
+  })
+}
+
+export {bestOf, mostContribution, bestMatched}

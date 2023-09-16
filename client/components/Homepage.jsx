@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 import axios from'axios';
 import Post from './Post.jsx';
 import Timer from './Timer.jsx'
-import {bestOf, mostContribution} from '../badgeHelpers/bestOf.jsx';
+import {bestOf, mostContribution, bestMatched} from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
 function Homepage() {
@@ -116,41 +116,41 @@ function Homepage() {
       .then((textArr) => {
         console.log('contestants', textArr)
         //send badge to user that owns text with overall most likes
-        bestOf(textArr.data)
-          .then((text) => {
-            console.log('for most overall likes', text)
-            axios.post(`/user/badges/${text.userId}`, { badge: 'Likeable' })
-          })
+        // bestOf(textArr.data)
+        //   .then((text) => {
+        //     console.log('for most overall likes', text)
+        //     axios.post(`/user/badges/${text.userId}`, { badge: 'Likeable' })
+        //   })
         //send badge to user/s that made the most contributions
-        mostContribution(textArr.data)
-        //send badge to user/s
+        // mostContribution(textArr.data)
+        // //send badge to user/s
+        //   .then((winnerArr) => {
+        //     console.log('best contributor/s [id, contribution count]', winnerArr);
+        //     //single winner
+        //     if(winnerArr.length === 2){
+        //         axios.post(`/user/badges/${winnerArr[0]}`, { badge: 'Contributor' })
+        //     //multiple winners
+        //     } else if (winnerArr.length > 2) {
+        //       for(let x = 0; x < winnerArr.length; x+=2){
+        //         axios.post(`/user/badges/${winnerArr[x]}`, { badge: 'Contributor' })
+        //       }
+        //     }
+        //   })
+        //pass them through function that checks for most matched words
+        bestMatched(textArr.data)
+        //send badge to user/s that owns winning text/s
           .then((winnerArr) => {
-              //single winner
-              console.log('best contributor/s [id, contribution count]', winnerArr);
-              if(winnerArr.length === 2){
-                  axios.post(`/user/badges/${winnerArr[0]}`, { badge: 'Contributor' })
-              //multiple winners
-              } else if (winnerArr.length > 2) {
-                for(let x = 0; x < winnerArr.length; x+=2){
-                  axios.post(`/user/badges/${winnerArr[x]}`, { badge: 'Contributor' })
+            console.log('best word matcher/s [id, word match count]', winnerArr);
+            //single winner
+            if(winnerArr.length === 2){
+                axios.post(`/user/badges/${winnerArr[0]}`, { badge: 'Matcher' })
+            //multiple winners
+            } else if (winnerArr.length > 2) {
+              for(let x = 0; x < winnerArr.length; x+=2){
+                axios.post(`/user/badges/${winnerArr[x]}`, { badge: 'Matcher' })
               }
             }
           })
-      // //pass them through function that checks for most matched words
-      // bestMatched(textArr.data)
-      // //send badge to user/s that owns winning text/s
-      //   .then((texts) => {
-      //     //single winner
-      //     if(texts.length === 1){
-      //       axios.post(`/user/badges/${texts.userId}`, { badge: 'Matcher' })
-      //       //multiple winners
-      //     } else if (texts.length > 1) {
-      //       texts.forEach((text) => {
-      //         axios.post(`/user/badges/${text.userId}`, { badge: 'Matcher' })
-      //       })
-      //     }
-      //   })
-  
 })
 .catch((error) => console.error('failed to grab all winning submissions', error))
 //   //update badges info in db to include user info of winners
