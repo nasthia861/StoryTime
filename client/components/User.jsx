@@ -74,6 +74,9 @@ const User = () => {
                   entry={entry}
                 >
                   <div>
+                    <strong>Username:</strong> {username}
+                  </div>
+                  <div>
                     <strong>Story:</strong> {entry.prompt.matchWords}
                   </div>
                   <div>
