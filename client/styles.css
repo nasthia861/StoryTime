@@ -233,8 +233,6 @@ body, html {
 
 .liked {
   background-color: slateblue;
-
-
 }
 
 .text-container {
@@ -257,6 +255,7 @@ body, html {
 .user-entry-box {
   display: flex;
   flex-direction: row;
+  text-align: center;
   align-items: flex-start;
   justify-content: space-between;
   margin: 10px;
@@ -275,6 +274,6 @@ body, html {
 }
 
 .small-text {
-  font-size: 14px;
-  margin-top: 5px;
+  font-size: 15px;
+  margin-top: 15px;
 }

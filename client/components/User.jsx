@@ -80,11 +80,9 @@ const User = () => {
                     <strong>Response:</strong> {entry.text}
                   </div>
                   <div className='small-text'>
-                    <strong>Likes:</strong> {entry.likes} &nbsp;&nbsp;&nbsp;
+                    <strong>Likes:</strong> {entry.likes}
+                     &nbsp;&nbsp;&nbsp;
                     <strong>Created:</strong> {entry.prompt.createdAt.substring(0, 10)}
-
-                  </div>
-                  <div className='small-text'>
 
                   </div>
                 </Link>
