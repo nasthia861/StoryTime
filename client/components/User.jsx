@@ -34,7 +34,7 @@ const User = () => {
 
   //axios request to retrieve user texts by id
   const getStoryWithResponse = (badgeId) => {
-    axios.get(`/text/winner/1/${badgeId}`)
+    axios.get(`http://127.0.0.1:8080/text/winner/1/${badgeId}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
@@ -65,7 +65,7 @@ const User = () => {
       <div className='user' >
           <div className='user-data'>
             <ul className='user-ul'>
-        {userTexts.map((entry, index) => {
+        {userTexts.map((entry) => {
             return (
               <div key={entry.id} className='user-entry-box'>
                 <Link
