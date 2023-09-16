@@ -24,8 +24,8 @@ const User = () => {
   };
  
   //axios request to retrieve user texts by id
-  const getStoryWithResponse = (id, badgeId) => {
-    axios.get(`http://127.0.0.1:8080/text/winner/${id}/${badgeId}`)
+  const getStoryWithResponse = (badgeId) => {
+    axios.get(`http://127.0.0.1:8080/text/winner/1/${badgeId}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
@@ -36,8 +36,8 @@ const User = () => {
 
   useEffect(() => {
     getUserId(username)
-    getStoryWithResponse(userId, badgeId);
-  }, [username, badgeId]); // dependency array prevents constant rendering, syncs with state 
+    getStoryWithResponse(badgeId);
+  }, [username, badgeId]); // dependency array prevents constant rendering, syncs with state
   //console.log(userTexts)
 
   return (
@@ -51,7 +51,7 @@ const User = () => {
       <div className='user' >
           <div className='user-data'>
             <ul className='user-ul'>
-        {userTexts.map((entry, index) => {
+        {userTexts.map((entry) => {
             return (
               <div key={entry.id} className='user-entry-box'>
                 <Link
