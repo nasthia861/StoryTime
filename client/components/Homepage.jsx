@@ -12,7 +12,7 @@ function Homepage() {
 
   // Initialize the user state with data from local storage
   const [user, setUserObj] = useState({
-    id: localStorage.getItem('userID'),
+    id: localStorage.getItem('user_id'),
     username: localStorage.getItem('user_name'),
   });
 
@@ -317,7 +317,7 @@ function Homepage() {
 
 
       <div className='wrapper'>
-        
+
         <div className='word-container'>
           {
             words.map((word, i) => {
@@ -325,7 +325,7 @@ function Homepage() {
             })
           }
         </div>
-        
+
          <div className='story-container'>
           {
             story.map((submission, i) => {
@@ -335,8 +335,8 @@ function Homepage() {
         </div>
 
         <div className='post-submission'>
-          
-          <textarea 
+
+          <textarea
           className='user-input'
           type='text'
           placeholder='Add to the story!'

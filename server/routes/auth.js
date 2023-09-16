@@ -37,21 +37,21 @@ router.post('/register', async (req, res) => {
 
 // User login
 router.post('/login', passport.authenticate('local'), (req, res) => {
-  const userID = req.user.id;
+  const user_id = req.user.id;
   const user_name = req.user.username;
-  console.log('this is the current user id/name ---------->', userID, user_name)
-  return res.json({ message: 'Login successful.', userID, user_name });
+  console.log('this is the current user id/name ---------->', user_id, user_name)
+  return res.json({ message: 'Login successful.', user_id, user_name });
 });
 
-// checking if user is logged in
-router.get('/check', (req, res) => {
-  if (req.isAuthenticated()) {
-    const userID = req.user.id;
-    const user_name = req.user.username;
-    return res.json({ message: 'Authenticated', userID, user_name });
-  }
-  res.status(401).json({ message: 'Not authenticated.' });
-});
+// // checking if user is logged in
+// router.get('/check', (req, res) => {
+//   if (req.isAuthenticated()) {
+//     const userID = req.user.id;
+//     const user_name = req.user.username;
+//     return res.json({ message: 'Authenticated', userID, user_name });
+//   }
+//   res.status(401).json({ message: 'Not authenticated.' });
+// });
 
 // User logout
 router.get('/logout', (req, res) => {
