@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 import axios from'axios';
 import Post from './Post.jsx';
 import Timer from './Timer.jsx'
-import bestOf from '../badgeHelpers/bestOf.jsx';
+import {bestOf, mostContribution} from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
 function Homepage() {
@@ -110,50 +110,50 @@ function Homepage() {
 
   const awardCeremony = () => {
     //grab all winning submissions
-    // console.log('Welcome to award show #', currentBadgeId)
+    console.log('Welcome to award show #', currentBadgeId)
     axios.get(`/text/winner/1/${currentBadgeId}`)
       //pass them through function that checks for most overall likes
       .then((textArr) => {
         console.log('contestants', textArr)
+        //send badge to user that owns text with overall most likes
         bestOf(textArr.data)
-      //send badge to user that owns winning text
           .then((text) => {
-            // console.log('and the winner is', text)
+            console.log('for most overall likes', text)
             axios.post(`/user/badges/${text.userId}`, { badge: 'Likeable' })
           })
-
-  //       //pass them through function that checks for most matched words
-  //       bestMatched(textArr.data)
-  //       //send badge to user/s that owns winning text/s
-  //         .then((texts) => {
-  //           //single winner
-  //           if(texts.length === 1){
-  //             axios.post(`/user/badges/${texts.userId}`, { badge: 'Matcher' })
-  //             //multiple winners
-  //           } else if (texts.length > 1) {
-  //             texts.forEach((text) => {
-  //               axios.post(`/user/badges/${text.userId}`, { badge: 'Matcher' })
-  //             })
-  //           }
-  //         })
-  //       //grab user that made the most contributions for the whole story
-  //       mostContribution(textArr.data)
-  //       //send badge to user/s
-  //         .then((texts) => {
-  //           //single winner
-  //           if(texts.length === 1){
-  //             axios.post(`/user/badges/${texts.userId}`, { badge: 'Contributor' })
-  //             //multiple winners
-  //           } else if (texts.length > 1) {
-  //             texts.forEach((text) => {
-  //               axios.post(`/user/badges/${text.userId}`, { badge: 'Contributor' })
-  //             })
-  //           // }
-  //         })
-        
-      })
-      .catch((error) => console.error('failed to grab all winning submissions', error))
-  //   //update badges info in db to include user info of winners
+        //send badge to user/s that made the most contributions
+        mostContribution(textArr.data)
+        //send badge to user/s
+          .then((winnerArr) => {
+              //single winner
+              console.log('best contributor/s [id, contribution count]', winnerArr);
+              if(winnerArr.length === 2){
+                  axios.post(`/user/badges/${winnerArr[0]}`, { badge: 'Contributor' })
+              //multiple winners
+              } else if (winnerArr.length > 2) {
+                for(let x = 0; x < winnerArr.length; x+=2){
+                  axios.post(`/user/badges/${winnerArr[x]}`, { badge: 'Contributor' })
+              }
+            }
+          })
+      // //pass them through function that checks for most matched words
+      // bestMatched(textArr.data)
+      // //send badge to user/s that owns winning text/s
+      //   .then((texts) => {
+      //     //single winner
+      //     if(texts.length === 1){
+      //       axios.post(`/user/badges/${texts.userId}`, { badge: 'Matcher' })
+      //       //multiple winners
+      //     } else if (texts.length > 1) {
+      //       texts.forEach((text) => {
+      //         axios.post(`/user/badges/${text.userId}`, { badge: 'Matcher' })
+      //       })
+      //     }
+      //   })
+  
+})
+.catch((error) => console.error('failed to grab all winning submissions', error))
+//   //update badges info in db to include user info of winners
   }
 
   useEffect(() => {
@@ -206,7 +206,7 @@ function Homepage() {
     const promptInterval = setInterval(() => {
       promptWinner()
       newRound();
-    }, 100000) // this is where to change interval time between prompt changes (currently set to an hour)
+    }, 10000) // this is where to change interval time between prompt changes (currently set to an hour)
     
     return () => {
       clearInterval(promptInterval);
@@ -229,7 +229,7 @@ function Homepage() {
       awardCeremony();
       newStory()
       newRound();
-    }, 300000)
+    }, 60000)
 
   }, [currentBadgeId])
 

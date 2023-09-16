@@ -13,4 +13,27 @@ const bestOf = (array) => {
    }))
  })
 };
-module.exports = bestOf;
+
+const mostContribution = (array) => {
+  return new Promise((resolve, reject) => {
+    let subUserObj = {}
+    array.forEach((submission) => {
+      if(subUserObj[submission.userId]) {
+        subUserObj[submission.userId] = subUserObj[submission.userId]+1
+      } else {
+        subUserObj[submission.userId] = 1
+      }
+    })
+    console.log('about to hit resolve', subUserObj);
+    resolve(Object.entries(subUserObj).reduce((acc, current) => {
+      if(current[1] > acc[1]){
+        acc = current;
+      }
+      if(current[1] === acc[1]){
+        acc = acc.concat(current);
+      }
+      return acc;
+    }))
+  })
+  }
+export {bestOf, mostContribution}
