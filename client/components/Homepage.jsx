@@ -1,6 +1,6 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import axios from'axios';
 import Post from './Post.jsx';
 import bestOf from '../badgeHelpers/bestOf.jsx';
@@ -8,15 +8,21 @@ import bestOf from '../badgeHelpers/bestOf.jsx';
 
 function Homepage() {
   //setting states of generated word, current story, and input using hooks
+
+  // setting state for logged in user:
+  const [user, setUser] = useState(null);
+
   //building story from post winners
   const [story, setStory] = useState([])
-  const [currentBadgeId, setBadgeId] = useState(1) 
+  const [currentBadgeId, setBadgeId] = useState(1)
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
+
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
   const [lastUpdate, setLastUpdate] = useState('')
-  //current round of submittions for story, holds words and 
+
+  //current round of submissions for story, holds words and
   const [currentPrompt, setCurrentPrompt] = useState({})
 
   //useEffect to fetch data from database upon mounting
@@ -29,7 +35,7 @@ function Homepage() {
             .then((response) => {
               const wordsForDb = response.data.join(' ')
               //setRound(currentRound++);
-              //creates new prompt with 
+              //creates new prompt with
               axios.post('/prompt', {matchWords: wordsForDb, badgeId: currentBadgeId})
               .then(() => {
                 //grabs all prompts
@@ -47,7 +53,6 @@ function Homepage() {
                 .catch((err) => {
                 console.error("Could not get prompts", err)
                 })
-    
               })
               .catch((err) => {
                 console.error("Could not Submit!", err)
@@ -86,12 +91,12 @@ function Homepage() {
           //sets the most current prompt
           setCurrentPrompt(latestPrompt)
           }
-      
+
         })
       .catch((err) => {
         console.error('Error getting words:', err)
       })
-    
+
     //grabs the most current story
     axios.get('/badges')
       .then((response) => {
@@ -119,8 +124,19 @@ function Homepage() {
             setPosts(response.data)
           })
           .catch((error) => console.error('could not get latest prompt', error));
+
+      // Check user authentication
+    axios.get('/auth/check')
+      .then((response) => {
+        const { userID, user_name } = response.data;
+        setUser({ id: userID, username: user_name });
+        console.log('this is the current user ------------>', user);
+      })
+      .catch((error) => {
+        setUser(null); // User is not authenticated
+      });
      })
-      
+
     const promptInterval = setInterval(() => {
       promptWinner()
       console.log('storyArr', story);
@@ -130,7 +146,7 @@ function Homepage() {
     const storyInterval = setInterval(() => {
       setBadgeId(currentBadgeId++);
     }, 300000)
-    
+
     return () => {
       clearInterval(promptInterval);
       clearInterval(storyInterval);
@@ -182,10 +198,8 @@ function Homepage() {
         console.error("err", err)
       })
     }
-
   }
 
-  
   //return dom elements and structure
   return (
     <div>
@@ -207,7 +221,7 @@ function Homepage() {
         <span key={i}>{word } </span>
       ))}
       </div>
-      
+
         <div className='story-container'>
           {
             story.map((submission, i) => {
@@ -217,11 +231,11 @@ function Homepage() {
         </div>
 
         <div>
-          
-          <input 
+
+          <input
           className='user-input'
           type='text'
-          placeholder='Add to the story!' 
+          placeholder='Add to the story!'
           onChange={handleInput}
           value={input}
           />
@@ -235,7 +249,7 @@ function Homepage() {
                 <Post key={`${i} - ${post.id}`} text={post} />
               ))
             }
-            
+
           </div>
         </div>
 
@@ -243,7 +257,7 @@ function Homepage() {
         </div>
 
     </div>
-    
+
   </div>
   )
 };

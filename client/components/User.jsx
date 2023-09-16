@@ -9,20 +9,23 @@ const User = () => {
   const [userBadges, setUserBadges] = useState('');
   const  [username, setUsername] = useState('PhreezorBurn');
 
- 
-  const getUserId = (username) => {
-    axios.get(`/user/${username}`)
-      .then((userData) => {
-        userData.data.forEach(element => {
-          setUserId(element.id);
-          setUserBadges(element.badges);
-        });
-      })
-      .catch((err) => {
-        console.error('Could not retrieve user ID', err)
-      });
-  };
- 
+  useEffect(() => {
+    // Retrieve user ID from local storage
+    const storedUserId = localStorage.getItem('userId');
+    if (storedUserId) {
+      setUserId(parseInt(storedUserId)); // Convert to integer if necessary
+      console.log('this is the userID state --------->', userId)
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   // Retrieve username from local storage
+  //   const storedUsername = localStorage.getItem('user_name');
+  //   if (storedUsername) {
+  //     setUserId(storedUsername);
+  //   }
+  // }, []);
+
   //axios request to retrieve user texts by id
   const getUserTexts = (id) => {
     axios.get(`http://localhost:8080/text/user/${id}`)
@@ -35,7 +38,7 @@ const User = () => {
   };
 
   useEffect(() => {
-    getUserId(username)
+    // getUserId(username)
     getUserTexts(userId);
   });
 

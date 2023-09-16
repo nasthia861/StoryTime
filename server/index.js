@@ -11,6 +11,7 @@ const port = process.env.PORT || 8080;
 // // Require and use routes
 // const { app: routesApp } = require('./routes/routes');
 // app.use('/', routesApp); // Mount routes
+
 // Middleware for serving static files
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
