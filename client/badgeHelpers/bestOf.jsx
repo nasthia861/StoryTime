@@ -1,4 +1,4 @@
-//sets winner
+//sets winner of prompt
 const bestOf = (array) => {  
  return new Promise((resolve, reject) => {
    resolve(array.reduce((acc, current) => {

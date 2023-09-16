@@ -94,6 +94,7 @@ router.get('/user/:userId', (req,res) => {
     });
 })
 
+//post a new text
 router.post('/', (req, res) => {
   Text.create(req.body)
     .then(() => {
@@ -165,5 +166,7 @@ router.get('/winner/:id/:badgeId', (req, res) => {
     res.status(500);
   });
 });
+
+
 
 module.exports = router; 

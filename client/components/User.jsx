@@ -6,23 +6,32 @@ const User = () => {
 
   const [userId, setUserId] = useState(1);
   const [userTexts, setUserTexts] = useState([]);
-  const [userBadges, setUserBadges] = useState('');
-  const  [username, setUsername] = useState('yeauxDejuan');
+  const [userBadgesSt, setUserBadgesSt] = useState('');
+  const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
+  const [username, setUsername] = useState('thirduser');
   const [badgeId, setBadgeId] = useState(1)
 
  
   const getUserId = (username) => {
     axios.get(`/user/${username}`)
       .then((userData) => {
-       const user = userData.data[0];
+        let user = userData.data[0];
+          setUserBadgesSt(user.badges)
           setUserId(user.id);
-          setUserBadges(user.badges);
       })
       .catch((err) => {
         console.error('Could not retrieve user ID', err)
       });
   };
  
+  const manipulateBadgeData = () => {
+    userBadgesSt.split('+').forEach((badge) => {
+      if(badge.length > 0){
+        setUserBadgeObj((userBadgeObj) => ({...userBadgeObj, [badge]: userBadgeObj[badge]+1}));
+      }
+    })
+  }
+
   //axios request to retrieve user texts by id
   const getStoryWithResponse = (badgeId) => {
     axios.get(`http://127.0.0.1:8080/text/winner/1/${badgeId}`)
@@ -34,11 +43,16 @@ const User = () => {
     });
   };
 
+  //runs when dom is compounded
   useEffect(() => {
-    getUserId(username)
-    getStoryWithResponse(badgeId);
-  }, [username, badgeId]); // dependency array prevents constant rendering, syncs with state
-  //console.log(userTexts)
+    getUserId(username);
+    getStoryWithResponse(badgeId)
+  }, []);
+  
+  //runs when userBadgeSt changes
+  useEffect(() => {
+    manipulateBadgeData();
+  }, [userBadgesSt])
 
   return (
     <div>
@@ -74,7 +88,21 @@ const User = () => {
           </div>
       </div>
       <h1 className='badges-header' >Badges</h1>
-      <div className='user-badges'>{userBadges}</div>
+      <div>
+        {
+          Object.entries(userBadgeObj).map((category, i) => {
+            if(category[1] >= 10) {
+              return <div><div className='gold-badge' id={i}>{category[0]}</div><br/></div>
+            }
+            if(category[1] >= 5) {
+              return <div><div className='bronze-badge' id={i}>{category[0]}</div><br/></div>
+            }
+            if(category[1] > 0 ) {
+              return <div><div className='silver-badge' id={i}>{category[0]}</div><br/></div>
+            }
+          })
+        }
+      </div>
     </div>
   )
 }
