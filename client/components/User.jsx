@@ -4,31 +4,37 @@ import {Link} from 'react-router-dom'
 
 const User = () => {
 
-  const [userId, setUserId] = useState();
+  const [userId, setUserId] = useState(1);
   const [userTexts, setUserTexts] = useState([]);
-  const [userBadges, setUserBadges] = useState('');
-  const  [username, setUsername] = useState('PhreezorBurn');
+  const [userBadgesSt, setUserBadgesSt] = useState('');
+  const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
+  const [username, setUsername] = useState('thirduser');
+  const [badgeId, setBadgeId] = useState(1)
 
-  useEffect(() => {
-    // Retrieve user ID from local storage
-    const storedUserId = localStorage.getItem('userId');
-    if (storedUserId) {
-      setUserId(parseInt(storedUserId)); // Convert to integer if necessary
-      console.log('this is the userID state --------->', userId)
-    }
-  }, []);
-
-  // useEffect(() => {
-  //   // Retrieve username from local storage
-  //   const storedUsername = localStorage.getItem('user_name');
-  //   if (storedUsername) {
-  //     setUserId(storedUsername);
-  //   }
-  // }, []);
+ 
+  const getUserId = (username) => {
+    axios.get(`/user/${username}`)
+      .then((userData) => {
+        let user = userData.data[0];
+          setUserBadgesSt(user.badges)
+          setUserId(user.id);
+      })
+      .catch((err) => {
+        console.error('Could not retrieve user ID', err)
+      });
+  };
+ 
+  const manipulateBadgeData = () => {
+    userBadgesSt.split('+').forEach((badge) => {
+      if(badge.length > 0){
+        setUserBadgeObj((userBadgeObj) => ({...userBadgeObj, [badge]: userBadgeObj[badge]+1}));
+      }
+    })
+  }
 
   //axios request to retrieve user texts by id
-  const getUserTexts = (id) => {
-    axios.get(`http://localhost:8080/text/user/${id}`)
+  const getStoryWithResponse = (badgeId) => {
+    axios.get(`/text/winner/1/${badgeId}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
@@ -37,10 +43,16 @@ const User = () => {
     });
   };
 
+  //runs when dom is compounded
   useEffect(() => {
-    // getUserId(username)
-    getUserTexts(userId);
-  });
+    getUserId(username);
+    getStoryWithResponse(badgeId)
+  }, []);
+  
+  //runs when userBadgeSt changes
+  useEffect(() => {
+    manipulateBadgeData();
+  }, [userBadgesSt])
 
   return (
     <div>
@@ -49,26 +61,48 @@ const User = () => {
           <button className='user-home-button'>HomePage</button>
         </Link>
       </nav>
-        <h1 className='user-head' >MY STORIES</h1>
+        <h1 className='user-head'>MY STORIES</h1>
       <div className='user' >
           <div className='user-data'>
             <ul className='user-ul'>
-        {
-          userTexts.map((entry) => {
-            return <Link to="/user/text"
-            className='user-index'
-            entry={entry}
-            key={entry.id}>
-               {entry.text}
-            </Link>
-          })
-        }
+        {userTexts.map((entry, index) => {
+            return (
+              <div key={entry.id} className='user-entry-box'>
+                <Link
+                  to={`/user/text/${entry.id}`}
+                  className='user-index'
+                  entry={entry}
+                >
+                  <div>
+                    <strong>Story:</strong> {entry.prompt.matchWords}
+                  </div>
+                  <div>
+                    <strong>Response:</strong> {entry.text}
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
 
             </ul>
           </div>
       </div>
       <h1 className='badges-header' >Badges</h1>
-      <div className='user-badges'>{userBadges}</div>
+      <div>
+        {
+          Object.entries(userBadgeObj).map((category, i) => {
+            if(category[1] >= 10) {
+              return <div><div className='gold-badge' id={i}>{category[0]}</div><br/></div>
+            }
+            if(category[1] >= 5) {
+              return <div><div className='bronze-badge' id={i}>{category[0]}</div><br/></div>
+            }
+            if(category[1] > 0 ) {
+              return <div><div className='silver-badge' id={i}>{category[0]}</div><br/></div>
+            }
+          })
+        }
+      </div>
     </div>
   )
 }

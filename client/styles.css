@@ -46,6 +46,20 @@ body, html {
   width: 100%;
   height: 40px;
   overflow-wrap: break-word;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  color: #666;
+  box-shadow: inset 0 0 0.25rem #ddd;
+  &:focus {
+    outline: none;
+    border: 1px solid darken(#ddd, 5%);
+    box-shadow: inset 0 0 0.5rem darken(#ddd, 5%);
+  }
+  &[placeholder] { 
+    font-style: italic;
+    font-size: 0.875rem;
+  }
 }
 
 .submit{
@@ -58,6 +72,14 @@ body, html {
 .submit-btn {
   padding: 20px;
   border-radius: 12px;
+}
+
+.text-count {
+  color:#ccc
+}
+
+.live-timer {
+  color:#ccc
 }
 
 .user-data {
@@ -95,8 +117,45 @@ body, html {
   padding: 5px;
   align-items: right;
   color: black;
-  background: #f8e40c;
-  border: 11px dashed #1C6EA4;
+  background: #69a1d9;
+  border: 11px #1C6EA4;
+}
+
+.silver-badge {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 15%;
+  text-align: center;
+  padding: 5px;
+  align-items: right;
+  color: black;
+  background: -moz-linear-gradient(left, #f2f2f2 0%, #c1c3c3 42%, #8d9091 100%);
+  background: -webkit-linear-gradient(left, #f2f2f2 0%, #c1c3c3 42%, #8d9091 100%);
+  background: linear-gradient(to right, #f2f2f2 0%, #c1c3c3 42%, #8d9091 100%);
+  border: 8px dashed silver;
+}
+
+.bronze-badge {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 15%;
+  text-align: center;
+  padding: 5px;
+  color: black;
+  background: -moz-linear-gradient(left, #e9d4b3 0%, #b68d4c 100%);
+  background: -webkit-linear-gradient(left, #e9d4b3 0%, #b68d4c 100%);
+  background: linear-gradient(to right, #e9d4b3 0%, #b68d4c 100%);
+  border: 8px dashed #cd7f32;
+}
+
+.gold-badge {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 15%;
+  text-align: center;
+  padding: 5px;
+  color: black;
+  background: -moz-linear-gradient(left, #f4f1d2 0%, #feb645 100%);
+  background: -webkit-linear-gradient(left, #e4e0ae 0%, #feb645 100%);
+  background: linear-gradient(to right, #FCF6BA 0%, #feb645 100%);
+  border: 8px dashed gold;
 }
 
 .badges-header {
@@ -184,4 +243,10 @@ body, html {
 
 .text-content {
   flex-grow: 1;
+}
+
+.user-entry-box {
+  border: 2px solid blue;
+  padding: 20px; 
+  margin-bottom: 10px; 
 }

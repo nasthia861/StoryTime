@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {Text} = require('../database/index');
+const {Text, Prompt} = require('../database/index');
 
 //get text by text id
 router.get('/:id', (req, res) => {
@@ -94,6 +94,7 @@ router.get('/user/:userId', (req,res) => {
     });
 })
 
+//post a new text
 router.post('/', (req, res) => {
   Text.create(req.body)
     .then(() => {
@@ -111,33 +112,76 @@ router.get('/prompt/:promptId', (req, res) => {
   const { promptId } = req.params;
   Text.findAll({
     where: {
-      promptId: promptId
+      promptId: promptId,
     }
   })
     .then((textArr) => {
       if(textArr.length > 0){
         res.status(200).send(textArr);
       } else {
-        console.log('promptId had no match')
+        console.log('promptId and round had no match')
         res.sendStatus(404);
       }
     })
     .catch((error) => {
-      console.error('get text with promptId failed', error);
+      console.error('get text with promptId and round failed', error);
       res.sendStatus(500);
     })
 })
 
+//get all texts
 router.get('/', (req,res) => {
-  // const { } = req.params;
-   Text.findAll({})
-     .then((textData) => {
-       res.send(textData).status(200);
-     })
-     .catch((err) => {
-       console.error('Could not Get all texts', err);
-       res.sendStatus(500);
-     });
- })
+// const { } = req.params;
+  Text.findAll({})
+    .then((textData) => {
+      res.send(textData).status(200);
+    })
+    .catch((err) => {
+      console.error('Could not Get all texts', err);
+      res.sendStatus(500);
+    });
+})
+
+//get last text submitted
+router.get('/find/last', (req,res) => {
+  Text.findAll({
+    limit: 1,
+    order: [['id', 'DESC']]
+  })
+    .then((lastText) => {
+      res.send(lastText).status(200);
+    })
+    .catch((err) => {
+      console.error('Could not Get last Text submitted', err);
+      res.sendStatus(500);
+    });
+})
+
+//get all texts for specific story that won
+router.get('/winner/:id/:badgeId', (req, res) => {
+  const { id, badgeId } = req.params;
+  Text.findAll({
+    where: {
+      winner: id,
+    },
+    include: [
+      {
+        model: Prompt,
+        where: {
+          badgeId: badgeId,
+        }
+      }
+    ]
+  })
+  .then((texts) => {
+    res.status(200).send(texts)
+  })
+  .catch((err) => {
+    console.error('Error:', err);
+    res.status(500);
+  });
+});
+
+
 
 module.exports = router; 

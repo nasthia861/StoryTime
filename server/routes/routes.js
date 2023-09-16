@@ -18,7 +18,7 @@ const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next(); // User is authenticated, proceed to the route handler
   }
-  res.status(401).json({ message: 'Authentication required.' }); // Send an error if not
+  res.redirect('/'); // Redirect unauthenticated users to the login page
 };
 
 // Use the isAuthenticated middleware for protected routes
