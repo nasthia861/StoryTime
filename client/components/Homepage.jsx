@@ -15,7 +15,7 @@ function Homepage() {
   const [words, setWords] = useState([])
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
-  const [userId, setUser] = useState(1);
+  const [userId, setUser] = useState(3);
   const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
   const [currentPrompt, setCurrentPrompt] = useState({})
@@ -154,14 +154,14 @@ function Homepage() {
         setStory((story) => ([...story, best]));
       })
       newRound();
-    }, 10000) // this is where to change interval time between prompt changes (currently set to an hour)
+    }, 20000) // this is where to change interval time between prompt changes (currently set to an hour)
 
     //send badges, resets the story to start a new one, starts a new round
     const storyInterval = setInterval(() => {
       console.log('inside storyinterval', latestBadgeStory.id)
       awardCeremony(latestBadgeStory.id);
       newStory()
-    }, 30000)
+    }, 60000)
     
     return () => {
       clearInterval(promptInterval)
