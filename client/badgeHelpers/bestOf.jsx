@@ -3,7 +3,6 @@ import axios from'axios';
 //sets winner of prompt
 const bestOf = (array) => {  
  return new Promise((resolve, reject) => {
-  console.log('bestof', array);
    resolve(array.reduce((acc, current) => {
      //if there is already a tie
      if(current.likes > acc.likes){
@@ -36,7 +35,6 @@ const mostContribution = (array) => {
           acc = acc.concat(current);
         }
       }
-      //console.log('acc', acc)
       return acc;
     }))
   })
@@ -94,18 +92,17 @@ const bestMatched = (array) => {
 
 const awardCeremony = (storyId) => {
   return new Promise((resolve, reject) => {
-    //grab all winning submissions
-  let badge = {}
-  let likeable = []
-  let matcher = []
-  let contributor = []
+    let badge = {}
+    let likeable = []
+    let matcher = []
+    let contributor = []
+  //grab all winning submissions
   resolve(axios.get(`/text/winner/1/${storyId}`)
     //pass them through function that checks for most overall likes
     .then((textArr) => {
       //send badge to user that owns text with overall most likes
       bestOf(textArr.data)
         .then((text) => {
-          // axios.post(`/user/badges/${text.userId}/Likeable`)
           likeable.push(text.userId)
           //update badges info in db to include user info of winners
           badge.mostLikes = `${text.userId}`

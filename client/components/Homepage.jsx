@@ -40,7 +40,6 @@ function Homepage() {
             .then((response) => {
               const wordsForDb = response.data.join(' ')
               //creates new prompt with new matchWords and current story id
-              console.log('newRound, check badgeid before post handler', latestBadgeStory)
               axios.post('/prompt', {matchWords: wordsForDb, badgeId: latestBadgeStory.id})
               .then(() => {
                 //grabs latest prompt
@@ -99,7 +98,6 @@ function Homepage() {
           newRound()
         }else{
           latestPrompt = response.data[0]
-          //console.log('checking  latest prompt before setting state', latestPrompt);
           setCurrentPrompt(latestPrompt)
           //sets the words of most current prompt
           const wordArray = latestPrompt.matchWords.split(' ')
@@ -108,7 +106,6 @@ function Homepage() {
           axios.get(`/text/prompt/${latestPrompt.id}`)
           .then((response) => {
             //renders all posts to page
-            console.log('checking posts from latest prompt before setting state', response.data)
             setPosts(response.data)
             })
             .catch((error) => console.error('there are no submissions', error));
@@ -129,12 +126,10 @@ function Homepage() {
         }else{
         //sets the most current badge
           latestBadgeStory = response.data[0]
-          //console.log('checking latest story before setting state', latestBadgeStory);
           setBadge(latestBadgeStory)
           //grabs all of the texts that are already a part of the main story
           axios.get(`/text/winner/1/${latestBadgeStory.id}`)
             .then((winnerArr) => {
-              console.log('checking submitted posts for story before setting state', winnerArr.data);
               //sets story to an array of text obj
               setStory(winnerArr.data)
             })
@@ -148,9 +143,7 @@ function Homepage() {
     
     //picks winning submission and starts a new round
     const promptInterval = setInterval(() => {
-      console.log('inside prompt interval', latestPrompt.id)
       promptWinner(latestPrompt.id).then((best) => {
-        console.log('checking who won before adding to main story', best)
         setStory((story) => ([...story, best]));
       })
       newRound();
@@ -158,7 +151,6 @@ function Homepage() {
 
     //send badges, resets the story to start a new one, starts a new round
     const storyInterval = setInterval(() => {
-      console.log('inside storyinterval', latestBadgeStory.id)
       awardCeremony(latestBadgeStory.id);
       newStory()
     }, 60000)
@@ -205,7 +197,6 @@ function Homepage() {
     if(input !== ''){
       setInput('')
       setTextCount(0)
-      console.log('inside handlesubmit, checking promptid', currentPrompt)
       axios.post('/text', {text: input, userId: userId , promptId: currentPrompt.id })
       .then(() => {
         axios.get('/text/find/last')
