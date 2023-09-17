@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 
 const User = () => {
 
-  const [userId, setUserId] = useState(1);
+  const [userId, setUserId] = useState(3);
   const [userTexts, setUserTexts] = useState([]);
   const [userBadgesSt, setUserBadgesSt] = useState('');
   const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
@@ -68,7 +68,7 @@ const User = () => {
         {userTexts.map((entry) => {
             return (
               <div key={entry.id} className='user-entry-box'>
-                <Link
+              <div
                   to={`/user/text/${entry.id}`}
                   className='user-index'
                   entry={entry}
@@ -88,7 +88,7 @@ const User = () => {
                     <strong>Created:</strong> {entry.prompt.createdAt.substring(0, 10)}
 
                   </div>
-                </Link>
+                </div>
               </div>
             );
           })}

@@ -24,8 +24,8 @@ function Homepage() {
 
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
-  const [userId, setUser] = useState(3);
-  const [textCount, setTextCount] = useState(0)
+  const [userId, setUser] = useState(6);
+  const [textCount, setTextCount] = useState()
   const [lastUpdate, setLastUpdate] = useState('')
   const [currentPrompt, setCurrentPrompt] = useState({})
   
