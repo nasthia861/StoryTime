@@ -1,25 +1,25 @@
 import React from 'react';
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import axios from'axios';
 import Post from './Post.jsx';
 import Timer from './Timer.jsx'
-import {bestOf, mostContribution, bestMatched} from '../badgeHelpers/bestOf.jsx';
+import {promptWinner, awardCeremony} from '../badgeHelpers/bestOf.jsx';
 // import Text from './Text.jsx';
 
 function Homepage() {
   //setting states of generated word, current story, and input using hooks
   //building story from post winners
   const [story, setStory] = useState([])
-  const [currentBadgeId, setBadgeId] = useState() 
   const [input, setInput] = useState('')
   const [words, setWords] = useState([])
   //contenders for next part of the story
   const [posts, setPosts] = useState([])
-  const [userId, setUser] = useState(2);
+  const [userId, setUser] = useState(1);
   const [textCount, setTextCount] = useState(0)
   const [lastUpdate, setLastUpdate] = useState('')
   const [currentPrompt, setCurrentPrompt] = useState({})
+  const [currentBadge, setBadge] = useState({}) 
   
 
   //set the starting time for the timer
@@ -30,19 +30,18 @@ function Homepage() {
   //calculate the remaining time based on the target time and current time
   const [remainingTime, setRemainingTime] = useState(initialTargetTime - Date.now());
 
+  //useEffect to fetch data from database upon mounting
   let latestPrompt;
-  let latestBadgeStoryId;
-////////////////////////////////////
-  /////////HELPER FUNCTIONS///////
-  ////////////////////////////////
+  let latestBadgeStory;
+
   //creates a new round of submissions for the next iteration of the main story
   const newRound = () => {
     return axios.get('https://random-word-api.herokuapp.com/word?number=5')
             .then((response) => {
               const wordsForDb = response.data.join(' ')
               //creates new prompt with new matchWords and current story id
-              console.log('coming from newRound', latestBadgeStoryId);
-              axios.post('/prompt', {matchWords: wordsForDb, badgeId: latestBadgeStoryId})
+              console.log('newRound, check badgeid before post handler', latestBadgeStory)
+              axios.post('/prompt', {matchWords: wordsForDb, badgeId: latestBadgeStory.id})
               .then(() => {
                 //grabs latest prompt
                 axios.get('/prompt/find/last')
@@ -79,123 +78,48 @@ function Homepage() {
         //grabs newly created badge
         axios.get('/badges/find/last')
           .then((response) => {
-            latestBadgeStoryId = response.data[0].id
+            latestBadgeStory = response.data[0]
             //sets the new story state id
-            console.log('coming from newStory', latestBadgeStoryId);
-            setBadgeId(latestBadgeStoryId)
-            //setStory([]);
+            setBadge(latestBadgeStory)
+            setStory([]);
           })
           .catch((error) => console.error('could not get badges', error))
       })
       .catch((error) => console.error('could not create new badge', error));
   }
 
-  //picks submission with most likes and makes it part of the main story
-  const promptWinner = () => {
-    //grab texts with the current promptId
-    axios.get(`/text/prompt/${latestPrompt.id}`)
-      .then((textArr) => {
-        //runs through function to determine submission with most likes
-        bestOf(textArr.data)
-        .then((best) => {
-          //changes the winning state in the text db
-          axios.post(`/text/winner/${best.id}`)
-          //rerenders story to show new text
-          setStory((story) => ([...story, best]));
-        })
-      })
-      .catch((error) => {
-        console.error('no posts submitted', error);
-      })
-  }
 
-  const awardCeremony = () => {
-    //grab all winning submissions
-    console.log('Welcome to award show #', latestBadgeStoryId)
-    axios.get(`/text/winner/1/${latestBadgeStoryId}`)
-      //pass them through function that checks for most overall likes
-      .then((textArr) => {
-        console.log('contestants', textArr)
-        //send badge to user that owns text with overall most likes
-        bestOf(textArr.data)
-          .then((text) => {
-            console.log('for most overall likes', text)
-            axios.post(`/user/badges/${text.userId}`, { badge: 'Likeable' })
-              .catch(console.error('could not post to user badges'))
-            axios.post(`/badges/${latestBadgeStoryId}/mostLikes`, { newValue: text.userId})
-              .catch(console.error('could not update badges for story'))
-          })
-        //send badge to user/s that made the most contributions
-        mostContribution(textArr.data)
-        //send badge to user/s
-          .then((winnerArr) => {
-            console.log('for best contributor/s [id, contribution count]', winnerArr);
-            //single winner
-            if(winnerArr.length === 2){
-                axios.post(`/user/badges/${winnerArr[0]}`, { badge: 'Contributor' })
-                  .catch(console.error('could not post to user badges'))
-                axios.post(`/badges/${latestBadgeStoryId}/mostContributions`, { newValue: winnerArr[0]})
-                  .catch(console.error('could not post to user badges'))
-            //multiple winners
-            } else if (winnerArr.length > 2) {
-              let multipleWinnersId = ''
-              for(let x = 0; x < winnerArr.length; x+=2){
-                axios.post(`/user/badges/${winnerArr[x]}`, { badge: 'Contributor' })
-                  .catch(console.error('could not post to user badges'))
-                multipleWinnersId += `${winnerArr[x]}...`
-              }
-              axios.post(`/badges/${latestBadgeStoryId}/mostContributions`, { newValue: multipleWinnersId})
-                .catch(console.error('could not post to user badges'))
-            }
-          })
-        //pass them through function that checks for most matched words
-        bestMatched(textArr.data)
-        //send badge to user/s that owns winning text/s
-          .then((winnerArr) => {
-            console.log('for best word matcher/s [id, word match count]', winnerArr);
-            //single winner
-            if(winnerArr.length === 2){
-                axios.post(`/user/badges/${winnerArr[0]}`, { badge: 'Matcher' })
-                  .catch(console.error('could not post to user badges'))
-                axios.post(`/badges/${latestBadgeStoryId}/mostWordMatchCt`, { newValue: winnerArr[0]})
-                  .catch(console.error('could not post to user badges'))
-            //multiple winners
-            } else if (winnerArr.length > 2) {
-              let multipleWinnersId = ''
-              for(let x = 0; x < winnerArr.length; x+=2){
-                axios.post(`/user/badges/${winnerArr[x]}`, { badge: 'Matcher' })
-                  .catch(console.error('could not post to user badges'))
-                multipleWinnersId += `${winnerArr[x]}...`
-              }
-              axios.post(`/badges/${latestBadgeStoryId}/mostWordMatchCt `, { newValue: multipleWinnersId})
-                .catch(console.error('could not post to user badges'))
-            }
-          })
-      })
-      .catch((error) => console.error('failed to grab all winning submissions', error))
-      //   //update badges info in db to include user info of winners
-  }
-  
-  ////////////////////////
-  //INTERVALS START HERE///////
-  ///////////////////////////
 
-    //picks winning submission and starts a new round
-    const promptInterval = setInterval(() => {
-      promptWinner()
-      newRound();
-    }, 10000) // this is where to change interval time between prompt changes (currently set to an hour)
-    
-    const storyInterval = setInterval(() => {
-      awardCeremony();
-      newStory()
-      //newRound();
-    }, 60000)
-
-//////////////////////////////////
-//USE EFFECTS START HERE 
-//////////////////////////////////
   useEffect(() => {
+    //grabs latest prompt, sets words, renders any submissions
+      axios.get('/prompt/find/last')
+      .then((response) => {
+        //only hit if prompts table is empty
+        if(response.data.length === 0){
+          newRound()
+        }else{
+          latestPrompt = response.data[0]
+          //console.log('checking  latest prompt before setting state', latestPrompt);
+          setCurrentPrompt(latestPrompt)
+          //sets the words of most current prompt
+          const wordArray = latestPrompt.matchWords.split(' ')
+          setWords(wordArray)
+          //grabs all submissions for current prompt
+          axios.get(`/text/prompt/${latestPrompt.id}`)
+          .then((response) => {
+            //renders all posts to page
+            console.log('checking posts from latest prompt before setting state', response.data)
+            setPosts(response.data)
+            })
+            .catch((error) => console.error('there are no submissions', error));
+          //sets the most current prompt in state
+          }
+      
+        })
+      .catch((err) => {
+        console.error('Could not get latest Prompt', err)
+      })
+    
     //grabs the most current story
     axios.get('/badges/find/last')
       .then((response) => {
@@ -204,99 +128,52 @@ function Homepage() {
         newStory();
         }else{
         //sets the most current badge
-          latestBadgeStoryId = response.data[0].id
-          //rerenders
-          setBadgeId(latestBadgeStoryId)
+          latestBadgeStory = response.data[0]
+          //console.log('checking latest story before setting state', latestBadgeStory);
+          setBadge(latestBadgeStory)
+          //grabs all of the texts that are already a part of the main story
+          axios.get(`/text/winner/1/${latestBadgeStory.id}`)
+            .then((winnerArr) => {
+              console.log('checking submitted posts for story before setting state', winnerArr.data);
+              //sets story to an array of text obj
+              setStory(winnerArr.data)
+            })
+            .catch((error) => console.error('could not grab winner texts for story'));
         }
       })
       .catch((err) => {
         console.error('Error getting story:', err)
       })
 
-    // //grabs latest prompt, texts submitted to prompt, and words associated
-    // axios.get('/prompt/find/last')
-    //   .then((response) => {
-    //     //conditional for if prompt table is empty
-    //     if(response.data === undefined){
-    //       newRound()
-    //     }else{
-    //       latestPrompt = response.data[0]
-    //       //sets the words of most current prompt
-    //       //console.log(latestPrompt.current);
-    //       const wordArray = latestPrompt.matchWords.split(' ')
-    //       setWords(wordArray)
-    //       //sets the most current prompt
-    //       setCurrentPrompt(latestPrompt)
-    //       //grabs all of the texts already submitted for prompt
-    //       axios.get(`/text/prompt/${latestBadgeStoryId}`)
-    //         .then((response) => {
-    //           setPosts(response.data)
-    //         })
-    //         .catch((error) => console.error('could not get latest prompt', error));
-    //       }
-    //     })
-    //   .catch((err) => {
-    //     console.error('Error getting words:', err)
-    //   })
     
+    //picks winning submission and starts a new round
+    const promptInterval = setInterval(() => {
+      console.log('inside prompt interval', latestPrompt.id)
+      promptWinner(latestPrompt.id).then((best) => {
+        console.log('checking who won before adding to main story', best)
+        setStory((story) => ([...story, best]));
+      })
+      newRound();
+    }, 10000) // this is where to change interval time between prompt changes (currently set to an hour)
+
+    //send badges, resets the story to start a new one, starts a new round
+    const storyInterval = setInterval(() => {
+      console.log('inside storyinterval', latestBadgeStory.id)
+      awardCeremony(latestBadgeStory.id);
+      newStory()
+    }, 30000)
+    
+    return () => {
+      clearInterval(promptInterval)
+      clearInterval(storyInterval);
+    }
+
+
   }, [])
 
-  //renders when currentBadgeId is changed
   useEffect(() => {
-    latestBadgeStoryId = currentBadgeId;
-    console.log('coming from useEffect', currentBadgeId);
-        //grabs all of the texts that are already a part of the main story
-    axios.get(`/text/winner/1/${currentBadgeId}`)
-      .then((winnerArr) => {
-        //sets story to an array of text obj
-        setStory(winnerArr.data)
-      })
-      .catch((error) => console.error('the current story is empty'));
-
-     //grabs latest prompt, texts submitted to prompt, and words associated
-     axios.get('/prompt/find/last')
-     .then((response) => {
-       //conditional for if prompt table is empty
-       if(response.data === undefined){
-         newRound()
-       }else{
-         latestPrompt = response.data[0]
-         //sets the words of most current prompt
-         const wordArray = latestPrompt.matchWords.split(' ')
-         setWords(wordArray)
-         //sets the most current prompt
-         setCurrentPrompt(latestPrompt)
-         //grabs all of the texts already submitted for prompt
-         axios.get(`/text/prompt/${latestPrompt.id}`)
-           .then((response) => {
-             setPosts(response.data)
-           })
-           .catch((error) => console.error('there are no submission for this round', error));
-         }
-       })
-     .catch((err) => {
-       console.error('Error getting words:', err)
-     })
-
-     storyInterval();
     
-    // const storyInterval = setInterval(() => {
-    //   awardCeremony();
-    //   newStory()
-    //   //newRound();
-    // }, 60000)
 
-    // return () => {
-    //   clearInterval(storyInterval);
-    // }
-
-  }, [currentBadgeId])
-
-  useEffect(() => {
-    promptInterval();
-  }, [currentPrompt])
-
-  useEffect(() => {
     //update the timer every second
     const timer = setInterval(() => {
       setRemainingTime(prevRemainingTime => {
@@ -309,12 +186,13 @@ function Homepage() {
 
     //cleanup
     return () => {
+      clearInterval(appInterval);
       clearInterval(timer);
     };
   }, [actionInterval]);
-
   const minutes = Math.floor(remainingTime / 60000);
   const seconds = Math.floor((remainingTime % 60000) / 1000);
+
 
   //function to handle input change
   const handleInput = (event) => {
@@ -327,6 +205,7 @@ function Homepage() {
     if(input !== ''){
       setInput('')
       setTextCount(0)
+      console.log('inside handlesubmit, checking promptid', currentPrompt)
       axios.post('/text', {text: input, userId: userId , promptId: currentPrompt.id })
       .then(() => {
         axios.get('/text/find/last')
@@ -345,32 +224,31 @@ function Homepage() {
   //return dom elements and structure
   return (
     <div>
-        <nav className='nav-btn' >
-          <div className='user-div'>
-            <Link to="/user">
-              <button className='user-btn'>User</button>
-            </Link>
-            <Link to=''>
-              <button className='user-btn' >Button for Logan</button>
-            </Link>
-            <div>
-              <Timer minutes={minutes} seconds={seconds} />
-            </div>
-          </div>
-        </nav>
+      
+      <nav className='nav-btn' >
+      <div className='user-div'>
+        <Link to="/user">
+          <button className='user-btn'>User</button>
+        </Link>
+      <Link to=''>
+        <button className='user-btn' >Button for Logan</button>
+      </Link>
+      <div>
+        <Timer minutes={minutes} seconds={seconds} />
+      </div>
+      </div>
+      </nav>
 
-
-      <div className='wrapper'>
-        
-        <div className='word-container'>
-          {
-            words.map((word, i) => {
-              return <span key={i}>{word} </span>
-            })
-          }
-        </div>
-        
-         <div className='story-container'>
+    {/* //div for wrapper containing all homepage elements */}
+    <div className='wrapper'>
+      
+      <div className='word-container'>
+        {words.map((word, i) => (
+        <span key={i}>{word } </span>
+      ))}
+      </div>
+      
+        <div className='story-container'>
           {
             story.map((submission, i) => {
               return <div key={submission.id}>{submission.text}</div>
@@ -378,7 +256,7 @@ function Homepage() {
           }
         </div>
 
-        <div className='post-submission'>
+        <div >
           
           <textarea 
           className='user-input'
@@ -392,20 +270,25 @@ function Homepage() {
             {textCount}/150
           </div>
           <div className='submit'>
-            <button className='submit-btn' onClick={handleSubmit}>Submit</button>
+          <button className='submit-btn' onClick={handleSubmit}>Submit</button>
           </div>
 
-        </div>
-        <div className='posts-container'>
+          <div>
           {
-            posts.map((post) => {
-              return <Post key={post.id} text={post}/>
-            })
-          }
+              posts.map((post) => {
+                return <Post key={post.id} text={post}/>
+              })
+            }
+            
+          </div>
         </div>
 
-      </div>
+        <div className='posts'>
+        </div>
+
     </div>
+    
+  </div>
   )
 };
 
