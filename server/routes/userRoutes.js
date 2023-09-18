@@ -57,23 +57,20 @@ router.get('/user', (req, res) => {
 });
 
 //post to update user badges
-router.post('/badges/:id', (req, res) => {
-  const { id } = req.params;
-  const { badge } = req.body;
+router.post('/badges/:id/:value', (req, res) => {
+  const { id, value } = req.params;
 
   User.findByPk(id)
   .then((user) => {
-  //     res.status(201).send(user);
-  // })
-  // .catch((error) => res.sendStatus(500))
+
       if (!user) {
         return res.status(404).send({ error: 'User not found' });
       }
 
       if(user.badges === null || !user.badges) {
-        user.badges = `${badge}+`;
+        user.badges = `${value}+`;
       } else {
-        user.badges += `${badge}+`;
+        user.badges += `${value}+`;
       }
 
       return user.save()
@@ -90,6 +87,19 @@ router.post('/badges/:id', (req, res) => {
       res.sendStatus(500)
     });
 });
+
+// //post to update badge string in user
+// router.post('/update/:id/:value', (req, res) => {
+//   const { id, value } = req.params;
+//   const oldInfo = User.findByPk(id).then(user => user.badges)
+
+//   User.upsert({
+//     id: id,
+//     badges: `${User.findByPk(id).then(user => user.badges)}+${value}`
+//   })
+//   .then(() => res.sendStatus(201))
+//   .catch(() => res.sendStatus(500))
+// });
 
 
 

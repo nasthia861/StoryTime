@@ -18,6 +18,21 @@ router.get('/:id', (req, res) => {
   })
 })
 
+//grabs latest text created
+router.get('/find/last', (req, res) => {
+  Text.findAll({
+    limit: 1,
+    order: [['id', 'DESC']]
+  })
+    .then((lastText) => {
+      res.send(lastText).status(200);
+    })
+    .catch((err) => {
+      console.error('Could not Get last text submitted', err);
+      res.sendStatus(500);
+    });
+})
+
 //post to update likes and dislikes
 router.post('/likes/:id', (req, res) => {
   const { id } = req.params;
@@ -129,6 +144,7 @@ router.get('/prompt/:promptId', (req, res) => {
     })
 })
 
+//get all text
 router.get('/', (req,res) => {
 // const { } = req.params;
   Text.findAll({})
@@ -141,10 +157,9 @@ router.get('/', (req,res) => {
     });
 })
 
+//get texts that won for specific story
 router.get('/winner/:id/:badgeId', (req, res) => {
   const { id, badgeId } = req.params;
-
-
   Text.findAll({
     where: {
       winner: id,

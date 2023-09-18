@@ -44,8 +44,8 @@ router.get('/find/last', (req,res) => {
     });
 })
 
-//Get last prompt submitted
-router.get('/find/last', (req,res) => {
+//Get last prompt submitted in particular story
+router.get('/find/last/', (req,res) => {
   Prompt.findAll({
     limit: 1,
     order: [['id', 'DESC']]
