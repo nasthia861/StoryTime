@@ -69,7 +69,6 @@ const User = () => {
             return (
               <div key={entry.id} className='user-entry-box'>
               <div
-                  to={`/user/text/${entry.id}`}
                   className='user-index'
                   entry={entry}
                 >
