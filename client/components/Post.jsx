@@ -30,7 +30,7 @@ const Post = ({text}) => {
       minute: 'numeric',
     });
   
-    setNewTimeStamp(`Posted: ${formattedTime}-${formattedDate}`);
+    setNewTimeStamp(`${formattedTime}-${formattedDate}`);
   
   }, []);
 
@@ -42,8 +42,8 @@ const Post = ({text}) => {
        </div>
         <div className='text-context'>
       <p> {text.text} </p>
-      <p className='timeStamp'>{newTimeStamp}</p>
       <UpVote text={text}/>
+      <p className='timeStamp'>{newTimeStamp}</p>
     </div>
     </div>
   )
