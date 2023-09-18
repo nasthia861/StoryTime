@@ -195,7 +195,7 @@ function Homepage() {
 
     //cleanup
     return () => {
-      clearInterval(appInterval);
+      clearInterval(actionInterval);
       clearInterval(timer);
     };
   }, [actionInterval]);

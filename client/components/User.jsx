@@ -27,7 +27,9 @@ const User = () => {
     axios.get(`/user/${username}`)
       .then((userData) => {
         let user = userData.data[0];
-          setUserBadgesSt(user.badges)
+          if (user.badges) {
+            setUserBadgesSt(user.badges)
+          }
           setUserId(user.id);
       })
       .catch((err) => {

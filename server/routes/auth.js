@@ -25,8 +25,8 @@ router.post('/register', async (req, res) => {
 
     // Create a new user
     const new_user = await User.create({ username, password: hashedPassword });
-    const user_id = newUser.id;
-    const user_name = newUser.username;
+    const user_id = new_user.id;
+    const user_name = new_user.username;
 
     return res.status(201).json({ message: 'Registration successful.', new_user, user_id, user_name });
   } catch (error) {
