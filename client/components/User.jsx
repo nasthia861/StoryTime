@@ -6,6 +6,7 @@ import { useAuth } from './AuthContext.jsx';
 
 const User = () => {
 
+
   // access the user state with data from context
   const { user, login, logout } = useAuth();
 
@@ -96,8 +97,7 @@ const User = () => {
         {userTexts.map((entry) => {
             return (
               <div key={entry.id} className='user-entry-box'>
-                <Link
-                  to={`/user/text/${entry.id}`}
+              <div
                   className='user-index'
                   entry={entry}
                 >
@@ -116,7 +116,7 @@ const User = () => {
                     <strong>Created:</strong> {entry.prompt.createdAt.substring(0, 10)}
 
                   </div>
-                </Link>
+                </div>
               </div>
             );
           })}
