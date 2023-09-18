@@ -1,14 +1,25 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom'
+import { useAuth } from './AuthContext.jsx';
+import { Navigate } from 'react-router-dom';
 
 const User = () => {
 
-  const [userId, setUserId] = useState(1);
+  // access the user state with data from context
+  const { user } = useAuth();
+
+  // Check if the user is authenticated before rendering content
+  if (!user) {
+    // Redirect or show a message to unauthenticated users
+    return <Navigate to="/" />;
+  }
+
+  const [userId, setUserId] = useState(user.id);
   const [userTexts, setUserTexts] = useState([]);
   const [userBadgesSt, setUserBadgesSt] = useState('');
   const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
-  const [username, setUsername] = useState('yeauxdejuan');
+  const [username, setUsername] = useState(user.username);
   const [badgeId, setBadgeId] = useState(1)
 
  
@@ -20,7 +31,7 @@ const User = () => {
           setUserId(user.id);
       })
       .catch((err) => {
-        console.error('Could not retrieve user ID', err)
+        console.error('Could not retrieve user ID', err, props.user)
       });
   };
  
