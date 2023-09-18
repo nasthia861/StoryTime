@@ -21,7 +21,7 @@ const User = () => {
   const [userBadgesSt, setUserBadgesSt] = useState('');
   const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
   const [username, setUsername] = useState(user.username);
-  const [badgeId, setBadgeId] = useState(1)
+  const [badgeId, setBadgeId] = useState()
   const [newUsername, setNewUsername] = useState('');
 
  
@@ -49,7 +49,7 @@ const User = () => {
 
   //axios request to retrieve user texts by id
   const getStoryWithResponse = (badgeId) => {
-    axios.get(`http://127.0.0.1:8080/text/winner/1/${badgeId}`)
+    axios.get(`/text/user/${userId}`)
     .then((texts) =>{
       setUserTexts(texts.data);
     })
@@ -104,16 +104,16 @@ const User = () => {
                   <div>
                     <strong>Username:</strong> {username}
                   </div>
-                  <div>
+                  {/* <div>
                     <strong>Story:</strong> {entry.prompt.matchWords}
-                  </div>
+                  </div> */}
                   <div>
                     <strong>Response:</strong> {entry.text}
                   </div>
                   <div className='small-text'>
                     <strong>Likes:</strong> {entry.likes}
-                     &nbsp;&nbsp;&nbsp;
-                    <strong>Created:</strong> {entry.prompt.createdAt.substring(0, 10)}
+                     {/* &nbsp;&nbsp;&nbsp;
+                    <strong>Created:</strong> {entry.prompt.createdAt.substring(0, 10)} */}
 
                   </div>
                 </div>
