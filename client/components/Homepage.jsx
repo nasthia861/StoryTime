@@ -19,11 +19,11 @@ function Homepage() {
   // access the user state with data from context
   const { user, logout } = useAuth();
   
-  // Check if the user is authenticated before rendering content
-  if (!user) {
-    // Redirect or show a message to unauthenticated users
-    navigate({ pathname: '/' });
-  }
+  // // Check if the user is authenticated before rendering content
+  // if (!user) {
+  //   // Redirect or show a message to unauthenticated users
+  //   navigate({ pathname: '/' });
+  // }
   
   //building story from post winners
   const [story, setStory] = useState([])
@@ -239,7 +239,10 @@ function Homepage() {
           <button className='user-btn'>User</button>
         </Link>
         <div>
-            <button className='user-btn' onClick={ logout }>Logout</button>
+            <button className='user-btn' onClick={ () => {
+              logout();
+              navigate({ pathname: '/' });
+            } }>Logout</button>
         </div>
       <div>
         <Timer minutes={minutes} seconds={seconds} />

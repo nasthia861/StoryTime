@@ -11,6 +11,8 @@ export const AuthProvider = ({ children }) => {
     console.log("this is user ----->", user)
     console.log("this is userData ----->", userData)
     setUser(userData);
+    // sessionStorage.setItem('user_id', userData.id);
+    // sessionStorage.setItem('user_name', userData.username);
   };
 
   const logout = () => {

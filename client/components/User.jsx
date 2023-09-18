@@ -2,18 +2,18 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom'
 import { useAuth } from './AuthContext.jsx';
-import { Navigate } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom';
 
 const User = () => {
 
   // access the user state with data from context
   const { user } = useAuth();
 
-  // Check if the user is authenticated before rendering content
-  if (!user) {
-    // Redirect or show a message to unauthenticated users
-    return <Navigate to="/" />;
-  }
+  // // Check if the user is authenticated before rendering content
+  // if (!user) {
+  //   // Redirect or show a message to unauthenticated users
+  //   return <Navigate to="/" />;
+  // }
 
   const [userId, setUserId] = useState(user.id);
   const [userTexts, setUserTexts] = useState([]);
