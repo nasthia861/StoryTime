@@ -23,7 +23,7 @@ function Homepage() {
   
 
   //set the starting time for the timer
-  const actionInterval = 30000; // 30 seconds for testing
+  const actionInterval = 900000; // 30 seconds for testing
   const storedTargetTime = localStorage.getItem('targetTime');
   const initialTargetTime = storedTargetTime ? parseInt(storedTargetTime, 10) : Date.now() + actionInterval;
 
