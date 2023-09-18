@@ -7,7 +7,7 @@ import { useAuth } from './AuthContext.jsx';
 const User = () => {
 
   // access the user state with data from context
-  const { user } = useAuth();
+  const { user, login, logout } = useAuth();
 
   // // Check if the user is authenticated before rendering content
   // if (!user) {
@@ -21,6 +21,7 @@ const User = () => {
   const [userBadgeObj, setUserBadgeObj] = useState({Likeable: 0, Contributor: 0, Matcher: 0})
   const [username, setUsername] = useState(user.username);
   const [badgeId, setBadgeId] = useState(1)
+  const [newUsername, setNewUsername] = useState('');
 
  
   const getUserId = (username) => {
@@ -54,6 +55,20 @@ const User = () => {
     .catch((err) => {
       console.error('Could not retrieve texts!!', err);
     });
+  };
+
+  // Function to update the username
+  const handleUpdateUsername = () => {
+    axios
+      .put(`/user/${userId}`, { username: newUsername })
+      .then((response) => {
+        // Update the username in context
+        login({ ...user, username: newUsername });
+        setUsername(newUsername); // Update the local state
+      })
+      .catch((error) => {
+        console.error('Could not update username', error);
+      });
   };
 
   //runs when dom is compounded
@@ -108,6 +123,20 @@ const User = () => {
 
             </ul>
           </div>
+      <div className="username-update">
+        <div className="username-label">
+          <strong></strong> {username}
+        </div>
+        <div className="update-username">
+          <input
+            type="text"
+            placeholder="New Username"
+            value={newUsername}
+            onChange={(e) => setNewUsername(e.target.value)}
+          />
+          <button onClick={handleUpdateUsername}>Update</button>
+        </div>
+      </div>
       </div>
       <h1 className='badges-header' >Badges</h1>
       <div>
